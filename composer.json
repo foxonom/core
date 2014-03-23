@@ -1,0 +1,22 @@
+{
+    "name": "headzoo/utilities",
+    "description": "A collection of use PHP utility classes and functions.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["php", "strings", "arrays", "utility"],
+    "version": "0.1",
+    "authors": [
+        {
+            "name": "headzoo",
+            "email": "sean@headzoo.io"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Headzoo": "src/"
+        }
+    }
+}
