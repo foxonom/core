@@ -192,6 +192,9 @@ try {
 
 Change Log
 ----------
+##### v0.2.1 - 2014/03/24
+* Changed visibility of `Headzoo\Utilities\Complete::invoke()` to public.
+
 ##### v0.2 - 2014/03/24
 * Added the `Headzoo\Utilities\Complete` class.
 
