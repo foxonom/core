@@ -168,9 +168,34 @@ print_r($arr);
 // )
 ```
 
+#### Headzoo\Utilities\Complete
+The class wraps a callable function, which is called in the class destructor. The utility of this scheme is the ability
+to ensure the function is called eventually. Usually when the Complete object goes out of scope, which is when it's
+destructor is called.
+
+```php
+// In this example the database connection will always be closed, even if the $database->fetch()
+// method throws an exception, because the anonymous function passed to Complete::factory()
+// is called when the $complete object goes out of scope.
+
+$database = new FakeDatabase();
+$complete = Complete::factory(function() use($database) {
+   $database->close();
+});
+try {
+   $rows = $database->fetch();
+} catch (Exception $e) {
+   echo $e->getTraceAsString();
+   throw $e;
+}
+```
+
 Change Log
 ----------
-v0.1 - 2014/03/23
+##### v0.2 - 2014/03/24
+* Added the `Headzoo\Utilities\Complete` class.
+
+##### v0.1 - 2014/03/23
 * First version released under MIT license.
 
 License
