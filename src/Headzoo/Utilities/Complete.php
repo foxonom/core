@@ -6,7 +6,7 @@ namespace Headzoo\Utilities;
  *
  * The class wraps a callable function, which is called in the class destructor. The utility
  * of this scheme is the ability to ensure the function is called eventually. Usually when
- * the Complete instance object goes out of scope, which is when it's destructor is called.
+ * the Complete object goes out of scope, which is when it's destructor is called.
  * 
  * This class can be used to simulate a try...catch...finally in versions of PHP which do not
  * support the finally clause.
