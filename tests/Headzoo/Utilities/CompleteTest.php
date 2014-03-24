@@ -44,4 +44,16 @@ class CompleteTest
         $complete();
         $this->assertTrue($this->completed);
     }
+
+    /**
+     * @covers Headzoo\Utilities\Complete::invoke
+     */
+    public function testInvoke()
+    {
+        $complete = Complete::factory(function() {
+            $this->completed = true;
+        });
+        $complete->invoke();
+        $this->assertTrue($this->completed);
+    }
 }
