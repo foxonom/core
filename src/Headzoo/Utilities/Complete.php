@@ -88,21 +88,39 @@ class Complete
      * $complete();
      * ```
      * @see http://www.php.net/manual/en/language.oop5.magic.php#object.invoke
+     * @return bool
      */
     public function __invoke()
     {
-        $this->invoke();
+        return $this->invoke();
     }
 
     /**
      * Calls the set $callable function
+     * 
+     * Ensures the callable cannot be called twice, even if the callback has an error. Subsequent calls to this method
+     * do nothing. Returns true when the callable was called, and false if not.
+     *
+     * Example:
+     * ```php
+     * $complete = Complete::factory(function() {
+     *      echo "I'm complete!";
+     * });
+     * $complete->invoke();
+     * ```
+     * 
+     * @return bool
      */
-    private function invoke()
+    public function invoke()
     {
+        $is_called = false;
         if ($this->callable) {
-            $callable = $this->callable;
+            $callable       = $this->callable;
             $this->callable = null;
             call_user_func($callable);
+            $is_called = true;
         }
+        
+        return $is_called;
     }
 } 
