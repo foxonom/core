@@ -24,6 +24,7 @@ class CompleteTest
         {
             // Destructor is called when $complete goes out of scope, in this
             // case is when this wrapper function returns.
+            /** @noinspection PhpUnusedLocalVariableInspection */
             $complete = Complete::factory(function() {
                 $this->completed = true;
             });
