@@ -100,4 +100,56 @@ class ArraysTest
             Arrays::join($arr, ", ", "strtolower")
         );
     }
+
+    /**
+     * @covers Headzoo\Utilities\Arrays::findString
+     * @dataProvider providerFindString
+     */
+    public function testFindString($needle, $reverse, $expected)
+    {
+        if (stripos($expected, "Framework_Error") !== false) {
+            $this->setExpectedException($expected);
+        }
+        $arr = [
+            "headzoo",
+            "joe",
+            "sam",
+            "sam",
+            "666",
+            "headzoo",
+            3.14,
+            "joe"
+        ];
+        $this->assertEquals(
+            $expected, 
+            Arrays::findString($arr, $needle, $reverse)
+        );
+    }
+
+    /**
+     * Data provider for testFindString
+     * 
+     * @return array
+     */
+    public function providerFindString()
+    {
+        return [
+            ["headzoo",                 false,  0],
+            ["headzoo",                 true,   5],
+            ["joe",                     false,  1],
+            ["sam",                     false,  2],
+            ["SAM",                     true,   3],
+            ["JOE",                     false,  1],
+            ["666",                     false,  4],
+            [666,                       false,  4],
+            [666,                       true,   4],
+            [3.14,                      false,  6],
+            ["3.14",                    false,  6],
+            ["amy",                     false,  false],
+            [null,                      false,  false],
+            [["amy"],                   false,  "PHPUnit_Framework_Error_Warning"],
+            [new stdClass(),            false,  "PHPUnit_Framework_Error_Warning"],
+            [fopen("php://stdin", "r"), false,  "PHPUnit_Framework_Error_Warning"]
+        ];
+    }
 }
