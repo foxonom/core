@@ -1,5 +1,6 @@
 <?php
 use Headzoo\Utilities\Arrays;
+use Headzoo\Utilities\Strings;
 
 class ArraysTest
     extends PHPUnit_Framework_TestCase
@@ -98,6 +99,38 @@ class ArraysTest
         $this->assertEquals(
             "headzoo, joe, sam", 
             Arrays::join($arr, ", ", "strtolower")
+        );
+        $this->assertEquals(
+            "headzoo, joe, sam",
+            Arrays::join($arr, function($str) { return strtolower($str); })
+        );
+    }
+
+    /**
+     * @covers Headzoo\Utilities\Arrays::conjunct
+     */
+    public function testConjunct()
+    {
+        $arr = [
+            "headzoo",
+            "joe",
+            "sam"
+        ];
+        $this->assertEquals(
+            "'headzoo', 'joe', or 'sam'",
+            Arrays::conjunct($arr, "or", 'Headzoo\Utilities\Strings::quote')
+        );
+        $this->assertEquals(
+            "'headzoo', 'joe', " . Arrays::DEFAULT_CONJUNCTION . " 'sam'",
+            Arrays::conjunct($arr, function($str) { return Strings::quote($str); })
+        );
+        
+        $arr = [
+            "headzoo"
+        ];
+        $this->assertEquals(
+            "'headzoo'",
+            Arrays::conjunct($arr, "and", 'Headzoo\Utilities\Strings::quote')
         );
     }
 

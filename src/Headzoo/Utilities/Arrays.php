@@ -1,11 +1,22 @@
 <?php
 namespace Headzoo\Utilities;
+use Closure;
 
 /**
  * Contains static methods for working with arrays.
  */
 class Arrays
 {
+    /**
+     * Default conjunction used by the conjunct() method
+     */
+    const DEFAULT_CONJUNCTION = "and";
+
+    /**
+     * The default separator string using by joining methods
+     */
+    const DEFAULT_SEPARATOR = ", ";
+    
     /**
      * Returns true if the $array contains the key $key with the value $value
      *
@@ -132,14 +143,24 @@ class Arrays
      *
      * Example:
      * ```php
-     *  $arr = [
+     * $array = [
      *      "headzoo",
      *      "joe",
      *      "sam"
-     *  ];
-     *  $ret = Arrays::join($arr, ", ", 'Headzoo\Utilities\Strings::quote');
+     * ];
+     *  
+     * echo Arrays::join($array);
+     * // Outputs: headzoo, joe, sam
      * 
+     * echo Arrays::join($array, " - ");
+     * // Outputs: headzoo - joe - sam
+     * 
+     * echo Arrays::join($array, ", ", 'Headzoo\Utilities\Strings::quote');
      * // Outputs: 'headzoo', 'joe', 'sam'
+     *
+     * // The default separator will be used when the middle argument is omitted, and the
+     * // last argument is a Closer instance.
+     * echo Arrays::join($array, function($str) { return Strings::quote($str); });
      * ```
      *
      * @param  array    $array     The array to join
@@ -147,12 +168,68 @@ class Arrays
      * @param  callable $callback  Callback applied to each element of the array
      * @return string
      */
-    public static function join(array $array, $separator, $callback = null)
+    public static function join(array $array, $separator = self::DEFAULT_SEPARATOR, $callback = null)
     {
+        if ($separator instanceof Closure) {
+            $callback  = $separator;
+            $separator = self::DEFAULT_SEPARATOR;
+        }
         if (null !== $callback) {
             $array = array_map($callback, $array);
         }
         return join($separator, $array);
+    }
+
+    /**
+     * Joins an array of values with a final conjunction
+     * 
+     * Similar to the Arrays::join() method, this method combines the array values using the default separator,
+     * and joins the final item in the array with a conjunction. An array of strings can be turned into
+     * a list of items, for example ["food", "water", "shelter"] becomes "food, water, and shelter".
+     * 
+     * Examples:
+     * ```php
+     * $array = [
+     *      "headzoo",
+     *      "joe",
+     *      "sam"
+     * ];
+     * 
+     * echo Arrays::conjunct($array);
+     * // Outputs: headzoo, joe, and sam
+     * 
+     * echo Arrays::conjunct($array, "and", 'Strings::quote');
+     * // Outputs: 'headzoo', 'joe', and 'sam'
+     * 
+     * // The default conjunction will be used when the middle argument is omitted, and the
+     * // last argument is a Closer instance.
+     * echo Arrays::conjunct($array, function($str) { return Strings::quote($str); });
+     * ```
+     * 
+     * @param  array    $array        The array of values to join
+     * @param  string   $conjunction  The conjunction word to use
+     * @param  callable $callback     Optional callback applied to each element of the array
+     * @return string
+     */
+    public static function conjunct(array $array, $conjunction = self::DEFAULT_CONJUNCTION, $callback = null)
+    {
+        if ($conjunction instanceof Closure) {
+            $callback    = $conjunction;
+            $conjunction = self::DEFAULT_CONJUNCTION;
+        }
+        if (null !== $callback) {
+            $array = array_map($callback, $array);
+        }
+        if (count($array) > 1) {
+            $final     = array_pop($array);
+            $sentence  = join(self::DEFAULT_SEPARATOR, $array);
+            $separator = trim(self::DEFAULT_SEPARATOR);
+            $sentence  = "{$sentence}{$separator} {$conjunction} {$final}";
+        } else {
+            $sentence = array_pop($array);
+        }
+        
+        return $sentence;
     }
 
     /**
