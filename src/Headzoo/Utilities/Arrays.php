@@ -1,6 +1,5 @@
 <?php
 namespace Headzoo\Utilities;
-use Closure;
 
 /**
  * Contains static methods for working with arrays.
@@ -159,8 +158,8 @@ class Arrays
      * // Outputs: 'headzoo', 'joe', 'sam'
      *
      * // The default separator will be used when the middle argument is omitted, and the
-     * // last argument is a Closer instance.
-     * echo Arrays::join($array, function($str) { return Strings::quote($str); });
+     * // last argument is callable object.
+     * echo Arrays::join($array, 'Headzoo\Utilities\Strings::quote');
      * ```
      *
      * @param  array    $array     The array to join
@@ -168,15 +167,13 @@ class Arrays
      * @param  callable $callback  Callback applied to each element of the array
      * @return string
      */
-    public static function join(array $array, $separator = self::DEFAULT_SEPARATOR, $callback = null)
+    public static function join(array $array, $separator = self::DEFAULT_SEPARATOR, callable $callback = null)
     {
-        if ($separator instanceof Closure) {
-            $callback  = $separator;
-            $separator = self::DEFAULT_SEPARATOR;
-        }
+        Functions::swapCallable($separator, $callback, self::DEFAULT_SEPARATOR);
         if (null !== $callback) {
             $array = array_map($callback, $array);
         }
+        
         return join($separator, $array);
     }
 
@@ -198,12 +195,12 @@ class Arrays
      * echo Arrays::conjunct($array);
      * // Outputs: headzoo, joe, and sam
      * 
-     * echo Arrays::conjunct($array, "and", 'Strings::quote');
+     * echo Arrays::conjunct($array, "and", 'Headzoo\Utilities\Strings::quote');
      * // Outputs: 'headzoo', 'joe', and 'sam'
      * 
      * // The default conjunction will be used when the middle argument is omitted, and the
-     * // last argument is a Closer instance.
-     * echo Arrays::conjunct($array, function($str) { return Strings::quote($str); });
+     * // last argument is callable object.
+     * echo Arrays::conjunct($array, 'Headzoo\Utilities\Strings::quote');
      * ```
      * 
      * @param  array    $array        The array of values to join
@@ -211,12 +208,9 @@ class Arrays
      * @param  callable $callback     Optional callback applied to each element of the array
      * @return string
      */
-    public static function conjunct(array $array, $conjunction = self::DEFAULT_CONJUNCTION, $callback = null)
+    public static function conjunct(array $array, $conjunction = self::DEFAULT_CONJUNCTION, callable $callback = null)
     {
-        if ($conjunction instanceof Closure) {
-            $callback    = $conjunction;
-            $conjunction = self::DEFAULT_CONJUNCTION;
-        }
+        Functions::swapCallable($conjunction, $callback, self::DEFAULT_CONJUNCTION);
         if (null !== $callback) {
             $array = array_map($callback, $array);
         }

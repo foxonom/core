@@ -92,17 +92,25 @@ class ArraysTest
     public function testJoin()
     {
         $arr = [
-            "HEADZOO",
-            "JOE",
-            "SAM"
+            "headzoo",
+            "joe",
+            "sam"
         ];
         $this->assertEquals(
-            "headzoo, joe, sam", 
-            Arrays::join($arr, ", ", "strtolower")
+            "'headzoo', 'joe', 'sam'", 
+            Arrays::join($arr, ", ", 'Headzoo\Utilities\Strings::quote')
         );
         $this->assertEquals(
-            "headzoo, joe, sam",
-            Arrays::join($arr, function($str) { return strtolower($str); })
+            "'headzoo', 'joe', 'sam'",
+            Arrays::join($arr, 'Headzoo\Utilities\Strings::quote')
+        );
+        $this->assertEquals(
+            "'headzoo', 'joe', 'sam'",
+            Arrays::join($arr, [new Strings(), "quote"])
+        );
+        $this->assertEquals(
+            "'headzoo', 'joe', 'sam'",
+            Arrays::join($arr, function($str) { return Strings::quote($str); })
         );
     }
 
@@ -119,6 +127,14 @@ class ArraysTest
         $this->assertEquals(
             "'headzoo', 'joe', or 'sam'",
             Arrays::conjunct($arr, "or", 'Headzoo\Utilities\Strings::quote')
+        );
+        $this->assertEquals(
+            "'headzoo', 'joe', " . Arrays::DEFAULT_CONJUNCTION . " 'sam'",
+            Arrays::conjunct($arr, 'Headzoo\Utilities\Strings::quote')
+        );
+        $this->assertEquals(
+            "'headzoo', 'joe', " . Arrays::DEFAULT_CONJUNCTION . " 'sam'",
+            Arrays::conjunct($arr, [new Strings(), "quote"])
         );
         $this->assertEquals(
             "'headzoo', 'joe', " . Arrays::DEFAULT_CONJUNCTION . " 'sam'",
