@@ -155,4 +155,40 @@ class Arrays
         }
         return join($separator, $array);
     }
+
+    /**
+     * Finds the first or last occurrence of a string within an array
+     * 
+     * Similar to the array_search() function, this method only searches for strings, and
+     * does so in a case-insensitive manner. The value of $needle may be any type which is
+     * castable to a string. An E_USER_WARNING is triggered if the value can't be cast to a string.
+     * 
+     * Finds the first occurrence of the needle when $reverse is false. Otherwise the method finds
+     * the last occurrence of the needle.
+     * 
+     * Returns the array index where the string was found, or false if the string was not
+     * found.
+     * 
+     * @param  array $array   The array to search
+     * @param  mixed $needle  The string value to find
+     * @param  bool  $reverse Return the last occurrence of the needle
+     * @return mixed
+     */
+    public static function findString(array $array, $needle, $reverse = false)
+    {
+        if (!is_scalar($needle) && null !== $needle) {
+            trigger_error(
+                "Non-scalar search value; cannot cast to a string.", 
+                E_USER_WARNING
+            );
+        }
+        if ($reverse) {
+            $array = array_reverse($array, true);
+        }
+        
+        return array_search(
+            strtolower((string)$needle),
+            array_map("strtolower", $array)
+        );
+    }
 }
