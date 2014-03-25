@@ -168,6 +168,33 @@ print_r($arr);
 // )
 ```
 
+##### mixed Headzoo\Utilities\Arrays::findString(array $arr, mixed $needle, bool $reverse = false)
+Finds the first or last occurrence of a string within an array. Similar to the array_search() function, this method
+only searches for strings, and does so in a case-insensitive manner.
+
+```php
+$arr = [
+    "headzoo",
+    "joe",
+    "sam",
+    "sam",
+    "666",
+    "headzoo"
+];
+
+echo Arrays::findString($arr, "JoE");
+// Outputs: 1
+
+echo Arrays::findString($arr, "HEADZOO");
+// Outputs: 0
+
+echo Arrays::findString($arr, "headzoo", true);
+// Outputs: 5
+
+echo Arrays::findString($arr, "amy");
+// Outputs: false
+```
+
 #### Headzoo\Utilities\Complete
 The class wraps a callable function, which is called in the class destructor. The utility of this scheme is the ability
 to ensure the function is called eventually. Usually when the Complete object goes out of scope, which is when it's
@@ -192,6 +219,9 @@ try {
 
 Change Log
 ----------
+##### v0.2.2 - 2014/03/24
+* Added method `Headzoo\Utilities\Arrays::findString()`.
+
 ##### v0.2.1 - 2014/03/24
 * Changed visibility of `Headzoo\Utilities\Complete::invoke()` to public.
 
