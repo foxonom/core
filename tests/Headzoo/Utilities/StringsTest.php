@@ -5,6 +5,21 @@ class StringsTest
     extends PHPUnit_Framework_TestCase
 {
     /**
+     * @covers Headzoo\Utilities\Strings::quote
+     */
+    public function testQuote()
+    {
+        $this->assertEquals(
+            "'Ticking away the moments that make up a dull day'",
+            Strings::quote("Ticking away the moments that make up a dull day")
+        );
+        $this->assertEquals(
+            "`You fritter and waste the hours in an offhand way`",
+            Strings::quote("You fritter and waste the hours in an offhand way", "`")
+        );
+    }
+    
+    /**
      * @covers Headzoo\Utilities\Strings::random
      */
     public function testRandom()

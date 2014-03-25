@@ -51,6 +51,33 @@ class Strings
     private static $chars_punctuation = "!@#$%^&*()+=-_,.?{}[]<>";
 
     /**
+     * Simply wraps a string in quote characters
+     * 
+     * Useful as a callback function to functions like array_map(), this method wraps a string in your choose of
+     * quote character.
+     * 
+     * Note: Quote characters found in the string are not escaped with slashes.
+     * 
+     * Example:
+     * ```php
+     * $str = "Mary had a little lamb.";
+     * echo Strings::quote($str);
+     * // Outputs: 'Mary had a little lamb.'
+     * 
+     * echo Strings::quote($str, "`");
+     * // Outputs: `Mary had a little lamb.`
+     * ```
+     * 
+     * @param  string $str   The string to quote
+     * @param  string $quote The quote character to use
+     * @return string
+     */
+    public static function quote($str, $quote = "'")
+    {
+        return "{$quote}{$str}{$quote}";
+    }
+    
+    /**
      * Returns a completely random string $len characters long
      *
      * The $char_class argument controls which class of characters will be used
