@@ -182,10 +182,10 @@ class Arrays
                 E_USER_WARNING
             );
         }
+        
         if ($reverse) {
             $array = array_reverse($array, true);
         }
-        
         return array_search(
             strtolower((string)$needle),
             array_map("strtolower", $array)
