@@ -4,7 +4,7 @@ A collection of use PHP utility classes and functions.
 
 Requirements
 ------------
-* PHP 5.4 or greater.
+* PHP 5.5 or greater.
 
 Installing
 ----------
@@ -147,7 +147,7 @@ print_r($arr);
 // )
 ```
 
-##### array Headzoo\Utilities\Arrays::join(array $arr, string $separator, callable $callback = null)
+##### string Headzoo\Utilities\Arrays::join(array $arr, string $separator, callable $callback = null)
 Joins the elements of an array using an optional callback.
 
 ```php
@@ -166,6 +166,31 @@ print_r($arr);
 //     [1] => joe
 //     [2] => sam
 // )
+```
+
+##### string Headzoo\Utilities\Arrays::conjunct(array $arr, string $conjunction, callable $callback = null)
+Similar to the Arrays::join() method, this method combines the array values using the default separator,
+and joins the final item in the array with a conjunction. An array of strings can be turned into
+a list of items, for example ["food", "water", "shelter"] becomes '"food, water, and shelter"'.
+
+```php
+$arr = [
+    "headzoo",
+    "joe",
+    "sam"
+];
+
+echo Arrays::conjunct($arr);
+// Outputs: "headzoo, joe, and sam"
+
+echo Arrays::conjunct($arr, "or");
+// Outputs: "headzoo, joe, or sam"
+
+echo Arrays::conjunct($arr, "and", 'Headzoo\Utilities\String::quote');
+// Outputs: "'headzoo', 'joe', and 'sam'"
+
+echo Arrays::conjunct($arr, 'Headzoo\Utilities\String::quote');
+// Outputs: "'headzoo', 'joe', and 'sam'"
 ```
 
 ##### mixed Headzoo\Utilities\Arrays::findString(array $arr, mixed $needle, bool $reverse = false)
@@ -217,8 +242,75 @@ try {
 }
 ```
 
+#### Headzoo\Utilities\Validator
+Performs simple validation on values.
+
+##### bool Headzoo\Utilities\Validator::validateRequired(array $values, array $required, bool $allowEmpty = false)
+Throws an exception when required values are missing from an array of key/value pairs.
+
+```php
+$values = [
+    "name"   => "headzoo",
+    "job"    => "circus animal",
+    "age"    => 38,
+    "gender" => "male"
+];
+$required = [
+    "name",
+    "age",
+    "gender"
+];
+
+// This is valid. All required values exists.
+$this->validator->validateRequired($values, $required);
+
+$values = [
+    "name"   => "headzoo",
+    "job"    => "circus animal"
+];
+$required = [
+    "name",
+    "age",
+    "gender"
+];
+
+// This will throw an exception because the "age" value is missing.
+$this->validator->validateRequired($values, $required);
+```
+
+#### Headzoo\Utilities\Functions
+Contains static methods for working with functions and methods.
+
+##### bool Headzoo\Utilities\Functions::swapCallable(mixed &$optional, mixed &$callable, mixed $default = null)
+Swaps two variables when the second is a callable object. Used to create functions/methods which have a callback as
+the final argument, and it's desirable to make middle argument optional, while the callback remains the final argument.
+
+```php
+function joinArray(array $values, $separator = "-", callable $callback = null)
+{
+   Functions::swapCallable($separator, $callback, "-");
+   $values = array_map($callback, $values);
+   return join($separator, $values);
+}
+
+// The function above may be called normally, like this:
+$values = ["headzoo", "joe"];
+joinArray($values, "-", 'Headzoo\Utilities\String::quote');
+
+// Or the middle argument may be omitted, and called like this:
+joinArray($values, 'Headzoo\Utilities\String::quote');
+```
+
+
 Change Log
 ----------
+##### v0.2.3 - 2014/03/25
+* Increased the minimum PHP version requirement to 5.5.0. Long live, ClassName::class!
+* Added the method `Headzoo\Utilities\Strings::quote()`.
+* Added the method `Headzoo\Utilities\Arrays::conjunct()`.
+* Added the method `Headzoo\Utilities\Functions::swapCallable()`.
+* Added the class `Headzoo\Utilities\Validator`.
+
 ##### v0.2.2 - 2014/03/24
 * Added the method `Headzoo\Utilities\Arrays::findString()`.
 
