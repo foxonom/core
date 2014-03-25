@@ -19,12 +19,7 @@ class Functions
      * ```php
      * function joinArray(array $values, $separator, callable $callback = null)
      * {
-     *      Functions::swap(
-     *          $separator,
-     *          $callback,
-     *          "-"
-     *      );
-     * 
+     *      Functions::swapCallable($separator, $callback, "-");
      *      $values = array_map($callback, $values);
      *      return join($separator, $values);
      * }
