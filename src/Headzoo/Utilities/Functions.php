@@ -25,11 +25,11 @@ class Functions
      * }
      * 
      * // The function above may be called normally, like this:
-     * $values = [" headzoo ", " joe "];
-     * joinArray($values, "-", "trim");
+     * $values = ["headzoo", "joe"];
+     * joinArray($values, "-", 'Headzoo\Utilities\String::quote');
      * 
-     * // The middle argument may be omitted, and called like this:
-     * joinArray($values, "trim");
+     * // Or the middle argument may be omitted, and called like this:
+     * joinArray($values, 'Headzoo\Utilities\String::quote');
      * ```
      * 
      * @param  mixed $optional The optional argument
