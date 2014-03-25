@@ -133,15 +133,14 @@ class Arrays
      * Example:
      * ```php
      *  $arr = [
-     *      "HEADZOO",
-     *      "JOE",
-     *      "SAME"
+     *      "headzoo",
+     *      "joe",
+     *      "sam"
      *  ];
-     *  $ret = Arrays::join($arr, ", ", "strtolower");
+     *  $ret = Arrays::join($arr, ", ", 'Headzoo\Utilities\Strings::quote');
+     * 
+     * // Outputs: 'headzoo', 'joe', 'sam'
      * ```
-     *
-     * Returns:
-     *  `"headzoo, joe, sam"`
      *
      * @param  array    $array     The array to join
      * @param  string   $separator The separator string
