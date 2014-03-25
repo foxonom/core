@@ -220,7 +220,7 @@ try {
 Change Log
 ----------
 ##### v0.2.2 - 2014/03/24
-* Added method `Headzoo\Utilities\Arrays::findString()`.
+* Added the method `Headzoo\Utilities\Arrays::findString()`.
 
 ##### v0.2.1 - 2014/03/24
 * Changed visibility of `Headzoo\Utilities\Complete::invoke()` to public.
