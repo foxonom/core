@@ -301,9 +301,80 @@ joinArray($values, "-", 'Headzoo\Utilities\String::quote');
 joinArray($values, 'Headzoo\Utilities\String::quote');
 ```
 
+#### Headzoo\Utilities\ConstantsTrait
+Trait for reflecting on class constants.
+
+```php
+class WeekDays
+{
+   use ConstantsTrait;
+
+   const SUNDAY    = "Sunday";
+   const MONDAY    = "Monday";
+   const TUESDAY   = "Tuesday";
+   const WEDNESDAY = "Wednesday";
+   const THURSDAY  = "Thursday";
+   const FRIDAY    = "Friday";
+   const SATURDAY  = "Saturday";
+}
+
+$constants = WeekDays::constants();
+print_r($constants);
+
+// Outputs:
+[
+   "SUNDAY"    => "Sunday",
+   "MONDAY"    => "Monday",
+   "TUESDAY"   => "Tuesday",
+   "WEDNESDAY" => "Wednesday",
+   "THURSDAY"  => "Thursday",
+   "FRIDAY"    => "Friday",
+   "SATURDAY"  => "Saturday"
+]
+
+$names = WeekDays::constantNames();
+print_r($names);
+
+// Outputs:
+[
+   "SUNDAY",
+   "MONDAY",
+   "TUESDAY",
+   "WEDNESDAY",
+   "THURSDAY",
+   "FRIDAY",
+   "SATURDAY"
+]
+
+$values = WeekDays::constantValues();
+print_r($values);
+
+// Outputs:
+[
+   "Sunday",
+   "Monday",
+   "Tuesday",
+   "Wednesday",
+   "Thursday",
+   "Friday",
+   "Saturday"
+]
+
+echo WeekDays::constant("SUNDAY");
+echo WeekDays::constant("tuesday");
+echo WeekDays::constant("Friday");
+
+// Outputs:
+"Sunday"
+"Tuesday"
+"Friday"
+```
 
 Change Log
 ----------
+##### v0.2.4 - 2014/03/26
+* Added the trait `Headzoo\Utilities\ConstantsTrait`.
+
 ##### v0.2.3 - 2014/03/25
 * Increased the minimum PHP version requirement to 5.5.0. Long live, ClassName::class!
 * Added the method `Headzoo\Utilities\Strings::quote()`.
