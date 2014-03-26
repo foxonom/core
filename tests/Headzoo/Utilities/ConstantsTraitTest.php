@@ -94,7 +94,7 @@ class ConstantsTraitTest
 
     /**
      * @covers Headzoo\Utilities\ConstantsTrait::constant
-     * @expectedException PHPUnit_Framework_Error_Notice
+     * @expectedException Headzoo\Utilities\Exceptions\UndefinedConstantException
      */
     public function testConstant_Undefined()
     {

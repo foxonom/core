@@ -112,11 +112,12 @@ trait ConstantsTrait
      * Looks for a class constant with the given name in a case-insensitive manner, and returns
      * the value of the constant if found.
      * 
-     * Returns null and triggers an E_USER_NOTICE if a class constant is not defined with
-     * the given name.
+     * Throws an Exceptions\UndefinedConstantException if a constant with the given name is not
+     * defined in the class.
      * 
      * @param  string $name The name of a class constant
      * @return string
+     * @throws Exceptions\UndefinedConstantException When the constant does not exit
      */
     public static function constant($name)
     {
@@ -126,7 +127,9 @@ trait ConstantsTrait
         if (isset($constants[$name])) {
             $value = $constants[$name];
         } else {
-            trigger_error("Undefined constant {$name}.", E_USER_NOTICE);
+            throw new Exceptions\UndefinedConstantException(
+                "Undefined constant {$name}."
+            );
         }
         
         return $value;
