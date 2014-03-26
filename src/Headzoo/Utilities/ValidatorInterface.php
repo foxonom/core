@@ -1,6 +1,5 @@
 <?php
 namespace Headzoo\Utilities;
-use InvalidArgumentException;
 use Exception;
 
 /**
@@ -18,7 +17,7 @@ interface ValidatorInterface
      *
      * @param  string $thrownException Name of an Exception class to throw
      * @return $this
-     * @throws InvalidArgumentException When $thrownException does not name a sub-class of Exception
+     * @throws Exceptions\InvalidArgumentException When $thrownException does not name a sub-class of Exception
      */
     public function setThrownException($thrownException);
 
