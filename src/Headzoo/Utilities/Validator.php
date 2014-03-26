@@ -1,7 +1,6 @@
 <?php
 namespace Headzoo\Utilities;
 use Exception;
-use InvalidArgumentException;
 
 /**
  * Performs simple validation on values.
@@ -22,7 +21,7 @@ class Validator
     {
         $thrownException = trim($thrownException, '\\');
         if (Exception::class !== $thrownException && !is_subclass_of($thrownException, Exception::class)) {
-            throw new InvalidArgumentException(
+            throw new Exceptions\InvalidArgumentException(
                 "Value '{$thrownException}' must name an exception class."
             );
         }
