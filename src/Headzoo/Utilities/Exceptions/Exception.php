@@ -2,7 +2,7 @@
 namespace Headzoo\Utilities\Exceptions;
 
 /**
- * Base exception for the namespace.
+ * Base class for exceptions in this namespace.
  */
 class Exception
     extends \Exception {}
