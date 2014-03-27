@@ -41,7 +41,7 @@ abstract class Core
      * @param int    $code      The error code, defaults to 0
      * @param ...    $args      One or more values to quote into the message
      */
-    protected static function throwException(/** @noinspection PhpUnusedParameterInspection */ $exception, $message, $code = 0)
+    protected static function toss(/** @noinspection PhpUnusedParameterInspection */ $exception, $message, $code = 0)
     {
         $args = array_values(get_defined_vars());
         foreach(func_get_args() as $i => $value) {

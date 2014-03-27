@@ -19,7 +19,7 @@ class Validator
         }
         $missing = array_diff($required, array_keys($values));
         if (!empty($missing)) {
-            $this->throwException(
+            $this->toss(
                 "ValidationFailedException",
                 "Required values missing: {0}.",
                 Arrays::conjunct($missing, 'Headzoo\Utilities\Strings::quote')

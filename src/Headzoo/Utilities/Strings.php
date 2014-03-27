@@ -133,7 +133,7 @@ class Strings
     {
         if ($use_mbstring) {
             if (!extension_loaded(self::$__mbstring_extension_name)) {
-                self::throwException(
+                self::toss(
                     "RuntimeException",
                     "The '{0}' extension must be enabled.",
                     self::$__mbstring_extension_name
@@ -187,7 +187,7 @@ class Strings
             }
         }
         if (!$is_valid) {
-            self::throwException(
+            self::toss(
                 "InvalidArgumentException",
                 "Value '{0}' is not a valid character set name.",
                 $char_set
@@ -632,7 +632,7 @@ class Strings
                 $str = self::underscoreToCamelCase($str);
                 break;
             default:
-                self::throwException(
+                self::toss(
                     "InvalidArgumentException",
                     "Transforming argument {0}({1}) must be one of the {me}::TR constants",
                     __METHOD__,

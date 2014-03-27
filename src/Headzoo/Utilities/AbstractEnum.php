@@ -191,7 +191,7 @@ abstract class AbstractEnum
         $constants = $this->validate();
         
         if (is_object($value) && !($value instanceof $this)) {
-            $this->throwException(
+            $this->toss(
                 "InvalidArgumentException",
                 "Cannot initialize an instance of {me} with an instance of {0}.",
                 get_class($value)
@@ -203,7 +203,7 @@ abstract class AbstractEnum
             $this->value = $constants["__DEFAULT"];
         }
         if (!isset($constants[$this->value])) {
-            $this->throwException(
+            $this->toss(
                 "UndefinedConstantException",
                 "Class {me} does not have the constant {0}.",
                 $this->value
@@ -361,7 +361,7 @@ abstract class AbstractEnum
         if (!isset(self::$consts[$me])) {
             $constants = self::constants();
             if (!isset($constants["__DEFAULT"])) {
-                self::throwException(
+                self::toss(
                     "UndefinedConstantException",
                     "Class {me} does have a __DEFAULT constant."
                 );
@@ -369,7 +369,7 @@ abstract class AbstractEnum
 
             foreach($constants as $name => $value) {
                 if ("__DEFAULT" !== $name && $name !== $value) {
-                    self::throwException(
+                    self::toss(
                         "LogicException",
                         "Constant {me}:{0} does not match value {1}.",
                         $name,
