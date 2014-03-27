@@ -3,8 +3,38 @@ Headzoo\Utilities\AbstractEnum
 
 Abstract class for creating enumerator classes.
 
-Child classes define constants which become the enumerator values. The instances of those child
-classes can be easily compared and copied.
+Unlike the primary purpose of enumerators from other languages, which is having the verbosity of strings with
+the memory savings of integers, the enums created with this class have the purpose of reducing function
+argument validation. For example, how many times have you written code like this:
+
+```php
+function setWeekDay($week_day)
+{
+     $valid = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+     if (!in_array($week_day, $valid)) {
+         throw new InvalidArgumentException("Invalid week day given.");
+     }
+
+     echo "You set the week day to {$week_day}.";
+}
+
+$week_day = "Tuesday";
+setWeekDay($week_day);
+```
+
+Instead of validating string arguments we can use enums and PHP's type hinting.
+
+```php
+function setWeekDay(WeekDays $week_day)
+{
+     echo "You set the week day to {$week_day}.";
+}
+
+$week_day = new WeekDay("Tuesday");
+setWeekDay($week_day);
+```
+
+
 
 Example:
 ```php
@@ -131,6 +161,7 @@ class FoodsEnum
 * Class name: AbstractEnum
 * Namespace: Headzoo\Utilities
 * This is an **abstract** class
+* Parent class: [Headzoo\Utilities\Core](Headzoo-Utilities-Core.md)
 
 
 
@@ -140,12 +171,23 @@ Properties
 ----------
 
 
+### $consts
+Initialized enum constants
+
+
+```php
+private array $consts = array()
+```
+
+* This property is **static**.
+
+
 ### $value
 The constant value
 
 
 ```php
-public string $value
+private string $value
 ```
 
 
@@ -157,7 +199,9 @@ Methods
 ### Headzoo\Utilities\AbstractEnum::__construct
 Constructor
 
-
+The new instance will be set to the value of $value, which may be a string, another instance
+of the same class, or null. The default value will be used when not specified. When initialized
+with an object, the object must be an instance of this class, or else an exception is thrown.
 ```php
 public mixed Headzoo\Utilities\AbstractEnum::__construct(string|\Headzoo\Utilities\AbstractEnum $value)
 ```
@@ -165,7 +209,7 @@ public mixed Headzoo\Utilities\AbstractEnum::__construct(string|\Headzoo\Utiliti
 
 ##### Arguments
 
-* $value **string|[Headzoo\Utilities\AbstractEnum](Headzoo-Utilities-AbstractEnum.md)** - The enumerator value
+* $value **string|[Headzoo\Utilities\AbstractEnum](Headzoo-Utilities-AbstractEnum.md)** - The value of this enumerator
 
 
 
@@ -291,5 +335,87 @@ case WeekDays::TUESDAY:
 public string Headzoo\Utilities\AbstractEnum::__toString()
 ```
 
+
+
+
+### Headzoo\Utilities\AbstractEnum::validate
+Validates the enum class definition for correctness
+
+Checks the class has defined a __DEFAULT constant, and that the constant names and values
+match each other. This check only needs to be performed the first time an instance of the
+class is created, so the results of the validation are cached in the self::$consts property.
+Future invocations of the class will skip the validation checks.
+
+The self::$consts property must be static so each instance has access to the same cache data.
+Once a class has been validated, an array of the class constants are saved in the self::$consts
+array using the name of the validated class as the key.
+
+Returns an array of the class constants.
+```php
+private array Headzoo\Utilities\AbstractEnum::validate()
+```
+
+* This method is **static**.
+
+
+
+### Headzoo\Utilities\Core::className
+Returns the name of the class
+
+
+```php
+public string Headzoo\Utilities\AbstractEnum::className()
+```
+
+
+
+
+### Headzoo\Utilities\Core::throwException
+Throws the configured validation exception
+
+Available place holders:
+ {me}        - The name of the class throwing the exception
+ {exception} - The name of the exception being thrown
+ {code}      - The exception code
+ {date}      - The date the exception was thrown
+
+Examples:
+```php
+$validator = new Validator();
+$validator->throwException("There was a serious site error!");
+$validator->throwException("There was a serious site error!", 666);
+$validator->throwException("There was a {0} {1} error!", 666, "serious", "site");
+
+// The middle argument may be omitted when the next argument is not an integer.
+$validator->throwException("There was a {0} {1} error!", "serious", "site");
+```
+```php
+protected mixed Headzoo\Utilities\AbstractEnum::throwException(string $exception, string $message, int $code)
+```
+
+* This method is **static**.
+
+##### Arguments
+
+* $exception **string** - The name of the exception to throw
+* $message **string** - The error message
+* $code **int** - The error code, defaults to 0
+
+
+
+### Headzoo\Utilities\Core::interpolate
+Interpolates context values into the message placeholders.
+
+Taken from PSR-3's example implementation.
+```php
+private string Headzoo\Utilities\AbstractEnum::interpolate(string $message, array $context)
+```
+
+* This method is **static**.
+
+##### Arguments
+
+* $message **string** - Message with placeholders
+* $context **array** - Values to replace in the message
 
 
