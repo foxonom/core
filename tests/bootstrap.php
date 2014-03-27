@@ -16,6 +16,10 @@ spl_autoload_register(function($class_name)
       $namespace  = substr($class_name, 0, $pos_last);
       $class_name = substr($class_name, $pos_last + 1);
       $file_name  = str_replace("\\", DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+        if (strpos($file_name, "Headzoo\\Utilities\\Tests\\") === 0) {
+            $file_name = str_replace("\\Tests", "", $file_name);
+            $file_name = __DIR__ . "\\{$file_name}";
+        }
     }
     $file_name .= str_replace("_", DIRECTORY_SEPARATOR, $class_name) . ".php";
 
