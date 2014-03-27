@@ -380,6 +380,8 @@ Change Log
 ----------
 ##### v0.3 - 2014/03/26
 * Added the trait `ConstantsTrait`.
+* Created the `ConstantsTrait` trait.
+* Created the `AbstractEnum` class.
 * The `Strings` class is now made to work seamlessly with multi-byte strings.
 * Renamed `Strings::transformCamelCaseToUnderscore` to `Strings::camelCaseToUnderscore`.
 * Renamed `Strings::transformUnderscoreToCamelCase` to `Strings::underscoreToCamelCase`.
