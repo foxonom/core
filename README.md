@@ -29,6 +29,7 @@ Add the project to your composer.json as a dependency.
 Change Log
 ----------
 ##### v0.3 - 2014/03/26
+* Created core class `Obj`.
 * Added the trait `ConstantsTrait`.
 * Created the `ConstantsTrait` trait.
 * Created the `AbstractEnum` class.
