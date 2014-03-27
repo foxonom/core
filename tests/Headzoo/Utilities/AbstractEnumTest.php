@@ -12,7 +12,7 @@ class ConstantsEnumTest
      * @var DaysEnum
      */
     protected $day;
-
+    
     /**
      * Test fixture
      * @var HolidaysEnum
