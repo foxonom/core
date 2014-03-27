@@ -87,6 +87,15 @@ class ConstantsEnumTest
     }
 
     /**
+     * @covers ::__construct
+     * @expectedException Headzoo\Utilities\Exceptions\InvalidArgumentException
+     */
+    public function testConstruct_NotInstanceOf()
+    {
+        new DaysEnum(new OtherDaysEnum());
+    }
+
+    /**
      * @covers ::value
      */
     public function testValue()
@@ -184,6 +193,19 @@ class DaysEnum
     const FRIDAY    = "FRIDAY";
     const SATURDAY  = "SATURDAY";
     const __DEFAULT = self::SUNDAY;
+}
+
+class OtherDaysEnum
+    extends AbstractEnum
+{
+    const SUNDAY    = "SUNDAY";
+    const MONDAY    = "MONDAY";
+    const TUESDAY   = "TUESDAY";
+    const WEDNESDAY = "WEDNESDAY";
+    const THURSDAY  = "THURSDAY";
+    const FRIDAY    = "FRIDAY";
+    const SATURDAY  = "SATURDAY";
+    const __DEFAULT = self::SUNDAY;    
 }
 
 class HolidaysEnum

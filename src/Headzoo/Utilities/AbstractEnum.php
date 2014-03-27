@@ -159,67 +159,58 @@ namespace Headzoo\Utilities;
  * ```
  */
 abstract class AbstractEnum
+    extends Core
 {
     use ConstantsTrait;
 
     /**
+     * Initialized enum constants
+     * @var array
+     */
+    private static $consts = [];
+    
+    /**
      * The constant value
      * @var string
      */
-    public $value;
-    
-    
+    private $value;
 
     /**
      * Constructor
      * 
-     * @param string|AbstractEnum $value The enumerator value
-     * @throws Exceptions\UndefinedConstantException When the child class does not define a __DEFAULT constant
+     * The new instance will be set to the value of $value, which may be a string, another instance
+     * of the same class, or null. The default value will be used when not specified. When initialized
+     * with an object, the object must be an instance of this class, or else an exception is thrown.
+     * 
+     * @param  string|AbstractEnum $value The value of this enumerator
      * @throws Exceptions\UndefinedConstantException When the child class does not have a constant with the given $value
-     * @throws Exceptions\LogicException When the child class defines constants with non-string values
+     * @throws Exceptions\InvalidArgumentException   When $value is an object, but not an instance of this class.
      */
     public function __construct($value = null)
     {
-        $constants = $this->constants();
-        if (!isset($constants["__DEFAULT"])) {
-            throw new Exceptions\UndefinedConstantException(
-                sprintf(
-                    "Class %s must defined a __DEFAULT constant.",
-                    get_called_class()
-                )
-            );
-        }
-
-        $value = strtoupper((string)$value);
-        if (!$value) {
-            $value = $constants["__DEFAULT"];
-        }
-        if (!isset($constants[$value])) {
-            throw new Exceptions\UndefinedConstantException(
-                sprintf(
-                    "Class %s does not have a constant named %s.",
-                    get_called_class(),
-                    $value
-                )
+        $constants = $this->validate();
+        
+        if (is_object($value) && !($value instanceof $this)) {
+            $this->throwException(
+                "InvalidArgumentException",
+                "Cannot initialize an instance of {me} with an instance of {0}.",
+                get_class($value)
             );
         }
         
-        foreach($constants as $n => $v) {
-            if ("__DEFAULT" !== $n && $n !== $v) {
-                throw new Exceptions\LogicException(
-                    sprintf(
-                        "Constant %s:%s does not match value %s.",
-                        get_called_class(),
-                        $n,
-                        $v
-                    )
-                );
-            }
+        $this->value = strtoupper((string)$value);
+        if (!$this->value) {
+            $this->value = $constants["__DEFAULT"];
         }
-        
-        $this->value = $value;
+        if (!isset($constants[$this->value])) {
+            $this->throwException(
+                "UndefinedConstantException",
+                "Class {me} does not have the constant {0}.",
+                $this->value
+            );
+        }
     }
-
+    
     /**
      * Returns the value of the enum
      * 
@@ -229,7 +220,7 @@ abstract class AbstractEnum
     {
         return $this->value;
     }
-
+    
     /**
      * Returns whether the value is equal to this value
      *
@@ -344,5 +335,52 @@ abstract class AbstractEnum
     public function __toString()
     {
         return $this->value();
+    }
+
+    /**
+     * Validates the enum class definition for correctness
+     *
+     * Checks the class has defined a __DEFAULT constant, and that the constant names and values
+     * match each other. This check only needs to be performed the first time an instance of the
+     * class is created, so the results of the validation are cached in the self::$consts property.
+     * Future invocations of the class will skip the validation checks.
+     * 
+     * The self::$consts property must be static so each instance has access to the same cache data.
+     * Once a class has been validated, an array of the class constants are saved in the self::$consts
+     * array using the name of the validated class as the key.
+     * 
+     * Returns an array of the class constants.
+     * 
+     * @return array
+     * @throws Exceptions\LogicException When the child class defines constants with non-string values
+     * @throws Exceptions\UndefinedConstantException When the child class does not define a __DEFAULT constant
+     */
+    private static function validate()
+    {
+        $me = get_called_class();
+        if (!isset(self::$consts[$me])) {
+            $constants = self::constants();
+            if (!isset($constants["__DEFAULT"])) {
+                self::throwException(
+                    "UndefinedConstantException",
+                    "Class {me} does have a __DEFAULT constant."
+                );
+            }
+
+            foreach($constants as $name => $value) {
+                if ("__DEFAULT" !== $name && $name !== $value) {
+                    self::throwException(
+                        "LogicException",
+                        "Constant {me}:{0} does not match value {1}.",
+                        $name,
+                        $value
+                    );
+                }
+            }
+
+            self::$consts[$me] = $constants;
+        }
+
+        return self::$consts[$me];
     }
 } 
