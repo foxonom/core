@@ -1,6 +1,9 @@
 <?php
 use Headzoo\Utilities\Validator;
 
+/**
+ * @coversDefaultClass Headzoo\Utilities\Validator
+ */
 class ValidatorTest
     extends PHPUnit_Framework_TestCase
 {
@@ -20,25 +23,7 @@ class ValidatorTest
     }
 
     /**
-     * @covers Headzoo\Utilities\Validator::setThrownException
-     */
-    public function testSetThrownException()
-    {
-        $this->validator->setThrownException(Exception::class);
-        $this->validator->setThrownException(RuntimeException::class);
-    }
-
-    /**
-     * @covers Headzoo\Utilities\Validator::setThrownException
-     * @expectedException InvalidArgumentException
-     */
-    public function testSetThrownException_InvalidArgument()
-    {
-        $this->validator->setThrownException(ValidatorTest::class);
-    }
-
-    /**
-     * @covers Headzoo\Utilities\Validator::validateRequired
+     * @covers ::validateRequired
      */
     public function testValidateRequired()
     {
@@ -58,7 +43,7 @@ class ValidatorTest
     }
 
     /**
-     * @covers Headzoo\Utilities\Validator::validateRequired
+     * @covers ::validateRequired
      */
     public function testValidateRequired_Empty()
     {
@@ -78,7 +63,7 @@ class ValidatorTest
     }
 
     /**
-     * @covers Headzoo\Utilities\Validator::validateRequired
+     * @covers ::validateRequired
      * @expectedException Headzoo\Utilities\Exceptions\ValidationFailedException
      */
     public function testValidateRequired_Invalid()
@@ -97,7 +82,7 @@ class ValidatorTest
     }
 
     /**
-     * @covers Headzoo\Utilities\Validator::validateRequired
+     * @covers ::validateRequired
      * @expectedException Headzoo\Utilities\Exceptions\ValidationFailedException
      */
     public function testValidateRequired_Invalid_Empty()

@@ -8,20 +8,6 @@ use Exception;
 interface ValidatorInterface
 {
     /**
-     * The default type of exception thrown when a validation fails
-     */
-    const DEFAULT_THROWN_EXCEPTION = Exceptions\ValidationFailedException::class;
-
-    /**
-     * Sets the default thrown exception class name
-     *
-     * @param  string $thrownException Name of an Exception class to throw
-     * @return $this
-     * @throws Exceptions\InvalidArgumentException When $thrownException does not name a sub-class of Exception
-     */
-    public function setThrownException($thrownException);
-
-    /**
      * Throws an exception when required values are missing from an array of key/value pairs
      *
      * The $values argument is an array of key/value pairs, and the $required argument is an array
