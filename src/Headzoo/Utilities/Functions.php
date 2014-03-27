@@ -5,6 +5,7 @@ namespace Headzoo\Utilities;
  * Contains static methods for working with functions and methods.
  */
 class Functions
+    extends Core
 {
     /**
      * Swaps two variables when the second is a callable object
