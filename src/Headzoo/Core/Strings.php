@@ -69,7 +69,22 @@ class Strings
      * Transform a string from underscore_text to CamelCaseText
      */
     const TR_CAMEL_CASE = 7;
+
+    /**
+     * Truncate a string at the start
+     */
+    const TRUNC_START = 1;
+
+    /**
+     * Truncate a string in the middle
+     */
+    const TRUNC_MIDDLE = 2;
     
+    /**
+     * Truncate a string at the end
+     */
+    const TRUNC_END = 3;
+
     /**
      * The character set to use
      * @var string
@@ -566,9 +581,17 @@ class Strings
      */
     public static function sub($str, $start, $end = null)
     {
-        return self::$use_mbstring
-            ? mb_substr($str, $start, $end)
-            : substr($str, $start, $end);
+        // The $end argument must be left out of the function call when it's not used.
+        // Passing null to these functions doesn't work.
+        if (null !== $end) {
+            return self::$use_mbstring
+                ? mb_substr($str, $start, $end)
+                : substr($str, $start, $end);
+        } else {
+            return self::$use_mbstring
+                ? mb_substr($str, $start)
+                : substr($str, $start);
+        }
     }
 
     /**
@@ -586,6 +609,47 @@ class Strings
             : preg_split($pattern, $str, $limit);
     }
 
+    /**
+     * Truncates a string to a maximum length
+     * 
+     * @param  string $str          The string to truncate
+     * @param  int    $max_len      The maximum length
+     * @param  int    $pos          Where in the string the cut should be made
+     * @param  string $ellipsis     A string which indicates the string was truncated
+     * @return string
+     */
+    public static function truncate($str, $max_len, $pos = self::TRUNC_END, $ellipsis = "...")
+    {
+        if (self::length($str) > $max_len) {
+            $ellipsis_len = self::length($ellipsis);
+            switch($pos) {
+                case self::TRUNC_START:
+                    $max_len -= $ellipsis_len;
+                    $str = $ellipsis . self::sub($str, "-{$max_len}");
+                    break;
+                case self::TRUNC_MIDDLE:
+                    $start   = self::sub($str, 0, round($max_len / 2) - $ellipsis_len);
+                    $max_len = $max_len - self::length($start) - $ellipsis_len;
+                    $end     = self::sub($str, "-{$max_len}");
+                    $str     = "{$start}{$ellipsis}{$end}";
+                    break;
+                case self::TRUNC_END:
+                    $max_len -= $ellipsis_len;
+                    $str = self::sub($str, 0, $max_len) . $ellipsis;
+                    break;
+                default:
+                    self::toss(
+                        "InvalidArgumentException",
+                        "Invalid truncate position '{0}'.",
+                        $pos
+                    );
+                    break;
+            }
+        }
+        
+        return $str;
+    }
+    
     /**
      * Transform a string
      *

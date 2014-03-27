@@ -175,6 +175,20 @@ class StringsTest
     }
 
     /**
+     * @covers ::truncate
+     * @dataProvider providerTruncate
+     */
+    public function testTruncate($str, $max_len, $pos, $expected)
+    {
+        $actual = Strings::truncate($str, $max_len, $pos);
+        $this->assertEquals($max_len, strlen($actual));
+        $this->assertEquals(
+            $expected,
+            $actual
+        );
+    }
+    
+    /**
      * @covers ::camelCaseToUnderscore
      */
     public function testCamelCaseToUnderscore()
@@ -300,6 +314,20 @@ class StringsTest
             ["But Gollum, and the evil one",     Strings::TR_LC_FIRST,   "but Gollum, and the evil one"],
             ["MaryHadALittleLamb",               Strings::TR_UNDERSCORE, "mary_had_a_little_lamb"],
             ["mary_had_a_little_lamb",           Strings::TR_CAMEL_CASE, "MaryHadALittleLamb"]
+        ];
+    }
+
+    /**
+     * Data provider for testTruncate
+     * 
+     * @return array
+     */
+    public function providerTruncate()
+    {
+        return [
+            ["This string is very long.",   13, Strings::TRUNC_END,     "This strin..."],
+            ["This string is very long.",   13, Strings::TRUNC_MIDDLE,  "This... long."],
+            ["This string is very long.",   13, Strings::TRUNC_START,   "...very long."]
         ];
     }
 }

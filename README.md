@@ -220,6 +220,9 @@ try {
 
 Change Log
 ----------
+##### v0.3.2 - 2014/03/28
+* Created the `Strings::truncate` method.
+
 ##### v0.3.1 - 2014/03/27
 * Merged the `Validator` class into the `Functions` class.
 
@@ -268,6 +271,11 @@ Change Log
 
 ##### v0.1 - 2014/03/23
 * First version released under MIT license.
+
+TODO
+----
+* Replace `Strings` constants with enums.
+* Make the word "Exception" in "InvalidArgumentException" optional in Obj::toss()
 
 
 License
