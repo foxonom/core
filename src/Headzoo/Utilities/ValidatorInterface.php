@@ -14,8 +14,6 @@ interface ValidatorInterface
      * of keys which must exist in $values to validate. When $allowEmpty is false, the required values
      * must also evaluate to a non-empty value to validate.
      *
-     * Use the Validator::setThrownException() method to set which type of exception is thrown.
-     *
      * This method always returns true, but throws an exception when the value is invalid.
      *
      * @param  array $values       The values to validate
