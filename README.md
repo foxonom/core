@@ -55,7 +55,6 @@ Change Log
     * `Strings::split`.
     * `Strings::transform`.
     
-
 ##### v0.2.3 - 2014/03/25
 * Increased the minimum PHP version requirement to 5.5.0. Long live, ClassName::class!
 * Added the method `Strings::quote`.
