@@ -6,6 +6,7 @@ API Index
         * [AbstractEnum](Headzoo-Utilities-AbstractEnum.md)
         * [Arrays](Headzoo-Utilities-Arrays.md)
         * [Complete](Headzoo-Utilities-Complete.md)
+        * [Core](Headzoo-Utilities-Core.md)
         * Headzoo\Utilities\Exceptions
             * [Exception](Headzoo-Utilities-Exceptions-Exception.md)
             * [InvalidArgumentException](Headzoo-Utilities-Exceptions-InvalidArgumentException.md)
