@@ -4,8 +4,38 @@ namespace Headzoo\Utilities;
 /**
  * Abstract class for creating enumerator classes.
  * 
- * Child classes define constants which become the enumerator values. The instances of those child
- * classes can be easily compared and copied.
+ * Unlike the primary purpose of enumerators from other languages, which is having the verbosity of strings with
+ * the memory savings of integers, the enums created with this class have the purpose of reducing function
+ * argument validation. For example, how many times have you written code like this:
+ * 
+ * ```php
+ * function setWeekDay($week_day)
+ * {
+ *      $valid = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+ *      if (!in_array($week_day, $valid)) {
+ *          throw new InvalidArgumentException("Invalid week day given.");
+ *      }
+ * 
+ *      echo "You set the week day to {$week_day}.";
+ * }
+ * 
+ * $week_day = "Tuesday";
+ * setWeekDay($week_day);
+ * ```
+ * 
+ * Instead of validating string arguments we can use enums and PHP's type hinting.
+ * 
+ * ```php
+ * function setWeekDay(WeekDays $week_day)
+ * {
+ *      echo "You set the week day to {$week_day}.";
+ * }
+ * 
+ * $week_day = new WeekDay("Tuesday");
+ * setWeekDay($week_day);
+ * ```
+ * 
+ * 
  * 
  * Example:
  * ```php
@@ -137,6 +167,8 @@ abstract class AbstractEnum
      * @var string
      */
     public $value;
+    
+    
 
     /**
      * Constructor
