@@ -20,6 +20,86 @@ class FunctionsTest
     }
 
     /**
+     * @covers ::validateRequired
+     */
+    public function testValidateRequired()
+    {
+        $values = [
+            "name"   => "headzoo",
+            "job"    => "circus animal",
+            "age"    => 38,
+            "gender" => "male"
+        ];
+        $required = [
+            "name",
+            "age",
+            "gender"
+        ];
+
+        Functions::validateRequired($values, $required);
+    }
+
+    /**
+     * @covers ::validateRequired
+     */
+    public function testValidateRequired_Empty()
+    {
+        $values = [
+            "name"   => "headzoo",
+            "job"    => "circus animal",
+            "age"    => null,
+            "gender" => "male"
+        ];
+        $required = [
+            "name",
+            "age",
+            "gender"
+        ];
+
+        Functions::validateRequired($values, $required, true);
+    }
+
+    /**
+     * @covers ::validateRequired
+     * @expectedException Headzoo\Core\Exceptions\ValidationFailedException
+     */
+    public function testValidateRequired_Invalid()
+    {
+        $values = [
+            "name"   => "headzoo",
+            "job"    => "circus animal"
+        ];
+        $required = [
+            "name",
+            "age",
+            "gender"
+        ];
+
+        Functions::validateRequired($values, $required);
+    }
+
+    /**
+     * @covers ::validateRequired
+     * @expectedException Headzoo\Core\Exceptions\ValidationFailedException
+     */
+    public function testValidateRequired_Invalid_Empty()
+    {
+        $values = [
+            "name"   => "headzoo",
+            "job"    => "circus animal",
+            "gender" => "male",
+            "age"    => null
+        ];
+        $required = [
+            "name",
+            "age",
+            "gender"
+        ];
+
+        Functions::validateRequired($values, $required);
+    }
+    
+    /**
      * @covers ::swapCallable
      */
     public function testSwapCallable_Callable()

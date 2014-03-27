@@ -49,4 +49,36 @@ class Functions
         
         return $swapped;
     }
+
+    /**
+     * Throws an exception when required values are missing from an array of key/value pairs
+     *
+     * The $values argument is an array of key/value pairs, and the $required argument is an array
+     * of keys which must exist in $values to validate. When $allow_empty is false, the required values
+     * must also evaluate to a non-empty value to validate.
+     *
+     * This method always returns true, but throws an exception when the value is invalid.
+     *
+     * @param  array $values        The values to validate
+     * @param  array $required      List of keys
+     * @param  bool  $allow_empty   Are empty values acceptable?
+     * @return bool
+     * @throws Exceptions\ValidationFailedException When a required value is missing
+     */
+    public static function validateRequired(array $values, array $required, $allow_empty = false)
+    {
+        if (!$allow_empty) {
+            $values = array_filter($values);
+        }
+        $missing = array_diff($required, array_keys($values));
+        if (!empty($missing)) {
+            self::toss(
+                "ValidationFailedException",
+                "Required values missing: {0}.",
+                Arrays::conjunct($missing, 'Headzoo\Core\Strings::quote')
+            );
+        }
+
+        return true;
+    }
 } 
