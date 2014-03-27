@@ -89,7 +89,7 @@ trait ConstantsTrait
      * Returns an array of the class constants
      * 
      * The returned array are key/value pairs, with the name of the constants being the
-     * keys, and the constant values being the values.
+     * keys, and the constant values being the values. The names are always upper case.
      * 
      * Returns an empty array when the class does not have any constants.
      * 
@@ -100,7 +100,10 @@ trait ConstantsTrait
         $class = get_called_class();
         if (!isset(self::$__constants[$class])) {
             $reflection = new ReflectionClass($class);
-            self::$__constants[$class] = $reflection->getConstants();
+            self::$__constants[$class] = array_change_key_case(
+                $reflection->getConstants(),
+                CASE_UPPER
+            );
         }
         
         return self::$__constants[$class];
@@ -121,9 +124,9 @@ trait ConstantsTrait
      */
     public static function constant($name)
     {
-        $name      = strtolower($name);
+        $name      = strtoupper($name);
         $value     = null;
-        $constants = array_change_key_case(self::constants(), CASE_LOWER);
+        $constants = self::constants();
         if (isset($constants[$name])) {
             $value = $constants[$name];
         } else {
