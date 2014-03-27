@@ -1,5 +1,5 @@
-Headzoo Utilities v3.0
-======================
+Headzoo Core v3.0
+=================
 A collection of use PHP utility classes and functions.
 
 Requirements
@@ -14,7 +14,7 @@ The library may be installed using either git or composer.
 Simply clone the project with the following command.
 
 ```
-git clone git@github.com:headzoo/utilities.git
+git clone git@github.com:headzoo/core.git
 ```
 
 ##### Composer
@@ -22,13 +22,15 @@ Add the project to your composer.json as a dependency.
 
 ```
 "require": {
-    "headzoo/utilities" : "dev-master"
+    "headzoo/core" : "dev-master"
 }
 ```
 
 Change Log
 ----------
 ##### v0.3 - 2014/03/26
+* Renamed the namespace `Headzoo\Utilities` to `Headzoo\Core`.
+* Renamed the project `headzoo/core`.
 * Created core class `Obj`.
 * Added the trait `ConstantsTrait`.
 * Created the `ConstantsTrait` trait.

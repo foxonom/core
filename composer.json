@@ -1,5 +1,5 @@
 {
-    "name": "headzoo/utilities",
+    "name": "headzoo/core",
     "description": "A collection of use PHP utility classes and functions.",
     "type": "library",
     "license": "MIT",

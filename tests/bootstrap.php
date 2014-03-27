@@ -17,11 +17,11 @@ spl_autoload_register(function($class_name)
       $class_name = substr($class_name, $pos_last + 1);
       $file_name  = str_replace("\\", DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
         
-        if (strpos($file_name, "Headzoo\\Utilities\\Tests\\") === 0) {
+        if (strpos($file_name, "Headzoo\\Core\\Tests\\") === 0) {
             $file_name = str_replace("\\Tests", "", $file_name);
             $file_name = __DIR__ . "\\{$file_name}";
         } else if ('Exceptions\\' === $file_name) {
-            $file_name = __DIR__ . "\\Headzoo\\Utilities\\Exceptions\\";
+            $file_name = __DIR__ . "\\Headzoo\\Core\\Exceptions\\";
         }
     }
     $file_name .= str_replace("_", DIRECTORY_SEPARATOR, $class_name) . ".php";
