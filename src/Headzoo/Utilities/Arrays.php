@@ -5,6 +5,7 @@ namespace Headzoo\Utilities;
  * Contains static methods for working with arrays.
  */
 class Arrays
+    extends Core
 {
     /**
      * Default conjunction used by the conjunct() method
