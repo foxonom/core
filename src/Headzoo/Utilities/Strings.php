@@ -8,6 +8,7 @@ namespace Headzoo\Utilities;
  * is always the first argument.
  */
 class Strings
+    extends Core
 {
     /**
      * Default character set when not defined in the php.ini
@@ -132,11 +133,10 @@ class Strings
     {
         if ($use_mbstring) {
             if (!extension_loaded(self::$__mbstring_extension_name)) {
-                throw new Exceptions\RuntimeException(
-                    sprintf(
-                        "The '%s' extension must be enabled.",
-                        self::$__mbstring_extension_name
-                    )
+                self::throwException(
+                    "RuntimeException",
+                    "The '{0}' extension must be enabled.",
+                    self::$__mbstring_extension_name
                 );
             }
             self::$use_mbstring = true;
@@ -187,8 +187,10 @@ class Strings
             }
         }
         if (!$is_valid) {
-            throw new Exceptions\InvalidArgumentException(
-                "Value '{$char_set}' is not a valid character set name."
+            self::throwException(
+                "InvalidArgumentException",
+                "Value '{0}' is not a valid character set name.",
+                $char_set
             );
         }
         
@@ -630,12 +632,11 @@ class Strings
                 $str = self::underscoreToCamelCase($str);
                 break;
             default:
-                throw new Exceptions\InvalidArgumentException(
-                    sprintf(
-                        "Transformation argument %s must be one of the %s::TR constants.",
-                        __METHOD__,
-                        __CLASS__
-                    )
+                self::throwException(
+                    "InvalidArgumentException",
+                    "Transforming argument {0}({1}) must be one of the {me}::TR constants",
+                    __METHOD__,
+                    $transformation
                 );
                 break;
         }
