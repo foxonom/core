@@ -1,10 +1,27 @@
-Headzoo Core v3.0
-=================
+Headzoo Core v3.0.1
+===================
 A collection of use PHP utility classes and functions.
+
+- [Overview](#overview)
+- [Requirements](#requirements)
+- [Installing](#installing)
+- [Class Overview](#class-overview)
+- [Quick Start](#quick-start)
+- [Change Log](#change-log)
+- [License](#license)
+
+
+Overview
+--------
+This project is a collection of classes, methods, and functions which I've created over the years, and I use them
+in most of my other projects. The purpose of this project is putting all my useful code in one place. I'll be
+adding to this framework as I find useful classes from my other projects that I think should go into the core.
+
 
 Requirements
 ------------
 * PHP 5.5 or greater.
+
 
 Installing
 ----------
@@ -26,8 +43,186 @@ Add the project to your composer.json as a dependency.
 }
 ```
 
+Class Overview
+--------------
+The full class API documentation is available in the [/docs](docs/README.md) directory.
+
+##### Core\Arrays
+Contains static methods for working with arrays.
+
+##### Core\Strings
+Contains static methods for working with strings.
+
+##### Core\ConstantsTrait
+Trait for reflecting on class constants.
+
+##### Core\AbstractEnum
+Abstract class for creating enumerator classes.
+
+##### Core\Complete
+Used to call a function when the object destructs.
+
+##### Core\Functions
+Contains static methods for working with functions and methods.
+
+
+Quick Start
+-----------
+This quick start guide *briefly* goes over a few of the classes. The full class API documentation is available
+in the [/docs](docs/README.md) directory.
+
+```php
+/**
+ * Examples: Core\Strings
+ *
+ * The Core\Strings methods are designed to work transparently with the "mbstring" extension
+ * when it's available. The argument order for each method is consistent: The string to work
+ * on is always the first argument. No more wondering if $haystack is the first argument or
+ * the second.
+ */
+
+// The Strings::camelCaseToUnderscore() method transforms a string with CamelCaseText into a string
+// with underscore_text.
+
+echo Strings::camelCaseToUnderscore("CamelCaseString");
+// Outputs: "camel_case_string"
+
+echo Strings::camelCaseToUnderscore("MaryHadALittleLamb");
+// Outputs: "mary_had_a_little_lamb"
+
+
+/**
+ * Examples: Core\Arrays
+ *
+ * The Core\Arrays class adds some missing functionality to PHP's own array functions.
+ */
+
+// The Arrays::conjunct() method joins an array of values with a final conjunction, like "and" or "or".
+$array = [
+   "headzoo",
+   "joe",
+   "sam"
+];
+
+echo Arrays::conjunct($array);
+// Outputs: headzoo, joe, and sam
+
+// Using a callback to quote the array values.
+echo Arrays::conjunct($array, "and", 'Headzoo\Core\Strings::quote');
+// Outputs: 'headzoo', 'joe', and 'sam'
+
+
+/**
+ * Examples: Core\AbstractEnum
+ *
+ * Unlike the primary purpose of enumerators from other languages, which is having the verbosity of strings with
+ * the memory savings of integers, the enums created with this class have the purpose of reducing function
+ * argument validation.
+ */
+ 
+class DaysEnum
+   extends AbstractEnum
+{
+   const SUNDAY    = "SUNDAY";
+   const MONDAY    = "MONDAY";
+   const TUESDAY   = "TUESDAY";
+   const WEDNESDAY = "WEDNESDAY";
+   const THURSDAY  = "THURSDAY";
+   const FRIDAY    = "FRIDAY";
+   const SATURDAY  = "SATURDAY";
+   const __DEFAULT = self::SUNDAY;
+}
+
+$day = new DaysEnum("SUNDAY");
+echo $day;
+echo $day->value();
+
+// Outputs:
+// "SUNDAY"
+// "SUNDAY"
+
+
+// The default value is used when not specified.
+$day = new DaysEnum();
+echo $day;
+
+// Outputs: "SUNDAY"
+
+
+// The constructor value is not case-sensitive.
+$day = new DaysEnum("sUndAy");
+echo $day;
+
+// Outputs: "SUNDAY"
+
+// Enum values are easy to compare.
+$day_tue1 = new DaysEnum(DaysEnum::TUESDAY);
+$day_fri1 = new DaysEnum(DaysEnum::FRIDAY);
+$day_tue2 = new DaysEnum(DaysEnum::TUESDAY);
+$day_fri2 = new DaysEnum($day_fri1);
+
+var_dump($day_tue1 == DaysEnum::TUESDAY);
+var_dump($day_tue1 == $day_tue2);
+var_dump($day_fri1 == $day_fri2);
+var_dump($day_tue1 == DaysEnum::FRIDAY);
+var_dump($day_tue1 == $day_fri1);
+
+// Outputs:
+// bool(true)
+// bool(true)
+// bool(true)
+// bool(false)
+// bool(false)
+
+/**
+ * Core\Functions
+ */
+
+// The Functions::swapCallable() method is used to swap two arguments when the second is a callable. It's used
+// to create functions/methods which have callbacks as the final argument, and it's desirable to make middle
+// argument optional, while the callback remains the final argument.
+
+function joinArray(array $values, $separator, callable $callback = null)
+{
+   Functions::swapCallable($separator, $callback, "-");
+   $values = array_map($callback, $values);
+   return join($separator, $values);
+}
+
+// The function above may be called normally, like this:
+$values = ["headzoo", "joe"];
+joinArray($values, "-", 'Headzoo\Core\String::quote');
+
+// Or the middle argument may be omitted, and called like this:
+joinArray($values, 'Headzoo\Core\String::quote');
+
+/**
+ * Core\Complete
+ *
+ * This class was created before PHP added 'finally' to exception catching, but it still has other uses.
+ */
+ 
+// In this example the database connection will always be closed, even if the $database->fetch()
+// method throws an exception, because the anonymous function passed to Complete::factory()
+// is called when the $complete object goes out of scope.
+
+$database = new FakeDatabase();
+$complete = Complete::factory(function() use($database) {
+   $database->close();
+});
+try {
+   $rows = $database->fetch();
+} catch (Exception $e) {
+   echo $e->getTraceAsString();
+   throw $e;
+}
+```
+
 Change Log
 ----------
+##### v0.3.1 - 2014/03/27
+* Merged the `Validator` class into the `Functions` class.
+
 ##### v0.3 - 2014/03/26
 * Renamed the namespace `Headzoo\Utilities` to `Headzoo\Core`.
 * Renamed the project `headzoo/core`.
@@ -73,6 +268,7 @@ Change Log
 
 ##### v0.1 - 2014/03/23
 * First version released under MIT license.
+
 
 License
 -------
