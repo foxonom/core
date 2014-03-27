@@ -61,7 +61,7 @@ class ConstantsEnumTest
 
     /**
      * @covers ::__construct
-     * @expectedException Headzoo\Utilities\Exceptions\UndefinedConstantException
+     * @expectedException Exceptions\UndefinedConstantException
      */
     public function testConstruct_UndefinedConstant_NoDefault()
     {
@@ -70,7 +70,7 @@ class ConstantsEnumTest
 
     /**
      * @covers ::__construct
-     * @expectedException Headzoo\Utilities\Exceptions\UndefinedConstantException
+     * @expectedException Exceptions\UndefinedConstantException
      */
     public function testConstruct_UndefinedConstant_Invalid()
     {
@@ -79,7 +79,7 @@ class ConstantsEnumTest
 
     /**
      * @covers ::__construct
-     * @expectedException Headzoo\Utilities\Exceptions\LogicException
+     * @expectedException Exceptions\LogicException
      */
     public function testConstruct_Logic()
     {
@@ -88,7 +88,7 @@ class ConstantsEnumTest
 
     /**
      * @covers ::__construct
-     * @expectedException Headzoo\Utilities\Exceptions\InvalidArgumentException
+     * @expectedException Exceptions\InvalidArgumentException
      */
     public function testConstruct_NotInstanceOf()
     {
@@ -205,7 +205,7 @@ class OtherDaysEnum
     const THURSDAY  = "THURSDAY";
     const FRIDAY    = "FRIDAY";
     const SATURDAY  = "SATURDAY";
-    const __DEFAULT = self::SUNDAY;    
+    const __DEFAULT = self::SUNDAY;
 }
 
 class HolidaysEnum
