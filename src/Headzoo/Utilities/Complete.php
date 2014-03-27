@@ -32,7 +32,7 @@ namespace Headzoo\Utilities;
  * @see http://blogs.balabit.com/2011/02/20/try-catch-finally-in-php/
  */
 class Complete
-    extends Core
+    extends Obj
 {
     /**
      * Function to be called in the destructor

@@ -159,7 +159,7 @@ namespace Headzoo\Utilities;
  * ```
  */
 abstract class AbstractEnum
-    extends Core
+    extends Obj
 {
     use ConstantsTrait;
 

@@ -1,16 +1,16 @@
 <?php
 namespace Headzoo\Utilities\Tests;
-use Headzoo\Utilities\Core;
+use Headzoo\Utilities\Obj;
 
 /**
- * @coversDefaultClass Headzoo\Utilities\Core
+ * @coversDefaultClass Headzoo\Utilities\Obj
  */
-class CoreTest
+class ObjTest
     extends \PHPUnit_Framework_TestCase
 {
     /**
      * The test fixture
-     * @var CoreTestClass
+     * @var ObjTestClass
      */
     protected $core;
 
@@ -20,7 +20,7 @@ class CoreTest
      */
     protected function setUp()
     {
-        $this->core = new CoreTestClass();
+        $this->core = new ObjTestClass();
     }
 
     /**
@@ -29,7 +29,7 @@ class CoreTest
     public function testClassName()
     {
         $this->assertEquals(
-            __NAMESPACE__ . '\CoreTestClass',
+            __NAMESPACE__ . '\ObjTestClass',
             $this->core->getClassName()
         );
     }
@@ -159,7 +159,7 @@ class CoreTest
         } catch (Exceptions\CoreTestException $e) {}
 
         $this->assertEquals(
-            "The class Headzoo\\Utilities\\Tests\\CoreTestClass threw an exception.", 
+            "The class Headzoo\\Utilities\\Tests\\ObjTestClass threw an exception.", 
             $e->getMessage()
         );
         $this->assertEquals(0, $e->getCode());
@@ -174,7 +174,7 @@ class CoreTest
         } catch (Exceptions\CoreTestException $e) {}
 
         $this->assertEquals(
-            "The class Headzoo\\Utilities\\Tests\\CoreTestClass threw a serious exception.",
+            "The class Headzoo\\Utilities\\Tests\\ObjTestClass threw a serious exception.",
             $e->getMessage()
         );
         $this->assertEquals(0, $e->getCode());
@@ -190,7 +190,7 @@ class CoreTest
         } catch (Exceptions\CoreTestException $e) {}
 
         $this->assertEquals(
-            "The class Headzoo\\Utilities\\Tests\\CoreTestClass threw a serious exception.",
+            "The class Headzoo\\Utilities\\Tests\\ObjTestClass threw a serious exception.",
             $e->getMessage()
         );
         $this->assertEquals(42, $e->getCode());
@@ -198,8 +198,8 @@ class CoreTest
 }
 
 
-class CoreTestClass
-    extends Core
+class ObjTestClass
+    extends Obj
 {
     public function tossit()
     {

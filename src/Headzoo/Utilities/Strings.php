@@ -8,7 +8,7 @@ namespace Headzoo\Utilities;
  * is always the first argument.
  */
 class Strings
-    extends Core
+    extends Obj
 {
     /**
      * Default character set when not defined in the php.ini

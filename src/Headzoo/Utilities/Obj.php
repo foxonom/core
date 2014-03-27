@@ -4,7 +4,7 @@ namespace Headzoo\Utilities;
 /**
  * Base class for core utility classes.
  */
-abstract class Core
+abstract class Obj
 {
     /**
      * Returns the name of the class

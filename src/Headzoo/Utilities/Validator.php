@@ -6,7 +6,7 @@ use Exception;
  * Performs simple validation on values.
  */
 class Validator
-    extends Core
+    extends Obj
     implements ValidatorInterface
 {
     /**
