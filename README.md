@@ -1,5 +1,5 @@
-Headzoo Utilities
-=================
+Headzoo Utilities v3.0
+======================
 A collection of use PHP utility classes and functions.
 
 Requirements
@@ -46,22 +46,22 @@ var_dump($password);
 // string(10) "x87t,N5N2+"
 ```
 
-##### string Headzoo\Utilities\Strings::transformCamelCaseToUnderscore(string $str)
+##### string Headzoo\Utilities\Strings::camelCaseToUnderscore(string $str)
 Transforming CamelCaseText to under_score_text.
 
 ```php
-$str = Strings::transformCamelCaseToUnderscore("CamelCaseString");
+$str = Strings::camelCaseToUnderscore("CamelCaseString");
 var_dump($str);
 
 // Output:
 // string(17) "camel_case_string"
 ```
 
-##### string Headzoo\Utilities\Strings::transformUnderscoreToCamelCase(string $str)
+##### string Headzoo\Utilities\Strings::underscoreToCamelCase(string $str)
 Transforming under_score_text to CamelCaseText.
 
 ```php
-$str = Strings::transformUnderscoreToCamelCase("camel_case_string");
+$str = Strings::underscoreToCamelCase("camel_case_string");
 var_dump($str);
 
 // Output:
@@ -318,6 +318,7 @@ class WeekDays
    const SATURDAY  = "Saturday";
 }
 
+// Returns the class constants an array of name/value pairs.
 $constants = WeekDays::constants();
 print_r($constants);
 
@@ -332,6 +333,7 @@ print_r($constants);
    "SATURDAY"  => "Saturday"
 ]
 
+// Returns the names of the class constants.
 $names = WeekDays::constantNames();
 print_r($names);
 
@@ -346,6 +348,7 @@ print_r($names);
    "SATURDAY"
 ]
 
+// Returns the values of the class constants.
 $values = WeekDays::constantValues();
 print_r($values);
 
@@ -360,6 +363,9 @@ print_r($values);
    "Saturday"
 ]
 
+// Returns the value for the given constant name. This method throws an
+// exception when a constant with the given name does not exit, which should
+// be discovered during development.
 echo WeekDays::constant("SUNDAY");
 echo WeekDays::constant("tuesday");
 echo WeekDays::constant("Friday");
@@ -372,24 +378,44 @@ echo WeekDays::constant("Friday");
 
 Change Log
 ----------
-##### v0.2.4 - 2014/03/26
-* Added the trait `Headzoo\Utilities\ConstantsTrait`.
+##### v0.3 - 2014/03/26
+* Added the trait `ConstantsTrait`.
+* The `Strings` class is now made to work seamlessly with multi-byte strings.
+* Renamed `Strings::transformCamelCaseToUnderscore` to `Strings::camelCaseToUnderscore`.
+* Renamed `Strings::transformUnderscoreToCamelCase` to `Strings::underscoreToCamelCase`.
+* Added new methods to the `Strings` class:
+    * `Strings::startsWith`.
+    * `Strings::endsWith`.
+    * `Strings::startsUpper`.
+    * `Strings::startsLower`.
+    * `Strings::replace`.
+    * `Strings::length`.
+    * `Strings::chars`.
+    * `Strings::toUpper`.
+    * `Strings::toLower`.
+    * `Strings::ucFirst`.
+    * `Strings::lcFirst`.
+    * `Strings::title`.
+    * `Strings::sub`.
+    * `Strings::split`.
+    * `Strings::transform`.
+    
 
 ##### v0.2.3 - 2014/03/25
 * Increased the minimum PHP version requirement to 5.5.0. Long live, ClassName::class!
-* Added the method `Headzoo\Utilities\Strings::quote()`.
-* Added the method `Headzoo\Utilities\Arrays::conjunct()`.
-* Added the method `Headzoo\Utilities\Functions::swapCallable()`.
-* Added the class `Headzoo\Utilities\Validator`.
+* Added the method `Strings::quote`.
+* Added the method `Arrays::conjunct`.
+* Added the method `Functions::swapCallable`.
+* Added the class `Validator`.
 
 ##### v0.2.2 - 2014/03/24
-* Added the method `Headzoo\Utilities\Arrays::findString()`.
+* Added the method `Arrays::findString`.
 
 ##### v0.2.1 - 2014/03/24
-* Changed visibility of `Headzoo\Utilities\Complete::invoke()` to public.
+* Changed visibility of `Complete::invoke` to public.
 
 ##### v0.2 - 2014/03/24
-* Added the `Headzoo\Utilities\Complete` class.
+* Added the `Complete` class.
 
 ##### v0.1 - 2014/03/23
 * First version released under MIT license.
