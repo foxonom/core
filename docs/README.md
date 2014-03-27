@@ -17,6 +17,4 @@ API Index
         * [Functions](Headzoo-Core-Functions.md)
         * [Obj](Headzoo-Core-Obj.md)
         * [Strings](Headzoo-Core-Strings.md)
-        * [Validator](Headzoo-Core-Validator.md)
-        * [ValidatorInterface](Headzoo-Core-ValidatorInterface.md)
 

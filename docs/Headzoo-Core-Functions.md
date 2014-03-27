@@ -59,6 +59,28 @@ public bool Headzoo\Core\Functions::swapCallable(mixed $optional, mixed $callabl
 
 
 
+### Headzoo\Core\Functions::validateRequired
+Throws an exception when required values are missing from an array of key/value pairs
+
+The $values argument is an array of key/value pairs, and the $required argument is an array
+of keys which must exist in $values to validate. When $allow_empty is false, the required values
+must also evaluate to a non-empty value to validate.
+
+This method always returns true, but throws an exception when the value is invalid.
+```php
+public bool Headzoo\Core\Functions::validateRequired(array $values, array $required, bool $allow_empty)
+```
+
+* This method is **static**.
+
+##### Arguments
+
+* $values **array** - The values to validate
+* $required **array** - List of keys
+* $allow_empty **bool** - Are empty values acceptable?
+
+
+
 ### Headzoo\Core\Obj::getClassName
 Returns the name of the class
 
