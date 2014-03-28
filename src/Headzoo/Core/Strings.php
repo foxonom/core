@@ -107,13 +107,13 @@ class Strings
      * Upper case letters, used to generate random strings
      * @var string
      */
-    private static $chars_upper = "ABCDEFGHJKMNOPQRSTUVWXYZ";
+    private static $chars_upper = "ABCDEFGHJKMNPQRSTUVWXYZ";
 
     /**
      * Numbers, used to generate random strings
      * @var string
      */
-    private static $chars_numbers = "023456789";
+    private static $chars_numbers = "23456789";
 
     /**
      * Punctuation, used to generate random strings
