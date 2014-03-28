@@ -610,7 +610,30 @@ class Strings
     }
 
     /**
-     * Truncates a string to a maximum length
+     * Truncates strings which exceed a maximum length
+     * 
+     * An ellipsis is added to the string to indicate it's been shortened. The final length
+     * of the string, including ellipsis, will be the length specified by $max_len.
+     * 
+     * Strings may be truncated in three places: the start, middle, and end.
+     * 
+     * Examples:
+     * ```php
+     * // Truncating a string at the end.
+     * echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_END);
+     * 
+     * // Outputs: "Mary had a little..."
+     * 
+     * // Truncating a string at the start.
+     * echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_START);
+     *
+     * // Outputs: "...as white as snow."
+     *
+     * // Truncating a string in the middle.
+     * echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_MIDDLE);
+     *
+     * // Outputs: "Mary ha...e as snow."
+     * ```
      * 
      * @param  string $str          The string to truncate
      * @param  int    $max_len      The maximum length
@@ -669,7 +692,7 @@ class Strings
      *
      * @param string $str            The string to transform
      * @param int    $transformation The transformation to apply
-     * @throws \Headzoo\Core\Exceptions\InvalidArgumentException When $transformation is not one of the ::TR constants
+     * @throws Exceptions\InvalidArgumentException When $transformation is not one of the ::TR constants
      */
     public static function transform(&$str, $transformation = self::TR_LOWER)
     {
