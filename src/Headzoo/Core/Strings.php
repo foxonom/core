@@ -379,7 +379,7 @@ class Strings
     }
 
     /**
-     * Returns whether the string starts with another string, using multi-byte functions when enabled
+     * Returns whether the string starts with another string
      * 
      * @param  string $str  The string to search
      * @param  string $find The string to find
@@ -393,7 +393,7 @@ class Strings
     }
 
     /**
-     * Returns whether the string ends with another string, using multi-byte functions when enabled
+     * Returns whether the string ends with another string
      *
      * @param  string $str  The string to search
      * @param  string $find The string to find
@@ -413,7 +413,7 @@ class Strings
     }
 
     /**
-     * Returns whether the string starts with an upper case character, using multi-byte functions when enabled
+     * Returns whether the string starts with an upper case character
      * 
      * @param  string $str The string to search
      * @return bool
@@ -425,7 +425,7 @@ class Strings
     }
 
     /**
-     * Returns whether the string starts with a lower case character, using multi-byte functions when enabled
+     * Returns whether the string starts with a lower case character
      *
      * @param  string $str The string to search
      * @return bool
@@ -437,7 +437,7 @@ class Strings
     }
     
     /**
-     * Replaces characters in a string, using multi-byte functions when enabled
+     * Replaces characters in a string
      * 
      * @param  string $str The string to transform
      * @param  string $search The string to find
@@ -464,7 +464,7 @@ class Strings
     }
 
     /**
-     * Returns the number of characters in the string, using multi-byte functions when enabled
+     * Returns the number of characters in the string
      * 
      * @param  string $str The string to count
      * @return int
@@ -477,7 +477,7 @@ class Strings
     }
 
     /**
-     * Splits a string into individual characters, using multi-byte functions when enabled
+     * Splits a string into individual characters
      * 
      * @param  string $str The string to split
      * @return array
@@ -497,7 +497,7 @@ class Strings
     }
     
     /**
-     * Transforms a string to upper case, using multi-byte functions when enabled
+     * Transforms a string to upper case
      * 
      * @param  string $str The string to transform
      * @return string
@@ -510,7 +510,7 @@ class Strings
     }
 
     /**
-     * Transforms a string to lower case, using multi-byte functions when enabled
+     * Transforms a string to lower case
      *
      * @param  string $str The string to transform
      * @return string
@@ -523,7 +523,7 @@ class Strings
     }
 
     /**
-     * Transforms the first letter of each word to upper case, using multi-byte functions when enabled
+     * Transforms the first letter of each word to upper case
      *
      * @param  string $str The string to transform
      * @return string
@@ -541,7 +541,7 @@ class Strings
     }
 
     /**
-     * Transforms the first letter of each word to lower case, using multi-byte functions when enabled
+     * Transforms the first letter of each word to lower case
      *
      * @param  string $str The string to transform
      * @return string
@@ -559,7 +559,7 @@ class Strings
     }
 
     /**
-     * Upper cases the first letter of each word in the string, using multi-byte functions when enabled
+     * Upper cases the first letter of each word in the string
      *
      * @param  string $str The string to transform
      * @return string
@@ -572,7 +572,7 @@ class Strings
     }
 
     /**
-     * Returns a portion of the string, using multi-byte functions when enabled
+     * Returns a portion of the string
      *
      * @param  string $str   The string
      * @param  int    $start The start position
@@ -595,7 +595,7 @@ class Strings
     }
 
     /**
-     * Splits a string by regular expression, using multi-byte functions when enabled
+     * Splits a string by regular expression
      *
      * @param  string $str     The string to split
      * @param  string $pattern The regular expression pattern
