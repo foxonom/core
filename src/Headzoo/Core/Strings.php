@@ -497,7 +497,7 @@ class Strings
     }
     
     /**
-     * Transforms a string to lower case, using multi-byte functions when enabled
+     * Transforms a string to upper case, using multi-byte functions when enabled
      * 
      * @param  string $str The string to transform
      * @return string
@@ -510,7 +510,7 @@ class Strings
     }
 
     /**
-     * Transforms a string to upper case, using multi-byte functions when enabled
+     * Transforms a string to lower case, using multi-byte functions when enabled
      *
      * @param  string $str The string to transform
      * @return string
