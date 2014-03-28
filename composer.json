@@ -3,8 +3,8 @@
     "description": "A collection of use PHP utility classes and functions.",
     "type": "library",
     "license": "MIT",
-    "keywords": ["php", "strings", "arrays", "utility"],
-    "version": "0.3.1",
+    "keywords": ["php", "strings", "arrays", "utility", "enum"],
+    "version": "0.3.2",
     "minimum-stability" : "dev",
     "authors": [
         {
