@@ -161,6 +161,42 @@ const TR_CAMEL_CASE = 7
 
 
 
+### TRUNC_START
+Truncate a string at the start
+
+
+```php
+const TRUNC_START = 1
+```
+
+
+
+
+
+### TRUNC_MIDDLE
+Truncate a string in the middle
+
+
+```php
+const TRUNC_MIDDLE = 2
+```
+
+
+
+
+
+### TRUNC_END
+Truncate a string at the end
+
+
+```php
+const TRUNC_END = 3
+```
+
+
+
+
+
 Properties
 ----------
 
@@ -203,7 +239,7 @@ Upper case letters, used to generate random strings
 
 
 ```php
-private string $chars_upper = "ABCDEFGHJKMNOPQRSTUVWXYZ"
+private string $chars_upper = "ABCDEFGHJKMNPQRSTUVWXYZ"
 ```
 
 * This property is **static**.
@@ -214,7 +250,7 @@ Numbers, used to generate random strings
 
 
 ```php
-private string $chars_numbers = "023456789"
+private string $chars_numbers = "23456789"
 ```
 
 * This property is **static**.
@@ -358,7 +394,7 @@ default the character class used is
 (Strings::CHARS_LOWER | Strings::CHARS_UPPER | Strings::CHARS_NUMBERS),
 which is every character except punctuation.
 
-The return value will never contain characters "i", "I", "l", "L", and
+The return value will never contain characters "i", "I", "l", "L", "O", 0 and
 "1".
 ```php
 public string Headzoo\Core\Strings::random(int $len, int $char_class)
@@ -424,11 +460,30 @@ public string Headzoo\Core\Strings::underscoreToCamelCase(string $str)
 
 
 ### Headzoo\Core\Strings::startsWith
-Returns whether the string starts with another string, using multi-byte functions when enabled
+Returns whether the string starts with another string
 
+Returns a boolean value indicating whether a string starts with another string. The comparison is
+case-sensitive when $match_case is true, and case-insensitive when false.
 
+Examples:
 ```php
-public bool Headzoo\Core\Strings::startsWith(string $str, string $find)
+$is = Strings::startsWith("How I wish, how I wish you were here.", "How");
+var_dump($is);
+
+// Outputs: bool(true)
+
+$is = Strings::startsWith("We're just two lost souls, Swimming in a fish bowl", "we're");
+var_dump($is);
+
+// Outputs: bool(false)
+
+$is = Strings::startsWith("We're just two lost souls, Swimming in a fish bowl", "we're", false);
+var_dump($is);
+
+// Outputs: bool(true)
+```
+```php
+public bool Headzoo\Core\Strings::startsWith(string $str, string $find, bool $match_case)
 ```
 
 * This method is **static**.
@@ -437,15 +492,35 @@ public bool Headzoo\Core\Strings::startsWith(string $str, string $find)
 
 * $str **string** - The string to search
 * $find **string** - The string to find
+* $match_case **bool** - True to match the exact case, false for case-insensitive match
 
 
 
 ### Headzoo\Core\Strings::endsWith
-Returns whether the string ends with another string, using multi-byte functions when enabled
+Returns whether the string ends with another string
 
+Returns a boolean value indicating whether a string ends with another string. The comparison is
+case-sensitive when $match_case is true, and case-insensitive when false.
 
+Examples:
 ```php
-public bool Headzoo\Core\Strings::endsWith(string $str, string $find)
+$is = Strings::endsWith("Running over the same old ground.", "ground.");
+var_dump($is);
+
+// Outputs: bool(true)
+
+$is = Strings::endsWith("What have we found? The same old fears.", "Fears.");
+var_dump($is);
+
+// Outputs: bool(false)
+
+$is = Strings::endsWith("What have we found? The same old fears.", "Fears.", false);
+var_dump($is);
+
+// Outputs: bool(true)
+```
+```php
+public bool Headzoo\Core\Strings::endsWith(string $str, string $find, bool $match_case)
 ```
 
 * This method is **static**.
@@ -454,13 +529,28 @@ public bool Headzoo\Core\Strings::endsWith(string $str, string $find)
 
 * $str **string** - The string to search
 * $find **string** - The string to find
+* $match_case **bool** - True to match the exact case, false for case-insensitive match
 
 
 
 ### Headzoo\Core\Strings::startsUpper
-Returns whether the string starts with an upper case character, using multi-byte functions when enabled
+Returns whether the string starts with an upper case character
 
+Returns a boolean value indicating whether the first character in a string is upper
+case.
 
+Examples:
+```php
+$is = Strings::startsUpper("Welcome my son, welcome to the machine.");
+var_dump($is);
+
+// Output: bool(true);
+
+$is = Strings::startsUpper("you've been in the pipeline, filling in time");
+var_dump($is);
+
+// Output: bool(false)
+```
 ```php
 public bool Headzoo\Core\Strings::startsUpper(string $str)
 ```
@@ -474,9 +564,23 @@ public bool Headzoo\Core\Strings::startsUpper(string $str)
 
 
 ### Headzoo\Core\Strings::startsLower
-Returns whether the string starts with a lower case character, using multi-byte functions when enabled
+Returns whether the string starts with a lower case character
 
+Returns a boolean value indicating whether the first character in a string is lower
+case.
 
+Examples:
+```php
+$is = Strings::startsLower("And sail on the steel breeze.");
+var_dump($is);
+
+// Output: bool(false);
+
+$is = Strings::startsLower("come on you miner for truth and delusion, and shine!");
+var_dump($is);
+
+// Output: bool(true)
+```
 ```php
 public bool Headzoo\Core\Strings::startsLower(string $str)
 ```
@@ -490,9 +594,17 @@ public bool Headzoo\Core\Strings::startsLower(string $str)
 
 
 ### Headzoo\Core\Strings::replace
-Replaces characters in a string, using multi-byte functions when enabled
+Replaces characters in a string
 
+Example:
+```php
+$str = "With flowers and my love both never to come back";
+$search = "flowers";
+$replace = "roses";
+echo Strings::replace($str, $search, $replace);
 
+// Outputs: "With roses and my love both never to come back"
+```
 ```php
 public string Headzoo\Core\Strings::replace(string $str, string $search, string $replace)
 ```
@@ -508,9 +620,17 @@ public string Headzoo\Core\Strings::replace(string $str, string $search, string 
 
 
 ### Headzoo\Core\Strings::length
-Returns the number of characters in the string, using multi-byte functions when enabled
+Returns the number of characters in the string
 
+Note: When multi-byte support is enabled, the method returns the true number of characters
+instead of the number of bytes.
 
+Example:
+```php
+echo Strings::length("You can't say we're satisfied");
+
+// Outputs: 29
+```
 ```php
 public int Headzoo\Core\Strings::length(string $str)
 ```
@@ -524,9 +644,24 @@ public int Headzoo\Core\Strings::length(string $str)
 
 
 ### Headzoo\Core\Strings::chars
-Splits a string into individual characters, using multi-byte functions when enabled
+Splits a string into individual characters
 
+Returns an array with the individual characters from a string.
 
+Example:
+```php
+$chars = Strings::chars("Yeah!");
+print_r($chars);
+
+// Outputs:
+// [
+//       "Y",
+//       "e",
+//       "a",
+//       "h",
+//       "!"
+// ]
+```
 ```php
 public array Headzoo\Core\Strings::chars(string $str)
 ```
@@ -540,9 +675,14 @@ public array Headzoo\Core\Strings::chars(string $str)
 
 
 ### Headzoo\Core\Strings::toUpper
-Transforms a string to lower case, using multi-byte functions when enabled
+Transforms a string to upper case
 
+Example:
+```php
+echo Strings::toUpper("With no loving in our souls and no money in our coats");
 
+// Outputs: "WITH NO LOVING IN OUR SOULS AND NO MONEY IN OUR COATS"
+```
 ```php
 public string Headzoo\Core\Strings::toUpper(string $str)
 ```
@@ -556,9 +696,14 @@ public string Headzoo\Core\Strings::toUpper(string $str)
 
 
 ### Headzoo\Core\Strings::toLower
-Transforms a string to upper case, using multi-byte functions when enabled
+Transforms a string to lower case
 
+Example:
+```php
+echo Strings::toLower("But Angie, Angie, you can't say we never tried");
 
+// Outputs: "but angie, angie, you can't say we never tried"
+```
 ```php
 public string Headzoo\Core\Strings::toLower(string $str)
 ```
@@ -572,9 +717,14 @@ public string Headzoo\Core\Strings::toLower(string $str)
 
 
 ### Headzoo\Core\Strings::ucFirst
-Transforms the first letter of each word to upper case, using multi-byte functions when enabled
+Transforms the first letter of a string to upper case
 
+Example:
+```php
+echo Strings::ucFirst("people say that I've found a way");
 
+// Outputs: "People say that I've found a way"
+```
 ```php
 public string Headzoo\Core\Strings::ucFirst(string $str)
 ```
@@ -588,9 +738,14 @@ public string Headzoo\Core\Strings::ucFirst(string $str)
 
 
 ### Headzoo\Core\Strings::lcFirst
-Transforms the first letter of each word to lower case, using multi-byte functions when enabled
+Transforms the first letter of a string to lower case
 
+Example:
+```php
+echo Strings::lcFirst("To make you say that you love me");
 
+// Outputs: "to make you say that you love me"
+```
 ```php
 public string Headzoo\Core\Strings::lcFirst(string $str)
 ```
@@ -604,9 +759,14 @@ public string Headzoo\Core\Strings::lcFirst(string $str)
 
 
 ### Headzoo\Core\Strings::title
-Upper cases the first letter of each word in the string, using multi-byte functions when enabled
+Upper cases the first letter of each word in the string
 
+Example:
+```php
+echo Strings::title("Hey hey hey hey, and I'm cryin' tears all through the years");
 
+// Outputs: "Hey Hey Hey Hey, And I'm Cryin' Tears All Through The Years"
+```
 ```php
 public string Headzoo\Core\Strings::title(string $str)
 ```
@@ -620,9 +780,16 @@ public string Headzoo\Core\Strings::title(string $str)
 
 
 ### Headzoo\Core\Strings::sub
-Returns a portion of the string, using multi-byte functions when enabled
+Returns a portion of the string
 
+See the documentation for substr for details of each argument.
 
+Example:
+```php
+echo Strings::sub("Make you do right, love", 19, 4);
+
+// Outputs: "love"
+```
 ```php
 public string Headzoo\Core\Strings::sub(string $str, int $start, int $end)
 ```
@@ -637,21 +804,43 @@ public string Headzoo\Core\Strings::sub(string $str, int $start, int $end)
 
 
 
-### Headzoo\Core\Strings::split
-Splits a string by regular expression, using multi-byte functions when enabled
+### Headzoo\Core\Strings::truncate
+Truncates strings which exceed a maximum length
 
+An ellipsis is added to the string to indicate it's been shortened. The final length
+of the string, including ellipsis, will be the length specified by $max_len.
 
+Strings may be truncated in three places: the start, middle, and end.
+
+Examples:
 ```php
-public array Headzoo\Core\Strings::split(string $str, string $pattern, string $limit)
+// Truncating a string at the end.
+echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_END);
+
+// Outputs: "Mary had a little..."
+
+// Truncating a string at the start.
+echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_START);
+
+// Outputs: "...as white as snow."
+
+// Truncating a string in the middle.
+echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_MIDDLE);
+
+// Outputs: "Mary ha...e as snow."
+```
+```php
+public string Headzoo\Core\Strings::truncate(string $str, int $max_len, int $pos, string $ellipsis)
 ```
 
 * This method is **static**.
 
 ##### Arguments
 
-* $str **string** - The string to split
-* $pattern **string** - The regular expression pattern
-* $limit **string** - If optional parameter limit is specified, it will be split in limit elements as maximum
+* $str **string** - The string to truncate
+* $max_len **int** - The maximum length
+* $pos **int** - Where in the string the cut should be made
+* $ellipsis **string** - A string which indicates the string was truncated
 
 
 
