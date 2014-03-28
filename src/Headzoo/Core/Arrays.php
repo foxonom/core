@@ -24,6 +24,37 @@ class Arrays
      * and the value of the key is $value. Returns false if the key does not exist, or
      * the key value does not equal $value.
      *
+     * By default the array is assumed to be multidimensional, but will be checked as a
+     * flat array when false.
+     * 
+     * Examples:
+     * ```php
+     * $arr = [
+     *      "admins" => [
+     *          "headzoo" => "sean@headzoo.io",
+     *          "joe"     => "joe@headzoo.io"
+     *      ],
+     *      "mods" => [
+     *          "sam"     => "sam@headzoo.io"
+     *      ]
+     * ];
+     * 
+     * $is = Arrays::containsKeyValue($arr, "headzoo", "sean@headzoo.io");
+     * var_dump($is);
+     * 
+     * // Outputs: bool(true)
+     * 
+     * $is = Arrays::containsKeyValue($arr, "headzoo", "joe@headzoo.io");
+     * var_dump($is);
+     * 
+     * // Outputs: bool(false)
+     * 
+     * $is = Arrays::containsKeyValue($arr, "amy", "amy@headzoo.io");
+     * var_dump($is);
+     * 
+     * // Outputs: bool(false)
+     * ```
+     * 
      * @param  array  $array The array to scan
      * @param  string $key   The key to find
      * @param  mixed  $value The key value
@@ -239,6 +270,31 @@ class Arrays
      * 
      * Returns the array index where the string was found, or false if the string was not
      * found.
+     * 
+     * Examples:
+     * ```php
+     * $arr = [
+     *      "headzoo",
+     *      "joe",
+     *      "sam",
+     *      "headzoo"
+     * ];
+     * 
+     * $index = Arrays::findString($arr, "headzoo");
+     * echo $index;
+     * 
+     * // Outputs: 0
+     * 
+     * $index = Arrays::findString($arr, "same");
+     * echo $index;
+     * 
+     * // Outputs: 2
+     * 
+     * $index = Arrays::findString($arr, "headzoo", true);
+     * echo $index;
+     * 
+     * // Outputs: 4
+     * ```
      * 
      * @param  array $array   The array to search
      * @param  mixed $needle  The string value to find
