@@ -93,10 +93,9 @@ class Arrays
      *  ]
      *  
      *  $ret = Arrays::column($arr, "username");
-     * ```
      * 
-     * Returns:
-     *  `["headzoo", "joe"]`
+     * // Outputs: ["headzoo", "joe"]
+     * ```
      * 
      * @param  array  $array  The array with values
      * @param  string $column The column name
@@ -145,10 +144,9 @@ class Arrays
      *      ]
      *  ];
      *  $ret = Arrays::columnFilter($a, "username", function($element) { return $element["admin"]; });
-     * ```
      * 
-     * Returns:
-     *  `["headzoo", "sam"]`
+     * // Outputs: ["headzoo", "sam"]
+     * ```
      *
      * @param  array    $array    Multidimensional array
      * @param  string   $column   Name of the column
