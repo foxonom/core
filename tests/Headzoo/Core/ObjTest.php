@@ -64,6 +64,16 @@ class ObjTest
 
         $e = null;
         try {
+            $this->core->tossit("CoreTest", "There was an error.");
+        } catch (Exceptions\CoreTestException $e) {}
+
+        $this->assertInstanceOf(
+            'Headzoo\Core\Tests\Exceptions\CoreTestException',
+            $e
+        );
+        
+        $e = null;
+        try {
             $this->core->tossit("CoreTestException", "There was another error.", 42);
         } catch (Exceptions\CoreTestException $e) {}
 

@@ -66,6 +66,11 @@ abstract class Obj
      * // the error code. When you need a number to be interpolated into the message, cast
      * // it to a string.
      * $this->toss("RuntimeException", "There was a {0} error", 43, "database");
+     * 
+     * // For exceptions in the Headzoo\Core namespace, the word "Exception" in the name
+     * // of the exception is optional.
+     * $this->toss("InvalidArgument", "There was an error.");
+     * $this->toss("Runtime", "The {0} system broke.", "database");
      * ```
      *
      * The built in place holders:
@@ -87,12 +92,14 @@ abstract class Obj
         }
         list($exception, $message, $code) = array_splice($args, 0, 3);
         $exception = self::getNamespaceName() . "\\Exceptions\\{$exception}";
+        if (strpos($exception, 'Headzoo\Core\\') === 0 && substr($exception, -9) != "Exception") {
+            $exception .= "Exception";
+        }
         
         if (!is_int($code)) {
             array_unshift($args, $code);
             $code = 0;
         }
-
         $placeholders = array_merge($args, [
             "me"        => get_called_class(),
             "exception" => $exception,
