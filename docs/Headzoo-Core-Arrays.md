@@ -119,10 +119,9 @@ Example:
  ]
 
  $ret = Arrays::column($arr, "username");
-```
 
-Returns:
- `["headzoo", "joe"]`
+// Outputs: ["headzoo", "joe"]
+```
 ```php
 public array Headzoo\Core\Arrays::column(array $array, string $column)
 ```
@@ -168,10 +167,9 @@ Example:
      ]
  ];
  $ret = Arrays::columnFilter($a, "username", function($element) { return $element["admin"]; });
-```
 
-Returns:
- `["headzoo", "sam"]`
+// Outputs: ["headzoo", "sam"]
+```
 ```php
 public array Headzoo\Core\Arrays::columnFilter(array $array, string $column, callable $callback)
 ```
@@ -374,6 +372,11 @@ $this->toss("RuntimeException", "There was an error.", 43);
 // the error code. When you need a number to be interpolated into the message, cast
 // it to a string.
 $this->toss("RuntimeException", "There was a {0} error", 43, "database");
+
+// For exceptions in the Headzoo\Core namespace, the word "Exception" in the name
+// of the exception is optional.
+$this->toss("InvalidArgument", "There was an error.");
+$this->toss("Runtime", "The {0} system broke.", "database");
 ```
 
 The built in place holders:
