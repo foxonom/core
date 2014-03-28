@@ -276,7 +276,7 @@ class Strings
      * (Strings::CHARS_LOWER | Strings::CHARS_UPPER | Strings::CHARS_NUMBERS),
      * which is every character except punctuation.
      *
-     * The return value will never contain characters "i", "I", "l", "L", and
+     * The return value will never contain characters "i", "I", "l", "L", "O", 0 and
      * "1".
      *
      * @param  int $len        Length of the string to return
