@@ -1,4 +1,4 @@
-Headzoo Core v3.0.1
+Headzoo Core v3.0.2
 ===================
 A collection of use PHP utility classes and functions.
 
@@ -82,9 +82,6 @@ in the [/docs](docs/README.md) directory.
  * the second.
  */
 
-// The Strings::camelCaseToUnderscore() method transforms a string with CamelCaseText into a string
-// with underscore_text.
-
 echo Strings::camelCaseToUnderscore("CamelCaseString");
 // Outputs: "camel_case_string"
 
@@ -92,13 +89,38 @@ echo Strings::camelCaseToUnderscore("MaryHadALittleLamb");
 // Outputs: "mary_had_a_little_lamb"
 
 
+$is = Strings::startsUpper("Welcome my son, welcome to the machine.");
+var_dump($is);
+
+// Output: bool(true);
+
+$is = Strings::startsUpper("you've been in the pipeline, filling in time");
+var_dump($is);
+
+// Output: bool(false)
+
+
+// Truncating a string at the end.
+echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_END);
+
+// Outputs: "Mary had a little..."
+
+// Truncating a string at the start.
+echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_START);
+
+// Outputs: "...as white as snow."
+
+// Truncating a string in the middle.
+echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_MIDDLE);
+
+// Outputs: "Mary ha...e as snow."
+
 /**
  * Examples: Core\Arrays
  *
  * The Core\Arrays class adds some missing functionality to PHP's own array functions.
  */
 
-// The Arrays::conjunct() method joins an array of values with a final conjunction, like "and" or "or".
 $array = [
    "headzoo",
    "joe",
@@ -111,6 +133,22 @@ echo Arrays::conjunct($array);
 // Using a callback to quote the array values.
 echo Arrays::conjunct($array, "and", 'Headzoo\Core\Strings::quote');
 // Outputs: 'headzoo', 'joe', and 'sam'
+
+
+$arr = [
+ 0 => [
+     "username" => "headzoo",
+     "email" => "sean@headzoo.io"
+ ],
+ 1 => [
+     "username" => "joe",
+     "email" => "joe@headzoo.io"
+ ]
+]
+
+$ret = Arrays::column($arr, "username");
+
+// Outputs: ["headzoo", "joe"]
 
 
 /**
