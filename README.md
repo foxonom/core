@@ -223,6 +223,7 @@ Change Log
 ----------
 ##### v0.3.2 - 2014/03/28
 * Created the `Strings::truncate` method.
+* Removed the `Strings::split` method.
 
 ##### v0.3.1 - 2014/03/27
 * Merged the `Validator` class into the `Functions` class.

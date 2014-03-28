@@ -381,26 +381,80 @@ class Strings
     /**
      * Returns whether the string starts with another string
      * 
+     * Returns a boolean value indicating whether a string starts with another string. The comparison is
+     * case-sensitive when $match_case is true, and case-insensitive when false.
+     * 
+     * Examples:
+     * ```php
+     * $is = Strings::startsWith("How I wish, how I wish you were here.", "How");
+     * var_dump($is);
+     * 
+     * // Outputs: bool(true)
+     *
+     * $is = Strings::startsWith("We're just two lost souls, Swimming in a fish bowl", "we're");
+     * var_dump($is);
+     *
+     * // Outputs: bool(false)
+     *
+     * $is = Strings::startsWith("We're just two lost souls, Swimming in a fish bowl", "we're", false);
+     * var_dump($is);
+     *
+     * // Outputs: bool(true)
+     * ```
+     * 
      * @param  string $str  The string to search
      * @param  string $find The string to find
+     * @param  bool   $match_case True to match the exact case, false for case-insensitive match
      * @return bool
      */
-    public static function startsWith($str, $find)
+    public static function startsWith($str, $find, $match_case = true)
     {
-        return self::$use_mbstring
-            ? mb_strpos($str, $find) === 0
-            : strpos($str, $find) === 0;
+        if ($match_case) {
+            return self::$use_mbstring
+                ? mb_strpos($str, $find) === 0
+                : strpos($str, $find) === 0;
+        } else {
+            return self::$use_mbstring
+                ? mb_stripos($str, $find) === 0
+                : stripos($str, $find) === 0;  
+        }
     }
 
     /**
      * Returns whether the string ends with another string
      *
-     * @param  string $str  The string to search
-     * @param  string $find The string to find
+     * Returns a boolean value indicating whether a string ends with another string. The comparison is
+     * case-sensitive when $match_case is true, and case-insensitive when false.
+     *
+     * Examples:
+     * ```php
+     * $is = Strings::endsWith("Running over the same old ground.", "ground.");
+     * var_dump($is);
+     *
+     * // Outputs: bool(true)
+     *
+     * $is = Strings::endsWith("What have we found? The same old fears.", "Fears.");
+     * var_dump($is);
+     *
+     * // Outputs: bool(false)
+     *
+     * $is = Strings::endsWith("What have we found? The same old fears.", "Fears.", false);
+     * var_dump($is);
+     *
+     * // Outputs: bool(true)
+     * ```
+     * 
+     * @param  string $str        The string to search
+     * @param  string $find       The string to find
+     * @param  bool   $match_case True to match the exact case, false for case-insensitive match
      * @return bool
      */
-    public static function endsWith($str, $find)
+    public static function endsWith($str, $find, $match_case = true)
     {
+        if (!$match_case) {
+            $str  = self::toLower($str);
+            $find = self::toLower($find);
+        }
         if (self::$use_mbstring) {
             $len = mb_strlen($find);
             $is_ends = mb_substr($str, "-{$len}") === $find;
@@ -415,6 +469,22 @@ class Strings
     /**
      * Returns whether the string starts with an upper case character
      * 
+     * Returns a boolean value indicating whether the first character in a string is upper
+     * case.
+     * 
+     * Examples:
+     * ```php
+     * $is = Strings::startsUpper("Welcome my son, welcome to the machine.");
+     * var_dump($is);
+     * 
+     * // Output: bool(true);
+     * 
+     * $is = Strings::startsUpper("you've been in the pipeline, filling in time");
+     * var_dump($is);
+     * 
+     * // Output: bool(false)
+     * ```
+     * 
      * @param  string $str The string to search
      * @return bool
      */
@@ -427,6 +497,22 @@ class Strings
     /**
      * Returns whether the string starts with a lower case character
      *
+     * Returns a boolean value indicating whether the first character in a string is lower
+     * case.
+     *
+     * Examples:
+     * ```php
+     * $is = Strings::startsLower("And sail on the steel breeze.");
+     * var_dump($is);
+     *
+     * // Output: bool(false);
+     *
+     * $is = Strings::startsLower("come on you miner for truth and delusion, and shine!");
+     * var_dump($is);
+     *
+     * // Output: bool(true)
+     * ```
+     * 
      * @param  string $str The string to search
      * @return bool
      */
@@ -439,8 +525,18 @@ class Strings
     /**
      * Replaces characters in a string
      * 
-     * @param  string $str The string to transform
-     * @param  string $search The string to find
+     * Example:
+     * ```php
+     * $str = "With flowers and my love both never to come back";
+     * $search = "flowers";
+     * $replace = "roses";
+     * echo Strings::replace($str, $search, $replace);
+     * 
+     * // Outputs: "With roses and my love both never to come back"
+     * ```
+     * 
+     * @param  string $str     The string to transform
+     * @param  string $search  The string to find
      * @param  string $replace The replacement string
      * @return string
      */
@@ -466,6 +562,16 @@ class Strings
     /**
      * Returns the number of characters in the string
      * 
+     * Note: When multi-byte support is enabled, the method returns the true number of characters
+     * instead of the number of bytes.
+     * 
+     * Example:
+     * ```php
+     * echo Strings::length("You can't say we're satisfied");
+     * 
+     * // Outputs: 29
+     * ```
+     * 
      * @param  string $str The string to count
      * @return int
      */
@@ -478,6 +584,23 @@ class Strings
 
     /**
      * Splits a string into individual characters
+     * 
+     * Returns an array with the individual characters from a string.
+     * 
+     * Example:
+     * ```php
+     * $chars = Strings::chars("Yeah!");
+     * print_r($chars);
+     * 
+     * // Outputs:
+     * // [
+     * //       "Y",
+     * //       "e",
+     * //       "a",
+     * //       "h",
+     * //       "!"
+     * // ]
+     * ```
      * 
      * @param  string $str The string to split
      * @return array
@@ -499,6 +622,13 @@ class Strings
     /**
      * Transforms a string to upper case
      * 
+     * Example:
+     * ```php
+     * echo Strings::toUpper("With no loving in our souls and no money in our coats");
+     * 
+     * // Outputs: "WITH NO LOVING IN OUR SOULS AND NO MONEY IN OUR COATS"
+     * ```
+     * 
      * @param  string $str The string to transform
      * @return string
      */
@@ -512,6 +642,13 @@ class Strings
     /**
      * Transforms a string to lower case
      *
+     * Example:
+     * ```php
+     * echo Strings::toLower("But Angie, Angie, you can't say we never tried");
+     *
+     * // Outputs: "but angie, angie, you can't say we never tried"
+     * ```
+     * 
      * @param  string $str The string to transform
      * @return string
      */
@@ -523,7 +660,14 @@ class Strings
     }
 
     /**
-     * Transforms the first letter of each word to upper case
+     * Transforms the first letter of a string to upper case
+     * 
+     * Example:
+     * ```php
+     * echo Strings::ucFirst("people say that I've found a way");
+     * 
+     * // Outputs: "People say that I've found a way"
+     * ```
      *
      * @param  string $str The string to transform
      * @return string
@@ -541,8 +685,15 @@ class Strings
     }
 
     /**
-     * Transforms the first letter of each word to lower case
+     * Transforms the first letter of a string to lower case
      *
+     * Example:
+     * ```php
+     * echo Strings::lcFirst("To make you say that you love me");
+     *
+     * // Outputs: "to make you say that you love me"
+     * ```
+     * 
      * @param  string $str The string to transform
      * @return string
      */
@@ -561,6 +712,13 @@ class Strings
     /**
      * Upper cases the first letter of each word in the string
      *
+     * Example:
+     * ```php
+     * echo Strings::title("Hey hey hey hey, and I'm cryin' tears all through the years");
+     * 
+     * // Outputs: "Hey Hey Hey Hey, And I'm Cryin' Tears All Through The Years"
+     * ```
+     * 
      * @param  string $str The string to transform
      * @return string
      */
@@ -574,6 +732,15 @@ class Strings
     /**
      * Returns a portion of the string
      *
+     * See the documentation for substr for details of each argument.
+     * 
+     * Example:
+     * ```php
+     * echo Strings::sub("Make you do right, love", 19, 4);
+     * 
+     * // Outputs: "love"
+     * ```
+     * 
      * @param  string $str   The string
      * @param  int    $start The start position
      * @param  int    $end   The end position
@@ -592,21 +759,6 @@ class Strings
                 ? mb_substr($str, $start)
                 : substr($str, $start);
         }
-    }
-
-    /**
-     * Splits a string by regular expression
-     *
-     * @param  string $str     The string to split
-     * @param  string $pattern The regular expression pattern
-     * @param  string $limit   If optional parameter limit is specified, it will be split in limit elements as maximum
-     * @return array
-     */
-    public static function split($str, $pattern, $limit = -1)
-    {
-        return self::$use_mbstring
-            ? mb_split($pattern, $str, $limit)
-            : preg_split($pattern, $str, $limit);
     }
 
     /**

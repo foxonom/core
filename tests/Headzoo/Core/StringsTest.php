@@ -94,10 +94,14 @@ class StringsTest
     public function testStartsWith()
     {
         $this->assertTrue(Strings::startsWith("But Gollum, and the evil one", "But"));
+        $this->assertFalse(Strings::startsWith("But Gollum, and the evil one", "but"));
+        $this->assertTrue(Strings::startsWith("But Gollum, and the evil one", "but", false));
         $this->assertFalse(Strings::startsWith("But Gollum, and the evil one", "Gollum"));
 
         Strings::setUseMultiByte(true);
         $this->assertTrue(Strings::startsWith("But Gollum, and the evil one", "But"));
+        $this->assertFalse(Strings::startsWith("But Gollum, and the evil one", "but"));
+        $this->assertTrue(Strings::startsWith("But Gollum, and the evil one", "but", false));
         $this->assertFalse(Strings::startsWith("But Gollum, and the evil one", "Gollum"));
     }
 
@@ -107,10 +111,14 @@ class StringsTest
     public function testEndsWith()
     {
         $this->assertTrue(Strings::endsWith("But Gollum, and the evil one", "one"));
+        $this->assertFalse(Strings::endsWith("But Gollum, and the evil one", "One"));
+        $this->assertTrue(Strings::endsWith("But Gollum, and the evil one", "One", false));
         $this->assertFalse(Strings::endsWith("But Gollum, and the evil one", "evil"));
 
         Strings::setUseMultiByte(true);
         $this->assertTrue(Strings::endsWith("But Gollum, and the evil one", "one"));
+        $this->assertFalse(Strings::endsWith("But Gollum, and the evil one", "One"));
+        $this->assertTrue(Strings::endsWith("But Gollum, and the evil one", "One", false));
         $this->assertFalse(Strings::endsWith("But Gollum, and the evil one", "evil"));
     }
 
