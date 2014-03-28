@@ -315,7 +315,6 @@ Change Log
 TODO
 ----
 * Replace `Strings` constants with enums.
-* Make the word "Exception" in "InvalidArgumentException" optional in Obj::toss()
 
 
 License
