@@ -1,5 +1,7 @@
 <?php
 use Headzoo\Core\Profiler;
+use psr\Log\AbstractLogger;
+use psr\Log\LogLevel;
 
 /**
  * @coversDefaultClass Headzoo\Core\Profiler
@@ -127,6 +129,24 @@ class ProfilerTest
     /**
      * @covers ::stop
      */
+    public function testStop_Logging()
+    {
+        $logger = new TestLogger();
+        $this->profiler->setLogger($logger, LogLevel::DEBUG);
+        $this->profiler->start();
+        usleep(100);
+        $this->profiler->stop(false);
+        
+        $this->assertEquals(LogLevel::DEBUG, $logger->level);
+        $this->assertRegExp(
+            "~^Time for profile 'default': [\\d.]+$~",
+            $logger->message
+        );
+    }
+
+    /**
+     * @covers ::stop
+     */
     public function testStop_Output_Default()
     {
         $this->expectOutputRegex("~^Time for profile 'default': [\\d.]+" . PHP_EOL . "$~");
@@ -144,5 +164,17 @@ class ProfilerTest
         $this->profiler->start("profile1");
         usleep(100);
         $this->profiler->stop("profile1", true);
+    }
+}
+
+class TestLogger
+    extends AbstractLogger
+{
+    public $level;
+    public $message;
+    public function log($level, $message, array $context = array())
+    {
+        $this->level   = $level;
+        $this->message = $message;
     }
 }
