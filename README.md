@@ -298,7 +298,7 @@ try {
 
 Change Log
 ----------
-##### v0.3.2 - 2014/03/28
+##### v0.3.2 - 2014/03/29
 * Created the `Strings::truncate` method.
 * Removed the `Strings::split` method.
 * Created the `Profiler` class.
