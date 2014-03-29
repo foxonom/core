@@ -1,10 +1,10 @@
 <?php
-use Headzoo\Core\ErrorTypes;
+use Headzoo\Core\Errors;
 
 /**
  * @coversDefaultClass
  */
-class ErrorTypesTest
+class ErrorsTest
     extends PHPUnit_Framework_TestCase
 {
     /**
@@ -12,11 +12,11 @@ class ErrorTypesTest
      */
     public function testIsValid()
     {
-        $this->assertTrue(ErrorTypes::isValid(E_ERROR));
-        $this->assertTrue(ErrorTypes::isValid(E_ALL));
-        $this->assertFalse(ErrorTypes::isValid(0));
-        $this->assertFalse(ErrorTypes::isValid("foo"));
-        $this->assertFalse(ErrorTypes::isValid(null));
+        $this->assertTrue(Errors::isValid(E_ERROR));
+        $this->assertTrue(Errors::isValid(E_ALL));
+        $this->assertFalse(Errors::isValid(0));
+        $this->assertFalse(Errors::isValid("foo"));
+        $this->assertFalse(Errors::isValid(null));
     }
     
     /**
@@ -26,11 +26,11 @@ class ErrorTypesTest
     {
         $this->assertEquals(
             E_ERROR,
-            ErrorTypes::getValue(E_ERROR)
+            Errors::getValue(E_ERROR)
         );
         $this->assertEquals(
             E_ERROR,
-            ErrorTypes::getValue("E_ERROR")
+            Errors::getValue("E_ERROR")
         );
     }
 
@@ -41,7 +41,7 @@ class ErrorTypesTest
      */
     public function testGetValue_Invalid($value)
     {
-        ErrorTypes::getValue($value);
+        Errors::getValue($value);
     }
 
     /**
@@ -49,14 +49,14 @@ class ErrorTypesTest
      */
     public function testTypes()
     {
-        $this->assertNotEmpty(ErrorTypes::types());
+        $this->assertNotEmpty(Errors::types());
         $this->assertContains(
             E_ERROR,
-            ErrorTypes::types()
+            Errors::types()
         );
         $this->assertContains(
             E_RECOVERABLE_ERROR,
-            ErrorTypes::types()
+            Errors::types()
         );
     }
     

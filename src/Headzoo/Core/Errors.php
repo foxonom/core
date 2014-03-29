@@ -2,9 +2,9 @@
 namespace Headzoo\Core;
 
 /**
- * Utility class used to work with PHP's E_ error constants.
+ * Utility class used to work with PHP's E_ERROR constants.
  */
-class ErrorTypes
+class Errors
     extends Obj
 {
     /**
