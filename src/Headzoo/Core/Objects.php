@@ -3,8 +3,6 @@ namespace Headzoo\Core;
 
 /**
  * Contains static methods for working with objects and classes.
- *
- * 
  */
 class Objects
     extends Obj
