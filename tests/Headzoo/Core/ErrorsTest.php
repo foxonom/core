@@ -8,64 +8,65 @@ class ErrorsTest
     extends PHPUnit_Framework_TestCase
 {
     /**
-     * @covers ::isValid
+     * @covers ::isError
      */
-    public function testIsValid()
+    public function testIsError()
     {
-        $this->assertTrue(Errors::isValid(E_ERROR));
-        $this->assertTrue(Errors::isValid(E_ALL));
-        $this->assertFalse(Errors::isValid(0));
-        $this->assertFalse(Errors::isValid("foo"));
-        $this->assertFalse(Errors::isValid(null));
+        $this->assertTrue(Errors::isError(E_ERROR));
+        $this->assertTrue(Errors::isError(E_ALL));
+        $this->assertFalse(Errors::isError("E_ERROR"));
+        $this->assertFalse(Errors::isError(0));
+        $this->assertFalse(Errors::isError("foo"));
+        $this->assertFalse(Errors::isError(null));
     }
     
     /**
-     * @covers ::getValue
+     * @covers ::toInteger
      */
-    public function testGetValue()
+    public function testToInteger()
     {
         $this->assertEquals(
             E_ERROR,
-            Errors::getValue(E_ERROR)
+            Errors::toInteger(E_ERROR)
         );
         $this->assertEquals(
             E_ERROR,
-            Errors::getValue("E_ERROR")
+            Errors::toInteger("E_ERROR")
         );
     }
 
     /**
-     * @covers ::getValue
-     * @dataProvider providerGetValue
+     * @covers ::toInteger
+     * @dataProvider providerToInteger
      * @expectedException Headzoo\Core\Exceptions\InvalidArgumentException
      */
-    public function testGetValue_Invalid($value)
+    public function testToInteger_Invalid($value)
     {
-        Errors::getValue($value);
+        Errors::toInteger($value);
     }
 
     /**
-     * @covers ::types
+     * @covers ::toArray
      */
-    public function testTypes()
+    public function testToArray()
     {
-        $this->assertNotEmpty(Errors::types());
+        $this->assertNotEmpty(Errors::toArray());
         $this->assertContains(
             E_ERROR,
-            Errors::types()
+            Errors::toArray()
         );
         $this->assertContains(
             E_RECOVERABLE_ERROR,
-            Errors::types()
+            Errors::toArray()
         );
     }
     
     /**
-     * Data provider for testGetValue_Invalid
+     * Data provider for testToInteger_Invalid
      *
      * @return array
      */
-    public function providerGetValue()
+    public function providerToInteger()
     {
         return [
             [0],

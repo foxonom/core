@@ -2,7 +2,7 @@
 namespace Headzoo\Core;
 
 /**
- * Utility class used to work with PHP's E_ERROR constants.
+ * Utility class used to work with E_ERROR constants.
  */
 class Errors
     extends Obj
@@ -31,52 +31,51 @@ class Errors
     ];
 
     /**
-     * Returns a boolean value indicating whether $value is a valid PHP error type
+     * Returns a boolean value indicating whether a value is a E_ERROR constant
      * 
-     * @param  int $type The value to test
+     * @param  int $error The value to test
      *
      * @return bool
      */
-    public static function isValid($type)
+    public static function isError($error)
     {
-        return in_array((int)$type, self::$errors);
+        return in_array((int)$error, self::$errors);
     }
 
     /**
-     * Returns the type value
+     * Returns the value of the error as an integer
      * 
-     * The value of $type may be either one of the E_ error constants, or a string naming one
+     * The value of $error may be either one of the E_ERROR constants, or a string naming one
      * of the constants. The integer value of the constant is returned, or an exception is
-     * thrown when $type is not valid.
+     * thrown when $error is not valid.
      * 
-     * @param  string|int $type E_ type constant or string with name of constant
-     *
-     * @throws Exceptions\InvalidArgumentException When $type is not a valid E_ error constant
+     * @param  string|int $error E_ERROR constant or string with name of constant
+     * @throws Exceptions\InvalidArgumentException When $error is not a valid E_ error constant
      *
      * @return int
      */
-    public static function getValue($type)
+    public static function toInteger($error)
     {
-        if (is_string($type) && substr($type, 0, 2) == "E_") {
-            $type = @constant($type);
+        if (is_string($error) && substr($error, 0, 2) == "E_") {
+            $error = @constant($error);
         }
-        if (!self::isValid($type)) {
+        if (!self::isError($error)) {
             self::toss(
                 "InvalidArgument",
-                "The value {0} is not a valid E_ error constant value or name.",
-                $type
+                "The value {0} is not a valid E_ERROR constant value.",
+                $error
             );
         }
         
-        return $type;
+        return $error;
     }
 
     /**
-     * Returns an array of the PHP error types
+     * Returns an array of the E_ERROR constant values
      * 
      * @return int[]
      */
-    public static function types()
+    public static function toArray()
     {
         return self::$errors;
     }
