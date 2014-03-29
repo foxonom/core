@@ -3,6 +3,8 @@ namespace Headzoo\Core;
 
 /**
  * Contains static methods for working with objects and classes.
+ *
+ * 
  */
 class Objects
     extends Obj
@@ -309,9 +311,7 @@ class Objects
      */
     public static function merge($obj, $obj2)
     {
-        $objects = func_get_args();
-        $obj     = array_shift($objects);
-        if (!is_object($obj)) {
+        if (!is_object($obj) || !is_object($obj2)) {
             self::toss(
                 "InvalidArgument",
                 "Merged values must be objects. Got type {0}.",
@@ -319,15 +319,14 @@ class Objects
             );
         }
         
-        foreach($objects as $o) {
-            if (!is_object($o)) {
-                self::toss(
-                    "InvalidArgument",
-                    "Merged values must be objects. Got type {0}.",
-                    gettype($o)
-                );
+        if (func_num_args() > 2) {
+            $args = func_get_args();
+            $obj  = array_shift($args);
+            foreach($args as $arg) {
+                self::merge($obj, $arg);
             }
-            foreach($o as $name => $value) {
+        } else {
+            foreach($obj2 as $name => $value) {
                 if (null !== $value) {
                     $obj->$name = $value;
                 }
