@@ -125,6 +125,9 @@ abstract class Obj
     private static function interpolate($message, array $context = []) {
         $replace = [];
         foreach ($context as $key => $val) {
+            if (!is_scalar($val)) {
+                $val = gettype($val);
+            }
             $replace['{' . $key . '}'] = $val;
         }
         
