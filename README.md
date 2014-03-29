@@ -73,16 +73,9 @@ Quick Start
 This quick start guide *briefly* goes over a few of the classes. The full class API documentation is available
 in the [/docs](docs/README.md) directory.
 
-```php
-/**
- * Examples: Core\Strings
- *
- * The Core\Strings methods are designed to work transparently with the "mbstring" extension
- * when it's available. The argument order for each method is consistent: The string to work
- * on is always the first argument. No more wondering if $haystack is the first argument or
- * the second.
- */
 
+#### Core\Strings
+```php
 echo Strings::camelCaseToUnderscore("CamelCaseString");
 // Outputs: "camel_case_string"
 
@@ -115,13 +108,10 @@ echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow."
 echo Strings::truncate("Mary had a little lamb, whose fleece was white as snow.", 20, Strings::TRUNC_MIDDLE);
 
 // Outputs: "Mary ha...e as snow."
+```
 
-/**
- * Examples: Core\Arrays
- *
- * The Core\Arrays class adds some missing functionality to PHP's own array functions.
- */
-
+#### Core\Arrays
+```php
 $array = [
    "headzoo",
    "joe",
@@ -150,12 +140,10 @@ $arr = [
 $ret = Arrays::column($arr, "username");
 
 // Outputs: ["headzoo", "joe"]
+```
 
-
-/**
- * Examples: Core\Objects
- */
-
+#### Core\Objects
+```php
 // Testing whether an object is an instance of another.
 $is = Objects::isInstance(new stdClass(), stdClass);
 var_dump($is);
@@ -174,15 +162,46 @@ $objects = [
 $is = Objects::isInstance($objects, stdClass);
 var_dump($is);
 // Outputs: bool(true)
+```
 
-/**
- * Examples: Core\AbstractEnum
- *
- * Unlike the primary purpose of enumerators from other languages, which is having the verbosity of strings with
- * the memory savings of integers, the enums created with this class have the purpose of reducing function
- * argument validation.
- */
- 
+#### Core\Profiler
+```php
+// The most basic profiling.
+$profiler = new Profiler();
+$profiler->start();
+... do something here ...
+$micro = $profiler->stop();
+var_dump($micro);
+
+// Outputs:
+// "Profile time for 'default': 0.00030207633972168"
+// double(0.00030207633972168)
+
+
+// This example runs the closure 100 times, and displays the profile results.
+Profiler::run(100, true, function() {
+  ... do something here ...
+});
+
+// Output:
+//
+// Total Runs:                 100
+// Total Time:      0.099596977234
+// Average Time:    0.000981624126
+// -------------------------------
+// Run #1           0.000479936599
+// Run #2           0.000968933105
+// Run #3           0.000982999801
+// Run #4           0.000988006591
+// ......
+// Run #97          0.000985145568
+// Run #98          0.000983953476
+// Run #99          0.000997066497
+// Run #100         0.000993013382
+```
+
+#### Core\AbstractEnum
+```php
 class DaysEnum
    extends AbstractEnum
 {
@@ -236,11 +255,10 @@ var_dump($day_tue1 == $day_fri1);
 // bool(true)
 // bool(false)
 // bool(false)
+```
 
-/**
- * Core\Functions
- */
-
+#### Core\Functions
+```php
 // The Functions::swapCallable() method is used to swap two arguments when the second is a callable. It's used
 // to create functions/methods which have callbacks as the final argument, and it's desirable to make middle
 // argument optional, while the callback remains the final argument.
@@ -258,13 +276,10 @@ joinArray($values, "-", 'Headzoo\Core\String::quote');
 
 // Or the middle argument may be omitted, and called like this:
 joinArray($values, 'Headzoo\Core\String::quote');
+```
 
-/**
- * Core\Complete
- *
- * This class was created before PHP added 'finally' to exception catching, but it still has other uses.
- */
- 
+#### Core\Complete
+```php
 // In this example the database connection will always be closed, even if the $database->fetch()
 // method throws an exception, because the anonymous function passed to Complete::factory()
 // is called when the $complete object goes out of scope.
