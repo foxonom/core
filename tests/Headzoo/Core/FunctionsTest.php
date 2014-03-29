@@ -18,6 +18,17 @@ class FunctionsTest
             Functions::swapCallable($optional, $callable, $default)
         );
     }
+    
+    /**
+     * @covers ::swapCallable
+     * @expectedException Headzoo\Core\Exceptions\InvalidArgumentException
+     */
+    public function testMethod()
+    {
+        $optional = null;
+        $callable = null;
+        Functions::swapCallable($optional, $callable);
+    }
 
     /**
      * @covers ::validateRequired

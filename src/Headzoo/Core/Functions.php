@@ -14,6 +14,9 @@ class Functions
      * it's desirable to make middle argument optional, while the callback remains the
      * final argument.
      * 
+     * Throws an exception when $callable_required is true, and the callable object is
+     * empty.
+     * 
      * Returns true if the arguments were swapped, false if not.
      * 
      * Examples:
@@ -33,18 +36,27 @@ class Functions
      * joinArray($values, 'Headzoo\Core\String::quote');
      * ```
      * 
-     * @param  mixed $optional The optional argument
-     * @param  mixed $callable Possibly a callable object
-     * @param  mixed $default  The optional argument default value
+     * @param  mixed $optional          The optional argument
+     * @param  mixed $callable          Possibly a callable object
+     * @param  mixed $default           The optional argument default value
+     * @param  bool  $callable_required Whether the callable object is required (cannot be empty)
+     * @throws Exceptions\InvalidArgumentException When the callable is required and empty
+     * 
      * @return bool
      */
-    public static function swapCallable(&$optional, &$callable, $default = null)
+    public static function swapCallable(&$optional, &$callable, $default = null, $callable_required = true)
     {
         $swapped = false;
         if (is_callable($optional)) {
             $callable = $optional;
             $optional = $default;
             $swapped  = true;
+        }
+        if ($callable_required && !$callable) {
+            self::toss(
+                "InvalidArgument",
+                "A callable object is required."
+            );
         }
         
         return $swapped;
