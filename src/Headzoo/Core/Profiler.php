@@ -181,6 +181,117 @@ class Profiler
         
         return $profiler;
     }
+
+    /**
+     * Profiles one or more calls to a function
+     * 
+     * Calls a function the number of times specified by $num_runs, and displays the total run time,
+     * the average run time, and the time for each run. Also returns an array with the same
+     * information.
+     * 
+     * Regardless of the number of runs, the output only shows 40 run times: the first 20 and the
+     * last 20. The returned array always contains the times for each run.
+     * 
+     * Note: Profiling must be enabled to use this method.
+     * 
+     * Examples:
+     * ```php
+     * // This example runs the closure 100 times, and displays the profile results.
+     * $runs = Profiler::run(100, true, function() {
+     *      ... do something here ...
+     * });
+     * 
+     * // Output:
+     * //
+     * // Total Runs:                 100
+     * // Total Time:      0.099596977234
+     * // Average Time:    0.000981624126
+     * // -------------------------------
+     * // Run #1           0.000479936599
+     * // Run #2           0.000968933105
+     * // Run #3           0.000982999801
+     * // Run #4           0.000988006591
+     * // ......
+     * // Run #97          0.000985145568
+     * // Run #98          0.000983953476
+     * // Run #99          0.000997066497
+     * // Run #100         0.000993013382
+     * 
+     * print_r($runs);
+     * // Output:
+     * // [
+     * //       "total"   => 0.099596977234,
+     * //       "average" => 0.000981624126,
+     * //       "runs"    => [
+     * //           0.0004799365997,
+     * //           0.0009689331055,
+     * //           ....
+     * //           0.0009930133820
+     * //       ]
+     * // ]
+     * 
+     * // Use false for the second argument to turn off displaying the results.
+     * $runs = Profiler::run(100, false, function() {
+     *      ... do something here ...
+     * });
+     * 
+     * // The middle argument may be omitted, and defaults to true.
+     * $runs = Profiler::run(100, function() {
+     *      ... do something here ...
+     * });
+     * ```
+     * 
+     * @param  int      $num_runs  The number of times to run the function
+     * @param  bool     $display    Whether or not to display the results
+     * @param  callable $callable   The function to call
+     *
+     * @return array
+     */
+    public static function run($num_runs, $display = true, callable $callable = null)
+    {
+        Functions::swapCallable($display, $callable, true);
+        $results = [];
+        
+        if (self::$enabled) {
+            $run_times = [];
+            $profiler  = self::factory("top");
+            for($i = 0; $i < $num_runs; $i++) {
+                $profiler->start("loop");
+                $callable();
+                $run_times[] = $profiler->stop("loop", false);
+            }
+            $results["total"]   = $profiler->stop("top", false);
+            $results["average"] = $results["total"] / $num_runs;
+            $results["runs"]    = $run_times;
+            
+            if ($display) {
+                $output  = sprintf("Total Runs:   %17d%s",    $num_runs,           PHP_EOL);
+                $output .= sprintf("Total Time:   %17.12f%s", $results["total"],   PHP_EOL);
+                $output .= sprintf("Average Time: %17.12f%s", $results["average"], PHP_EOL);
+                $output .= sprintf('-------------------------------%s',            PHP_EOL);
+                
+                if (count($run_times) > 50) {
+                    $runs   = [];
+                    $runs[] = array_slice($run_times, 0, 20);
+                    $runs[] = array_slice($run_times, -20, null, true);
+                } else {
+                    $runs[] = $run_times;
+                }
+                foreach($runs as $run) {
+                    foreach($run as $index => $microtime) {
+                        $output .= sprintf("Run #%-7d %18.12f%s", ++$index, $microtime, PHP_EOL);
+                        if (20 == $index) {
+                            $output .= "......." . PHP_EOL;
+                        }
+                    }
+                }
+                
+                echo $output;
+            }
+        }
+        
+        return $results;
+    }
     
     /**
      * Constructor
@@ -311,7 +422,7 @@ class Profiler
      * 
      * @param  string $id      Identifies this profiling operation
      * @param  bool   $display Whether or not to display the profiling data
-     * @return bool
+     * @return float
      * @throws Exceptions\ProfilingException When called without first calling ::start() with the same id
      */
     public function stop($id = self::DEFAULT_ID, $display = true)
@@ -333,7 +444,7 @@ class Profiler
             
             $microtime = microtime(true) - $this->start[$id];
             unset($this->start[$id]);
-            $message = printf(
+            $message = sprintf(
                 "Time for profile '%s': %F",
                 $id,
                 $microtime
