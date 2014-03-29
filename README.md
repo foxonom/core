@@ -22,6 +22,7 @@ See the [wiki](https://github.com/headzoo/core/wiki) and [API class documentatio
 Requirements
 ------------
 * PHP 5.5 or greater.
+* psr/log.
 
 
 Installing
@@ -152,6 +153,29 @@ $ret = Arrays::column($arr, "username");
 
 
 /**
+ * Examples: Core\Objects
+ */
+
+// Testing whether an object is an instance of another.
+$is = Objects::isInstance(new stdClass(), stdClass);
+var_dump($is);
+// Outputs: bool(true)
+
+// Unlike the instanceof operator, the second argument can be a string.
+$is = Objects::isInstance(new stdClass(), 'stdClass');
+var_dump($is);
+// Outputs: bool(true);
+
+// You can even test an array of objects.
+$objects = [
+    new stdClass(),
+    new stdClass()
+];
+$is = Objects::isInstance($objects, stdClass);
+var_dump($is);
+// Outputs: bool(true)
+
+/**
  * Examples: Core\AbstractEnum
  *
  * Unlike the primary purpose of enumerators from other languages, which is having the verbosity of strings with
@@ -262,6 +286,8 @@ Change Log
 ##### v0.3.2 - 2014/03/28
 * Created the `Strings::truncate` method.
 * Removed the `Strings::split` method.
+* Created the `Profiler` class.
+* Made `psr/Log` a requirement.
 
 ##### v0.3.1 - 2014/03/27
 * Merged the `Validator` class into the `Functions` class.
