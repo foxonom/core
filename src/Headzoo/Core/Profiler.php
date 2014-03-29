@@ -422,7 +422,7 @@ class Profiler
      * 
      * @param  string $id      Identifies this profiling operation
      * @param  bool   $display Whether or not to display the profiling data
-     * @return float
+     * @return float|bool
      * @throws Exceptions\ProfilingException When called without first calling ::start() with the same id
      */
     public function stop($id = self::DEFAULT_ID, $display = true)
