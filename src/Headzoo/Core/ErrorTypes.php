@@ -45,8 +45,14 @@ class ErrorTypes
     /**
      * Returns the type value
      * 
+     * The value of $type may be either one of the E_ error constants, or a string naming one
+     * of the constants. The integer value of the constant is returned, or an exception is
+     * thrown when $type is not valid.
+     * 
      * @param  string|int $type E_ type constant or string with name of constant
-     *                          
+     *
+     * @throws Exceptions\InvalidArgumentException When $type is not a valid E_ error constant
+     *
      * @return int
      */
     public static function getValue($type)
