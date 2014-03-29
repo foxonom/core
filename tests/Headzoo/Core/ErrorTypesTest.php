@@ -18,6 +18,31 @@ class ErrorTypesTest
         $this->assertFalse(ErrorTypes::isValid("foo"));
         $this->assertFalse(ErrorTypes::isValid(null));
     }
+    
+    /**
+     * @covers ::getValue
+     */
+    public function testGetValue()
+    {
+        $this->assertEquals(
+            E_ERROR,
+            ErrorTypes::getValue(E_ERROR)
+        );
+        $this->assertEquals(
+            E_ERROR,
+            ErrorTypes::getValue("E_ERROR")
+        );
+    }
+
+    /**
+     * @covers ::getValue
+     * @dataProvider providerGetValue
+     * @expectedException Headzoo\Core\Exceptions\InvalidArgumentException
+     */
+    public function testGetValue_Invalid($value)
+    {
+        ErrorTypes::getValue($value);
+    }
 
     /**
      * @covers ::types
@@ -33,5 +58,22 @@ class ErrorTypesTest
             E_RECOVERABLE_ERROR,
             ErrorTypes::types()
         );
+    }
+    
+    /**
+     * Data provider for testGetValue_Invalid
+     *
+     * @return array
+     */
+    public function providerGetValue()
+    {
+        return [
+            [0],
+            ["e_error"],
+            ["E_BAD"],
+            [42],
+            [null],
+            [[]]
+        ];
     }
 }

@@ -5,6 +5,7 @@ namespace Headzoo\Core;
  * Utility class used to work with PHP's E_ error constants.
  */
 class ErrorTypes
+    extends Obj
 {
     /**
      * The error constants
@@ -39,6 +40,29 @@ class ErrorTypes
     public static function isValid($type)
     {
         return in_array((int)$type, self::$errors);
+    }
+
+    /**
+     * Returns the type value
+     * 
+     * @param  string|int $type E_ type constant or string with name of constant
+     *                          
+     * @return int
+     */
+    public static function getValue($type)
+    {
+        if (is_string($type) && substr($type, 0, 2) == "E_") {
+            $type = @constant($type);
+        }
+        if (!self::isValid($type)) {
+            self::toss(
+                "InvalidArgument",
+                "The value {0} is not a valid E_ error constant value or name.",
+                $type
+            );
+        }
+        
+        return $type;
     }
 
     /**
