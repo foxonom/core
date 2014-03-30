@@ -1,5 +1,7 @@
 <?php
 use Headzoo\Core\ErrorHandler;
+use psr\Log\AbstractLogger;
+use psr\Log\LogLevel;
 
 /**
  * @coversDefaultClass
@@ -423,6 +425,8 @@ class ErrorsHandlerTest
     {
         $this->expectOutputRegex("~<h1>There was an error.</h1>~");
         
+        $logger = new TestErrorLogger();
+        $this->handler->setLogger($logger);
         $this->handler->handle();
         $this->handler->setCoreErrors([E_ERROR]);
         $this->assertTrue($this->handler->handleCoreError(
@@ -431,6 +435,11 @@ class ErrorsHandlerTest
             __FILE__,
             __LINE__
         ));
+        $this->assertEquals(LogLevel::ERROR, $logger->level);
+        $this->assertRegExp(
+            '~^Core Error E_ERROR: "There was an error\." in file~',
+            $logger->message
+        );
         
         // Can't start handling again after an error has been handled.
         $this->assertFalse($this->handler->handle());
@@ -449,10 +458,17 @@ class ErrorsHandlerTest
     public function testHandleUncaughtException()
     {
         $this->expectOutputRegex("~<h1>There was an exception.</h1>~");
-        $exception = new Exception("There was an exception.");
+        $exception = new TestingException("There was an exception.", 42);
 
+        $logger = new TestErrorLogger();
+        $this->handler->setLogger($logger);
         $this->handler->handle();
         $this->assertTrue($this->handler->handleUncaughtException($exception));
+        $this->assertEquals(LogLevel::ERROR, $logger->level);
+        $this->assertRegExp(
+            '~^Uncaught Exception TestingException\[42\]: "There was an exception\." in file~',
+            $logger->message
+        );
         
         // Once an exception has been handled, we do not handle them any longer.
         $this->assertFalse($this->handler->handle());
@@ -467,3 +483,23 @@ class ErrorsHandlerTest
 
 class TestingException
     extends Exception {}
+
+class TestErrorLogger
+    extends AbstractLogger
+{
+    public $level;
+    public $message;
+    public function log($level, $message, array $context = [])
+    {
+        $this->level   = $level;
+        $this->message = $this->interpolate($message, $context);
+    }
+    protected function interpolate($message, array $context = [])
+    {
+        $replace = array();
+        foreach ($context as $key => $val) {
+            $replace['{' . $key . '}'] = $val;
+        }
+        return strtr($message, $replace);
+    }
+}

@@ -1,6 +1,7 @@
 <?php
 namespace Headzoo\Core;
 use Exception;
+use psr\Log;
 
 /**
  * Error handler.
@@ -10,7 +11,10 @@ use Exception;
  */
 class ErrorHandler
     extends Obj
+    implements Log\LoggerAwareInterface
 {
+    use Log\LoggerAwareTrait;
+    
     /**
      * The default runtime environment
      */
@@ -123,10 +127,15 @@ class ErrorHandler
     /**
      * Constructor
      * 
-     * @param string $running_env The current runtime environment
+     * @param string              $running_env The current runtime environment
+     * @param Log\LoggerInterface $logger      Used to log errors
      */
-    public function __construct($running_env = self::DEFAULT_ENVIRONMENT)
+    public function __construct($running_env = self::DEFAULT_ENVIRONMENT, Log\LoggerInterface $logger = null)
     {
+        if (null === $logger) {
+            $logger = new Log\NullLogger();
+        }
+        $this->setLogger($logger);
         $this->setRunningEnvironment($running_env);
     }
 
@@ -589,7 +598,7 @@ class ErrorHandler
                 $line
             );
             
-            $handled = $this->triggerCallback($exception);
+            $handled = $this->triggerError($exception, "Core Error");
         }
         
         return $handled;
@@ -607,7 +616,7 @@ class ErrorHandler
     public function handleUncaughtException(Exception $exception)
     {
         if ($this->is_handling && $this->isHandlingUncaughtException($exception)) {
-            $handled = $this->triggerCallback($exception);
+            $handled = $this->triggerError($exception, "Uncaught Exception");
         } else {
             throw $exception;
         }
@@ -638,14 +647,34 @@ class ErrorHandler
     /**
      * Calls the set error callback
      * 
-     * @param Exception $exception
+     * @param Exception $exception  The error
+     * @param string    $label      Label for the reason the error is being triggered
      *
      * @return bool
      */
-    protected function triggerCallback(Exception $exception)
+    protected function triggerError(Exception $exception, $label)
     {
         $this->last_error  = $exception;
         $this->is_handling = false;
+        
+        if ($exception instanceof Exceptions\PHPErrorException) {
+            $type = Errors::toString($exception->getCode());
+        } else {
+            $code = $exception->getCode();
+            $type = get_class($exception);
+            $type = "{$type}[{$code}]";
+        }
+        $this->logger->error(
+            '{label} {type}: "{message}" in file {file}[{line}].',
+            [
+                "label"   => $label,
+                "type"    => $type,
+                "message" => $exception->getMessage(),
+                "file"    => $exception->getFile(),
+                "line"    => $exception->getLine()
+            ]
+        );
+        
         try {
             call_user_func($this->getCallback(), $this);
         } catch (Exception $e) {}
