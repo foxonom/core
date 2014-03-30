@@ -182,6 +182,15 @@ class ConstantsEnumTest
     }
 }
 
+/**
+ * @method static DaysEnum SUNDAY
+ * @method static DaysEnum MONDAY
+ * @method static DaysEnum TUESDAY
+ * @method static DaysEnum WEDNESDAY
+ * @method static DaysEnum THURSDAY
+ * @method static DaysEnum FRIDAY
+ * @method static DaysEnum SATURDAY
+ */
 class DaysEnum
     extends AbstractEnum
 {
@@ -195,6 +204,15 @@ class DaysEnum
     const __DEFAULT = self::SUNDAY;
 }
 
+/**
+ * @method static DaysEnum SUNDAY
+ * @method static DaysEnum MONDAY
+ * @method static DaysEnum TUESDAY
+ * @method static DaysEnum WEDNESDAY
+ * @method static DaysEnum THURSDAY
+ * @method static DaysEnum FRIDAY
+ * @method static DaysEnum SATURDAY
+ */
 class OtherDaysEnum
     extends AbstractEnum
 {
@@ -208,6 +226,11 @@ class OtherDaysEnum
     const __DEFAULT = self::SUNDAY;
 }
 
+/**
+ * @method static HolidaysEnum CHRISTMAS
+ * @method static HolidaysEnum EASTER
+ * @method static HolidaysEnum NEW_YEARS
+ */
 class HolidaysEnum
     extends AbstractEnum
 {
@@ -217,6 +240,11 @@ class HolidaysEnum
     const __DEFAULT = self::CHRISTMAS;
 }
 
+/**
+ * @method static PetsEnum DOG
+ * @method static PetsEnum CAT
+ * @method static PetsEnum BIRD
+ */
 class PetsEnum
     extends AbstractEnum
 {
@@ -226,7 +254,12 @@ class PetsEnum
     const FISH = "FISH";
 }
 
-
+/**
+ * @method static FoodsEnum PIZZA
+ * @method static FoodsEnum HAMBURGER
+ * @method static FoodsEnum HOT_DOG
+ * @method static FoodsEnum FRENCH_FRIES
+ */
 class FoodsEnum
     extends AbstractEnum
 {

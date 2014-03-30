@@ -303,7 +303,7 @@ abstract class AbstractEnum
      */
     public static function __callStatic($value, $args)
     {
-        $enum = get_called_class();
+        $enum  = get_called_class();
         return new $enum($value);
     }
     
