@@ -12,22 +12,22 @@ class Errors
      * @var array
      */
     private static $errors = [
-        E_ERROR,
-        E_WARNING,
-        E_PARSE,
-        E_NOTICE,
-        E_CORE_ERROR,
-        E_CORE_WARNING,
-        E_COMPILE_ERROR,
-        E_COMPILE_WARNING,
-        E_USER_ERROR,
-        E_USER_WARNING,
-        E_USER_NOTICE,
-        E_STRICT,
-        E_RECOVERABLE_ERROR,
-        E_DEPRECATED,
-        E_USER_DEPRECATED,
-        E_ALL
+        "E_ERROR"             => E_ERROR,
+        "E_WARNING"           => E_WARNING,
+        "E_PARSE"             => E_PARSE,
+        "E_NOTICE"            => E_NOTICE,
+        "E_CORE_ERROR"        => E_CORE_ERROR,
+        "E_CORE_WARNING"      => E_CORE_WARNING,
+        "E_COMPILE_ERROR"     => E_COMPILE_ERROR,
+        "E_COMPILE_WARNING"   => E_COMPILE_WARNING,
+        "E_USER_ERROR"        => E_USER_ERROR,
+        "E_USER_WARNING"      => E_USER_WARNING,
+        "E_USER_NOTICE"       => E_USER_NOTICE,
+        "E_STRICT"            => E_STRICT,
+        "E_RECOVERABLE_ERROR" => E_RECOVERABLE_ERROR,
+        "E_DEPRECATED"        => E_DEPRECATED,
+        "E_USER_DEPRECATED"   => E_USER_DEPRECATED,
+        "E_ALL"               => E_ALL
     ];
 
     /**
@@ -56,10 +56,33 @@ class Errors
      */
     public static function toInteger($error)
     {
-        if (is_string($error) && substr($error, 0, 2) == "E_") {
-            $error = @constant($error);
+        if (is_string($error) && isset(self::$errors[$error])) {
+            $error = self::$errors[$error];
         }
-        if (!self::isError($error)) {
+        if (!is_int($error) || !in_array($error, self::$errors)) {
+            self::toss(
+                "InvalidArgument",
+                "The value {0} is not a valid E_ERROR constant value.",
+                $error
+            );
+        }
+        
+        return $error;
+    }
+
+    /**
+     * Returns the value of the error as a string
+     * 
+     * @param $error
+     *
+     * @return int
+     */
+    public static function toString($error)
+    {
+        if (is_int($error) && in_array($error, self::$errors)) {
+            $error = array_search($error, self::$errors);
+        }
+        if (!is_string($error) || !isset(self::$errors[$error])) {
             self::toss(
                 "InvalidArgument",
                 "The value {0} is not a valid E_ERROR constant value.",

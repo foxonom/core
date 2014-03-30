@@ -44,6 +44,31 @@ class ErrorsTest
     {
         Errors::toInteger($value);
     }
+    
+    /**
+     * @covers ::toString
+     */
+    public function testToString()
+    {
+        $this->assertEquals(
+            "E_ERROR",
+            Errors::toString(E_ERROR)
+        );
+        $this->assertEquals(
+            "E_ERROR",
+            Errors::toString("E_ERROR")
+        );
+    }
+
+    /**
+     * @covers ::toString
+     * @dataProvider providerToString
+     * @expectedException Headzoo\Core\Exceptions\InvalidArgumentException
+     */
+    public function testToString_Invalid($value)
+    {
+        Errors::toString($value);
+    }
 
     /**
      * @covers ::toArray
@@ -67,6 +92,23 @@ class ErrorsTest
      * @return array
      */
     public function providerToInteger()
+    {
+        return [
+            [0],
+            ["e_error"],
+            ["E_BAD"],
+            [42],
+            [null],
+            [[]]
+        ];
+    }
+
+    /**
+     * Data provider for testToString_Invalid
+     *
+     * @return array
+     */
+    public function providerToString()
     {
         return [
             [0],
