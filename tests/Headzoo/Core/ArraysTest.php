@@ -9,6 +9,50 @@ class ArraysTest
     extends PHPUnit_Framework_TestCase
 {
     /**
+     * @covers ::remove
+     */
+    public function testRemove()
+    {
+        $array = [
+            "headzoo",
+            "joe",
+            "sam"
+        ];
+        $this->assertEquals(0, Arrays::remove($array, "amy"));
+        
+        $this->assertEquals(1, Arrays::remove($array, "headzoo"));
+        $this->assertEquals(
+            ["joe", "sam"],
+            $array
+        );
+
+        $array = [
+            "headzoo",
+            "joe",
+            "sam"
+        ];
+        $this->assertEquals(1, Arrays::remove($array, "headzoo", false, true));
+        $this->assertEquals(
+            [1 => "joe", "sam"],
+            $array
+        );
+
+        $array = [
+            "headzoo",
+            "headzoo",
+            "joe",
+            "sam",
+            "headzoo",
+            "joe"
+        ];
+        $this->assertEquals(3, Arrays::remove($array, "headzoo"));
+        $this->assertEquals(
+            ["joe", "sam", "joe"],
+            $array
+        );
+    }
+    
+    /**
      * @covers ::containsKeyValue
      */
     public function testContainsKeyValue()

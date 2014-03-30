@@ -16,6 +16,57 @@ class Arrays
      * The default separator string using by joining methods
      */
     const DEFAULT_SEPARATOR = ", ";
+
+    /**
+     * Removes zero or more elements from an array
+     * 
+     * Searches the array and removes every element that matches the given $needle. A non-strict
+     * comparison (==) is made between the needle and array element unless $strict (===) is set to
+     * true. The array will be re-index after removing items unless $preserve_keys is true.
+     *
+     * The array is passed by reference, and may be changed. Returns the number of elements that
+     * were removed, or 0 when the needle was not found.
+     * 
+     * Examples:
+     * ```php
+     * $array = [
+     *      "headzoo",
+     *      "joe",
+     *      "sam",
+     *      "headzoo"
+     * ];
+     * 
+     * $removed = Arrays::remove($array, "amy");
+     * var_dump($removed);
+     * // Outputs: 0
+     * 
+     * $removed = Arrays::remove($array, "headzoo");
+     * var_dump($removed);
+     * // Outputs: 2
+     * ```
+     * 
+     * @param  array $array         The array to search
+     * @param  mixed $needle        The needle to find
+     * @param  bool  $strict        Whether to use strict comparison
+     * @param  bool  $preserve_keys Whether or not the array keys should be preserved
+     * 
+     * @return int
+     */
+    public static function remove(array &$array, $needle, $strict = false, $preserve_keys = false)
+    {
+        $removed = 0;
+        if ($keys = array_keys($array, $needle, $strict)) {
+            foreach($keys as $key) {
+                unset($array[$key]);
+            }
+            if (!$preserve_keys) {
+                $array = array_values($array);
+            }
+            $removed = count($keys);
+        }
+        
+        return $removed;
+    }
     
     /**
      * Returns true if the $array contains the key $key with the value $value
