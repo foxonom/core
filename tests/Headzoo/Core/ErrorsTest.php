@@ -8,16 +8,27 @@ class ErrorsTest
     extends PHPUnit_Framework_TestCase
 {
     /**
-     * @covers ::isError
+     * @covers ::isTrueError
+     * @dataProvider providerIsTrueError
      */
-    public function testIsError()
+    public function testIsTrueError($value, $expected)
     {
-        $this->assertTrue(Errors::isError(E_ERROR));
-        $this->assertTrue(Errors::isError(E_ALL));
-        $this->assertFalse(Errors::isError("E_ERROR"));
-        $this->assertFalse(Errors::isError(0));
-        $this->assertFalse(Errors::isError("foo"));
-        $this->assertFalse(Errors::isError(null));
+        $this->assertEquals(
+            $expected, 
+            Errors::isTrueError($value)
+        );
+    }
+
+    /**
+     * @covers ::isTrueUser
+     * @dataProvider providerIsTrueUser
+     */
+    public function testIsTrueUser($value, $expected)
+    {
+        $this->assertEquals(
+            $expected,
+            Errors::isTrueUser($value)
+        );
     }
     
     /**
@@ -69,6 +80,22 @@ class ErrorsTest
     {
         Errors::toString($value);
     }
+    
+    /**
+     * @covers ::toUser
+     * @dataProvider providerToUser
+     */
+    public function testToUser($in, $out, $expected)
+    {
+        $this->assertEquals(
+            $expected,
+            Errors::toUser($in)
+        );
+        $this->assertEquals(
+            $in,
+            $out
+        );
+    }
 
     /**
      * @covers ::toArray
@@ -84,6 +111,43 @@ class ErrorsTest
             E_RECOVERABLE_ERROR,
             Errors::toArray()
         );
+    }
+
+    /**
+     * Data provider for testIsTrueError
+     *
+     * @return array
+     */
+    public function providerIsTrueError()
+    {
+        return [
+            [E_ERROR,       true],
+            [E_ALL,         true],
+            [E_USER_ERROR,  true],
+            ["E_ERROR",     false],
+            [0,             false],
+            ["e_error",     false],
+            [null,          false]
+        ];
+    }
+
+    /**
+     * Data provider for testIsTrueUser
+     *
+     * @return array
+     */
+    public function providerIsTrueUser()
+    {
+        return [
+            [E_USER_ERROR,      true],
+            [E_USER_WARNING,    true],
+            [E_USER_NOTICE,     true],
+            [E_USER_DEPRECATED, true],
+            [E_ERROR,           false],
+            [E_WARNING,         false],
+            [0,                 false],
+            ["e_user_error",    false]
+        ];
     }
     
     /**
@@ -117,6 +181,27 @@ class ErrorsTest
             [42],
             [null],
             [[]]
+        ];
+    }
+    
+    /**
+     * Data provider for testToUser
+     *
+     * @return array
+     */
+    public function providerToUser()
+    {
+        return [
+            [E_ERROR,           E_USER_ERROR,       true],
+            [E_WARNING,         E_USER_WARNING,     true],
+            [E_NOTICE,          E_USER_NOTICE,      true],
+            [E_DEPRECATED,      E_USER_DEPRECATED,  true],
+            [E_USER_ERROR,      E_USER_ERROR,       true],
+            [E_USER_WARNING,    E_USER_WARNING,     true],
+            [E_USER_NOTICE,     E_USER_NOTICE,      true],
+            [E_USER_DEPRECATED, E_USER_DEPRECATED,  true],
+            [E_PARSE,           E_PARSE,            false],
+            [E_STRICT,          E_STRICT,           false]
         ];
     }
 }
