@@ -132,12 +132,12 @@ class ProfilerTest
     public function testStop_Logging()
     {
         $logger = new TestLogger();
-        $this->profiler->setLogger($logger, LogLevel::DEBUG);
+        $this->profiler->setLogger($logger);
         $this->profiler->start();
         usleep(100);
         $this->profiler->stop(false);
         
-        $this->assertEquals(LogLevel::DEBUG, $logger->level);
+        $this->assertEquals(LogLevel::INFO, $logger->level);
         $this->assertRegExp(
             "~^Time for profile 'default': [\\d.]+$~",
             $logger->message

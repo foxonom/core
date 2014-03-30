@@ -1,8 +1,6 @@
 <?php
 namespace Headzoo\Core;
-use psr\Log\LoggerInterface;
-use psr\Log\LogLevel;
-use psr\Log\NullLogger;
+use psr\Log;
 
 /**
  * A simple profiling class.
@@ -93,7 +91,10 @@ use psr\Log\NullLogger;
  */
 class Profiler
     extends Obj
+    implements Log\LoggerAwareInterface
 {
+    use Log\LoggerAwareTrait;
+    
     /**
      * The default enabled value
      */
@@ -115,18 +116,6 @@ class Profiler
      * @var array
      */
     protected $start = [];
-
-    /**
-     * Logs profile times
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * The logging level
-     * @var string
-     */
-    protected $log_level;
 
     /**
      * Gets or sets whether profiling is globally enabled
@@ -296,29 +285,14 @@ class Profiler
     /**
      * Constructor
      * 
-     * @param LoggerInterface $logger    Used to log profiling information
-     * @param string          $log_level The logging level
+     * @param Log\LoggerInterface $logger    Used to log profiling information
      */
-    public function __construct(LoggerInterface $logger = null, $log_level = LogLevel::DEBUG)
+    public function __construct(Log\LoggerInterface $logger = null)
     {
         if (!$logger) {
-            $logger = new NullLogger();
+            $logger = new Log\NullLogger();
         }
-        $this->setLogger($logger, $log_level);
-    }
-
-    /**
-     * Sets the logger instance
-     * 
-     * @param  LoggerInterface $logger    Used to log profiling information
-     * @param  string          $log_level The logging level
-     * @return $this
-     */
-    public function setLogger(LoggerInterface $logger, $log_level = LogLevel::DEBUG)
-    {
-        $this->logger    = $logger;
-        $this->log_level = $log_level;
-        return $this;
+        $this->setLogger($logger);
     }
     
     /**
@@ -449,7 +423,7 @@ class Profiler
                 $id,
                 $microtime
             );
-            $this->logger->log($this->log_level, $message);
+            $this->logger->log(Log\LogLevel::INFO, $message);
             if ($display) {
                 echo $message, PHP_EOL;
             }
