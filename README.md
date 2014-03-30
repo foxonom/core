@@ -47,24 +47,36 @@ Add the project to your composer.json as a dependency.
 
 Class Overview
 --------------
-The full class API documentation is available in the [/docs](docs/README.md) directory.
+The full class API documentation is available in the [/docs](docs/README.md) directory and the [wiki](wiki).
 
-##### Core\Arrays
+##### [Core\Arrays](wiki/Arrays)  
 Contains static methods for working with arrays.
 
-##### Core\Strings
+##### [Core\Strings](wiki/Strings)  
 Contains static methods for working with strings.
 
-##### Core\ConstantsTrait
+##### [Core\Objects](wiki/Objects)  
+Contains static methods for working with objects and classes.
+
+##### [Core\Objects](wiki/ErrorHandler)  
+Used to capture and gracefully handle core errors and exceptions.
+
+##### [Core\Objects](wiki/Errors)  
+Utility class used to work with E_ERROR constants.
+
+##### [Core\Objects](wiki/Profiler)  
+Used to profile code.
+
+##### [Core\ConstantsTrait](wiki/ConstantsTrait)  
 Trait for reflecting on class constants.
 
-##### Core\AbstractEnum
+##### [Core\AbstractEnum](wiki/AbstractEnum)  
 Abstract class for creating enumerator classes.
 
-##### Core\Complete
+##### [Core\Complete](wiki/Complete)  
 Used to call a function when the object destructs.
 
-##### Core\Functions
+##### [Core\Functions](wiki/Functions)  
 Contains static methods for working with functions and methods.
 
 
@@ -162,6 +174,31 @@ $objects = [
 $is = Objects::isInstance($objects, stdClass);
 var_dump($is);
 // Outputs: bool(true)
+```
+
+#### Core\ErrorHandler
+```php
+// Capture all errors, and display an error page instead of the usual php
+// error message.
+$handler = new ErrorHandler();
+$handler->handle();
+
+// Setup your own way of handing errors.
+$handler = new ErrorHandler();
+$handler->setCallback(function($handler) {
+	include("template/error.php");
+});
+$handler->handle()
+
+// Even handle errors different in different environments.
+$handler = new ErrorHandler("live");
+$handler->setCallback("dev", function($handler) {
+	include("template/error_dev.php");
+});
+$handler->setCallback("live", function($handler) {
+	include("template/error_live.php");
+});
+$handler->handle();
 ```
 
 #### Core\Profiler
@@ -299,6 +336,8 @@ try {
 Change Log
 ----------
 ##### v0.4.0 - 2014/03/30
+* Created the `ErrorsHandler` class.
+* Created the `Errors` class.
 * Created the `Arrays::remove` method.
 
 ##### v0.3.2 - 2014/03/29
