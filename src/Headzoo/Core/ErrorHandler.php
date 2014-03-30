@@ -589,7 +589,7 @@ class ErrorHandler
      */
     public function handleCoreError($type, $message, $file, $line)
     {
-        $handled = false;
+        $is_handled = false;
         if ($this->is_handling && $this->isHandlingCoreError($type)) {
             $exception = new Exceptions\PHPErrorException(
                 $message,
@@ -597,11 +597,11 @@ class ErrorHandler
                 $file,
                 $line
             );
-            
-            $handled = $this->triggerError($exception, "Core Error");
+
+            $is_handled = $this->triggerError($exception, "Core Error");
         }
         
-        return $handled;
+        return $is_handled;
     }
 
     /**
@@ -615,13 +615,12 @@ class ErrorHandler
      */
     public function handleUncaughtException(Exception $exception)
     {
+        $is_handled = false;
         if ($this->is_handling && $this->isHandlingUncaughtException($exception)) {
-            $handled = $this->triggerError($exception, "Uncaught Exception");
-        } else {
-            throw $exception;
+            $is_handled = $this->triggerError($exception, "Uncaught Exception");
         }
         
-        return $handled;
+        return $is_handled;
     }
 
     /**
@@ -654,8 +653,8 @@ class ErrorHandler
      */
     protected function triggerError(Exception $exception, $label)
     {
-        $this->last_error  = $exception;
-        $this->is_handling = false;
+        $this->unhandle();
+        $this->last_error = $exception;
         
         if ($exception instanceof Exceptions\PHPErrorException) {
             $type = Errors::toString($exception->getCode());
