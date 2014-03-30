@@ -153,10 +153,7 @@ class ErrorsHandlerTest
      */
     public function testGetDefaultCallback()
     {
-        $this->assertEquals(
-            [$this->handler, ErrorHandler::DEFAULT_CALLBACK],
-            $this->handler->getDefaultCallback()
-        );
+        $this->assertTrue(is_callable($this->handler->getDefaultCallback()));
     }
     
     /**
@@ -164,10 +161,7 @@ class ErrorsHandlerTest
      */
     public function testGetCoreErrorHandler()
     {
-        $this->assertEquals(
-            [$this->handler, ErrorHandler::HANDLER_CORE_ERRORS],
-            $this->handler->getCoreErrorHandler()
-        );
+        $this->assertTrue(is_callable($this->handler->getCoreErrorHandler()));
     }
 
     /**
@@ -175,10 +169,7 @@ class ErrorsHandlerTest
      */
     public function testGetUncaughtExceptionHandler()
     {
-        $this->assertEquals(
-            [$this->handler, ErrorHandler::HANDLER_UNCAUGHT_EXCEPTIONS],
-            $this->handler->getUncaughtExceptionHandler()
-        );
+        $this->assertTrue(is_callable($this->handler->getUncaughtExceptionHandler()));
     }
     
     /**

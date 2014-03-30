@@ -2,6 +2,7 @@
 namespace Headzoo\Core;
 use Exception;
 use psr\Log;
+use Closure;
 
 /**
  * Used to capture and handle core PHP errors and uncaught exceptions.
@@ -80,21 +81,6 @@ class ErrorHandler
      * The default runtime environment
      */
     const DEFAULT_ENVIRONMENT = "development";
-
-    /**
-     * The default error handler
-     */
-    const DEFAULT_CALLBACK = "defaultCallback";
-
-    /**
-     * The name of a method in this class which handles uncaught exceptions.
-     */
-    const HANDLER_UNCAUGHT_EXCEPTIONS = "handleUncaughtException";
-
-    /**
-     * The name of a method in this class method which handles core errors.
-     */
-    const HANDLER_CORE_ERRORS = "handleCoreError";
     
     /**
      * The default types of errors handled for every runtime environment
@@ -274,7 +260,7 @@ class ErrorHandler
      */
     public function handle()
     {
-        $handled = false;
+        $is_handled = false;
         if (!$this->is_handling && !$this->last_error) {
             $this->prev_exception_handler = set_exception_handler($this->getUncaughtExceptionHandler());
             $this->prev_error_handler     = set_error_handler($this->getCoreErrorHandler());
@@ -289,10 +275,10 @@ class ErrorHandler
                     }
                 });
             $this->is_handling = true;
-            $handled = true;
+            $is_handled = true;
         }
 
-        return $handled;
+        return $is_handled;
     }
 
     /**
@@ -406,11 +392,13 @@ class ErrorHandler
      * with the error message and backtrace. This method returns a callable instace
      * of that default callback.
      * 
-     * @return callable
+     * @return Closure
      */
     public function getDefaultCallback()
     {
-        return [$this, self::DEFAULT_CALLBACK];
+        return function($handler) {
+            return $this->defaultCallback($handler);
+        };
     }
 
     /**
@@ -420,6 +408,7 @@ class ErrorHandler
      * This should not be used in production. Ever.
      *
      * @param  ErrorHandler $handler The object that handled the error
+     * @return mixed
      */
     public function defaultCallback(/** @noinspection PhpUnusedParameterInspection */ $handler)
     {
@@ -452,15 +441,13 @@ class ErrorHandler
      */
     public function setCoreErrors($env, array $errors = [])
     {
-        if (func_num_args() == 1) {
-            $errors = $env;
-            $env    = $this->running_env;
-        }
+        Functions::swapArgs($env, $errors, $this->running_env);
         
         $this->errors[$env] = [];
-        foreach($errors as $error) {
-            $error = Errors::toInteger($error);
-            $this->errors[$env][] = $error;
+        if (!empty($errors)) {
+            foreach($errors as $error) {
+                $this->errors[$env][] = Errors::toInteger($error);
+            }
             if (!$this->getCallback($env)) {
                 $this->setCallback($env, $this->getDefaultCallback());
             }
@@ -480,13 +467,8 @@ class ErrorHandler
      */
     public function getCoreErrors($env = null)
     {
-        $env    = $env ?: $this->running_env;
-        $errors = [];
-        if (isset($this->errors[$env])) {
-            $errors = $this->errors[$env];
-        }
-        
-        return $errors;
+        $env = $env ?: $this->running_env;
+        return isset($this->errors[$env]) ? $this->errors[$env] : [];
     }
     
     /**
@@ -511,14 +493,11 @@ class ErrorHandler
      */
     public function removeCoreError($env, $error = 0)
     {
-        if (func_num_args() == 1) {
-            $error = $env;
-            $env   = $this->running_env;
-        }
-        $error = Errors::toInteger($error);
+        Functions::swapArgs($env, $error, $this->running_env);
         
-        $is_removed = false;  
+        $is_removed = false;
         if (isset($this->errors[$env])) {
+            $error = Errors::toInteger($error);
             if (E_ALL === $error) {
                 $this->errors[$env] = [];
                 $is_removed = true;
@@ -556,14 +535,13 @@ class ErrorHandler
      */
     public function setUncaughtExceptions($env, array $exceptions = [])
     {
-        if (func_num_args() == 1) {
-            $exceptions = $env;
-            $env        = $this->running_env;
-        }
+        Functions::swapArgs($env, $exceptions, $this->running_env);
         
         $this->exceptions[$env] = [];
-        foreach($exceptions as $exception) {
-            $this->exceptions[$env][] = Objects::getFullName($exception);
+        if (!empty($exceptions)) {
+            foreach($exceptions as $exception) {
+                $this->exceptions[$env][] = Objects::getFullName($exception);
+            }
             if (!$this->getCallback($env)) {
                 $this->setCallback($env, $this->getDefaultCallback());
             }
@@ -584,12 +562,7 @@ class ErrorHandler
     public function getUncaughtExceptions($env = null)
     {
         $env = $env ?: $this->running_env;
-        $exceptions = [];
-        if (isset($this->exceptions[$env])) {
-            $exceptions = $this->exceptions[$env];
-        }
-
-        return $exceptions;
+        return isset($this->exceptions[$env]) ? $this->exceptions[$env] : [];
     }
 
     /**
@@ -613,10 +586,7 @@ class ErrorHandler
      */
     public function removeUncaughtException($env, $exception = null)
     {
-        if (func_num_args() == 1) {
-            $exception = $env;
-            $env = $this->running_env;
-        }
+        Functions::swapArgs($env, $exception, $this->running_env);
         
         $is_removed = false;
         if (isset($this->exceptions[$env])) {
@@ -646,10 +616,7 @@ class ErrorHandler
      */
     public function isHandlingCoreError($env, $error = 0)
     {
-        if (func_num_args() == 1) {
-            $error = $env;
-            $env   = $this->running_env;
-        }
+        Functions::swapArgs($env, $error, $this->running_env);
         
         $error = Errors::toInteger($error);
         return isset($this->errors[$env])
@@ -678,16 +645,13 @@ class ErrorHandler
      */
     public function isHandlingUncaughtException($env, $exception = null)
     {
-        if (func_num_args() == 1) {
-            $exception = $env;
-            $env = $this->running_env;
-        }
-        if (is_object($exception)) {
-            $exception = Objects::getFullName($exception);
-        }
+        Functions::swapArgs($env, $exception, $this->running_env);
         
         $is_handling = false;
         if (isset($this->exceptions[$env])) {
+            if (is_object($exception)) {
+                $exception = Objects::getFullName($exception);
+            }
             foreach($this->exceptions[$env] as $e) {
                 if (is_subclass_of($exception, $e) || $exception == $e) {
                     $is_handling = true;
@@ -723,7 +687,6 @@ class ErrorHandler
                 $file,
                 $line
             );
-
             $is_handled = $this->triggerError($exception, "Core Error");
         }
         
@@ -758,7 +721,9 @@ class ErrorHandler
      */
     public function getCoreErrorHandler()
     {
-        return [$this, self::HANDLER_CORE_ERRORS];
+        return function($type, $message, $file, $line) {
+            return $this->handleCoreError($type, $message, $file, $line);
+        };
     }
 
     /**
@@ -768,7 +733,9 @@ class ErrorHandler
      */
     public function getUncaughtExceptionHandler()
     {
-        return [$this, self::HANDLER_UNCAUGHT_EXCEPTIONS];
+        return function($exception) {
+            return $this->handleUncaughtException($exception);
+        };
     }
 
     /**
