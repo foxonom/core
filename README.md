@@ -298,6 +298,9 @@ try {
 
 Change Log
 ----------
+##### v0.4.0 - 2014/03/30
+* Created the `Arrays::remove` method.
+
 ##### v0.3.2 - 2014/03/29
 * Created the `Strings::truncate` method.
 * Removed the `Strings::split` method.
@@ -356,7 +359,7 @@ Change Log
 TODO
 ----
 * Replace `Strings` constants with enums.
-
+* Replace `ErrorHandler::defaultCallback` with a static method.
 
 License
 -------
