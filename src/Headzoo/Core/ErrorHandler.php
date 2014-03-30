@@ -4,10 +4,71 @@ use Exception;
 use psr\Log;
 
 /**
- * Error handler.
+ * Used to capture and handle core PHP errors and uncaught exceptions.
  * 
- * The object instances of this class stop handling errors when the instance goes out of scope. Therefore the
+ * #### Examples
+ * 
+ * The most basic setup, this will handle errors which crash scripts by displaying
+ * HTML5 with the error message and backtrace.
+ * 
+ * ```php
+ * $handler = new ErrorHandler();
+ * $handler->handle();
+ * ```
+ *
+ * That's all there is too it. That may be fine during development, but in production you
+ * will probably want to display
+ * your own error page. (One that doesn't show sensitive information) You do that by
+ * registering your own error callback instead of using the default, which will be called when an error
+ * is captured. You can do whatever you want in that function: include an error page, email
+ * yourself the error, etc.
+ * 
+ * ```php
+ * $handler = new ErrorHandler();
+ * $handler->setCallback(function($handler) {
+ *      // The $handler parameter is the ErrorHandler instance.
+ *      // The $handler->getLastError() method returns an exception which
+ *      // describes the error.
+ *      include("templates/error.php");
+ * });
+ * 
+ * $handler->handle();
+ * ```
+ *
+ * That's looking better, but you may want to handle errors differently in production and
+ * development. For that situation the ErrorHandler class supports the use of "environments".
+ * You tell the handler which environment -- "live", "staging", "development" -- is currently
+ * running, and then defined different callbacks for each possible environment.
+ * 
+ * ```php
+ * if (!defined("ENVIRONMENT")) {
+ *      define("ENVIRONMENT", "live");
+ * }
+ * $handler = new ErrorHandler(ENVIRONMENT);
+ * 
+ * $handler->setCallback("live", function($handler) {
+ *      include("templates/live_error.php");
+ * });
+ * $handler->setCallback("dev", function($handler) {
+ *      include("templates/dev_error.php");
+ * });
+ * 
+ * $handler->handle();
+ * ```
+ * 
+ * We pass the currently running environment to the ErrorHandler constructor, and then define
+ * callbacks for the various environments our site runs under. Change the ENVIRONMENT constant,
+ * and the way the error is handled changes with it.
+ * 
+ * There are many more options for dealing with how errors are handled, and which errors are
+ * handled. See the API documentation for more information.
+ * 
+ * Notes:
+ * The instances of this class stop handling errors when the instance goes out of scope. Therefore the
  * instance should be created in the global scope.
+ * 
+ * Only the single error is handled, because the errors it handles are meant to kill execution
+ * of the script. The callbacks should handle a graceful shutdown.
  */
 class ErrorHandler
     extends Obj
@@ -127,7 +188,7 @@ class ErrorHandler
     /**
      * Constructor
      * 
-     * @param string              $running_env The current runtime environment
+     * @param string              $running_env The current running environment
      * @param Log\LoggerInterface $logger      Used to log errors
      */
     public function __construct($running_env = self::DEFAULT_ENVIRONMENT, Log\LoggerInterface $logger = null)
@@ -150,6 +211,9 @@ class ErrorHandler
     /**
      * Returns the last generated exception
      *
+     * Generally used by the error callbacks, this method returns an exception instance which
+     * describes the error that was handled.
+     * 
      * @return Exception|null
      */
     public function getLastError()
@@ -158,7 +222,7 @@ class ErrorHandler
     }
     
     /**
-     * Returns the current runtime environment
+     * Returns the current running environment
      *
      * @return string
      */
@@ -170,10 +234,8 @@ class ErrorHandler
     /**
      * Sets the current runtime environment
      *
-     * Automatically sets the default error callable for this environment if none has been
-     * set already.
-     *
-     * Returns the previously running environment.
+     * Automatically sets the default error callback for this environment if none has been
+     * set already. Returns the previously set running environment.
      *
      * @param  string $running_env Name of the environment
      *
@@ -275,12 +337,30 @@ class ErrorHandler
     }
 
     /**
-     * Sets the callback that will be called when an error is handled in the given environment
+     * Sets the callback that will be called when an error is handled
      * 
-     * Defaults to the currently running environment.
+     * Uses the currently running environment when none is given.
      * 
-     * @param string|callable   $env
-     * @param callable|null     $callable
+     * Examples:
+     * ```php
+     * $handler->setCallback(function($handler) {
+     *      // The $handler parameter is the ErrorHandler instance.
+     *      // The $handler->getLastError() method returns an exception which
+     *      // describes the error.
+     *      include("templates/error.php");
+     * });
+     * 
+     * $handler->setCallback("live", function($handler) {
+     *      include("templates/error_live.php");
+     * });
+     * 
+     * $handler->setCallback("dev", function($handler) {
+     *      include("templates/error_dev.php");
+     * });
+     * ```
+     * 
+     * @param string|callable   $env        Name of the environment
+     * @param callable|null     $callable   The error callback
      *
      * @return $this
      */
@@ -300,11 +380,11 @@ class ErrorHandler
     }
 
     /**
-     * Returns the callback that will be called when an error is handled in the given environment
+     * Returns the callback that will be called when an error is handled
      * 
-     * Defaults to the currently running environment.
+     * Uses the currently running environment when none is given.
      * 
-     * @param  string|null $env
+     * @param  string|null $env Name of the environment
      * 
      * @return null
      */
@@ -322,6 +402,10 @@ class ErrorHandler
     /**
      * Returns the default callback for errors
      *
+     * The class has a default callback which handles errors by displaying an HTML5 page
+     * with the error message and backtrace. This method returns a callable instace
+     * of that default callback.
+     * 
      * @return callable
      */
     public function getDefaultCallback()
@@ -332,6 +416,7 @@ class ErrorHandler
     /**
      * The default error callback
      * 
+     * This is the default error callback. It displays a web page with error information.
      * This should not be used in production. Ever.
      *
      * @param  ErrorHandler $handler The object that handled the error
@@ -342,12 +427,24 @@ class ErrorHandler
     }
     
     /**
-     * Sets the core PHP errors which will be handled
+     * Sets the core errors which will be handled
      * 
-     * Defaults to the currently running environment.
+     * By default only a few fatal errors are handled, but you can specify exactly which
+     * errors to handle with this method.
      * 
-     * @param string|int[]  $env
-     * @param int[]         $errors
+     * Uses the currently running environment when none is given.
+     * 
+     * Examples:
+     * ```php
+     * $handler->setCoreErrors([E_ERROR, E_WARNING, E_DEPRECIATED]);
+     * 
+     * $handler->setCoreErrors("live", [E_ERROR, E_WARNING]);
+     * 
+     * $handler->setCoreError("dev", [E_ERROR, E_WARNING, E_NOTICE]);
+     * ```
+     * 
+     * @param string|int[]  $env        Name of the environment
+     * @param int[]         $errors     The errors to handle
      * 
      * @throws Exceptions\InvalidArgumentException When the errors array is empty
      *                                             
@@ -358,12 +455,6 @@ class ErrorHandler
         if (func_num_args() == 1) {
             $errors = $env;
             $env    = $this->running_env;
-        }
-        if (empty($errors)) {
-            $this->toss(
-                "InvalidArgument",
-                "At least one core error must be set."
-            );    
         }
         
         $this->errors[$env] = [];
@@ -381,9 +472,9 @@ class ErrorHandler
     /**
      * Returns the core errors which are being handled
      * 
-     * Defaults to the currently running environment.
+     * Uses the currently running environment when none is given.
      * 
-     * @param  string|null $env
+     * @param  string|null $env     Name of the environment
      * 
      * @return int[]
      */
@@ -400,15 +491,21 @@ class ErrorHandler
     
     /**
      * Stops handling a core error
+     *
+     * Uses the currently running environment when none is given. Passing E_ALL removes all error handling
+     * for the given environment.
      * 
-     * Defaults to the currently running environment.
+     * Examples:
+     * ```php
+     * $handler->removeCoreError(E_NOTICE);
      * 
-     * Note: Passing E_ALL removes all error handling for the given environment.
-     * Note: The registered error callable is removed once every type has been removed for the given
-     * environment.
+     * $handler->removeCoreError("live", E_NOTICE);
      * 
-     * @param  string|int   $env
-     * @param  string|int   $error
+     * $handler->removeCoreError("dev", E_DEPRECIATED);
+     * ```
+     * 
+     * @param  string|int   $env        Name of the environment
+     * @param  string|int   $error      The error to remove
      *
      * @return bool
      */
@@ -434,12 +531,24 @@ class ErrorHandler
     }
     
     /**
-     * Sets the exceptions which will be handled
+     * Sets the uncaught exceptions which will be handled
      *
-     * Defaults to the currently running environment.
+     * By default every uncaught exception is handled, but specific types may be
+     * specified using this method.
+     * 
+     * Uses the currently running environment when none is given.
      *
-     * @param string|Exception[]  $env
-     * @param string[]            $exceptions
+     * Examples:
+     * ```php
+     * $handler->setUncaughtExceptions([RuntimeException::class, LogicException::class]);
+     * 
+     * $handler->setUncaughtException("live", [RuntimeException::class, LogicException::class]);
+     * 
+     * $handler->setUncaughtException("dev", [InvalidArgumentException::class, LogicException::class]);
+     * ```
+     * 
+     * @param string|Exception[]  $env          Name of the environment
+     * @param string[]            $exceptions   The exceptions to handle
      *
      * @throws Exceptions\InvalidArgumentException When the exceptions array is empty
      *                                             
@@ -450,12 +559,6 @@ class ErrorHandler
         if (func_num_args() == 1) {
             $exceptions = $env;
             $env        = $this->running_env;
-        }
-        if (empty($exceptions)) {
-            $this->toss(
-                "InvalidArgument",
-                "At least one uncaught exception must be set."
-            );
         }
         
         $this->exceptions[$env] = [];
@@ -472,9 +575,9 @@ class ErrorHandler
     /**
      * Returns the types of uncaught exceptions which are being handled
      *
-     * Defaults to the currently running environment.
+     * Uses the currently running environment when none is given.
      *
-     * @param  string|null $env
+     * @param  string|null $env     Name of the environment
      *
      * @return string[]
      */
@@ -492,13 +595,18 @@ class ErrorHandler
     /**
      * Stops handling an uncaught exception
      * 
-     * Defaults to the currently running environment.
+     * Uses the currently running environment when none is given.
+     * 
+     * Examples:
+     * ```php
+     * $handler->removeUncaughtException(LogicError::class);
+     * 
+     * $handler->removeUncaughtException("live", LogicError::class);
+     * 
+     * $handler->removeUncaughtException("dev", InvalidArgumentException::class);
+     * ```
      *
-     * Note: Passing E_ALL removes all error handling for the given environment.
-     * Note: The registered error callable is removed once every type has been removed for the given
-     * environment.
-     *
-     * @param  string|int     $env
+     * @param  string|int     $env          Name of the environment
      * @param  Exception|null $exception
      *
      * @return bool
@@ -520,9 +628,16 @@ class ErrorHandler
     }
     
     /**
-     * Returns whether errors of the given type are being handled in the given environment
+     * Returns whether errors of the given type are being handled
      * 
-     * Defaults to the currently running environment.
+     * Uses the currently running environment when none is given.
+     * 
+     * Examples:
+     * ```php
+     * $is_handled = $handler->isHandlingCoreError(E_WARNING);
+     * 
+     * $is_handled = $handler->isHandlingCoreError("live", E_WARNING);
+     * ```
      * 
      * @param  string|int $env   The environment to check
      * @param  string|int $error The core error to check
@@ -545,9 +660,16 @@ class ErrorHandler
     }
 
     /**
-     * Returns whether the given exception is being handled in the given environment
+     * Returns whether the given exception is being handled
      *
-     * Defaults to the currently running environment.
+     * Uses the currently running environment when none is given.
+     * 
+     * Examples:
+     * ```php
+     * $is_handled = $handler->isHandlingUncaughtException(LogicException::class);
+     * 
+     * $is_handled = $handler->isHandlingUncaughtException("live", LogicException::class);
+     * ```
      *
      * @param  string|int             $env       The environment to check
      * @param  string|Exception|null  $exception The exception to check
@@ -580,6 +702,10 @@ class ErrorHandler
     /**
      * Handles core errors
      * 
+     * The callback used by ErrorHandler when it captures a core PHP error. This method
+     * will call the error callback if the type of error matches one of the errors
+     * being handled.
+     * 
      * @param int    $type      The level of the error raised
      * @param string $message   The error message
      * @param string $file      The filename that the error was raised in
@@ -607,9 +733,11 @@ class ErrorHandler
     /**
      * Handles uncaught exceptions
      * 
+     * The callback used by ErrorHandler when it captures an unhandled exception. This
+     * method will call the error callback if the type of exception matches the exceptions
+     * being handled.
+     * 
      * @param Exception $exception The exception to handle
-     *
-     * @throws Exception Rethrows the exception when it's not being handled
      *
      * @return bool
      */
@@ -624,7 +752,7 @@ class ErrorHandler
     }
 
     /**
-     * Returns the callback being used to handle core errors.
+     * Returns the callback being used to handle core errors
      *
      * @return callable
      */
@@ -645,6 +773,10 @@ class ErrorHandler
 
     /**
      * Calls the set error callback
+     * 
+     * Called by ::handleCoreError() and ::handleUncaughtException() when the type of error
+     * captured matches an error being handled. This method calls the error callback, and
+     * effectively shuts down the handler.
      * 
      * @param Exception $exception  The error
      * @param string    $label      Label for the reason the error is being triggered
