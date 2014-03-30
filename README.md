@@ -1,4 +1,5 @@
 Headzoo Core v0.4
+=================
 
 A collection of use PHP utility classes and functions.
 
