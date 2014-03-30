@@ -435,6 +435,19 @@ class Profiler
     /**
      * Returns whether profiling has been started for the given id
      * 
+     * Examples:
+     * ```php
+     * $profiler = new Profiler();
+     * $is_started = $profiler->isStarted();
+     * var_dump($is_started);
+     * // Outputs: bool(false);
+     * 
+     * $profiler->start();
+     * $is_started = $profiler->isStarted();
+     * var_dump($is_started);
+     * // Outputs: bool(true)
+     * ```
+     * 
      * @param  string $id Identifies this profiling operation
      * @return bool
      */
