@@ -423,7 +423,7 @@ class Profiler
                 $id,
                 $microtime
             );
-            $this->logger->log(Log\LogLevel::INFO, $message);
+            $this->logger->info($message);
             if ($display) {
                 echo $message, PHP_EOL;
             }
