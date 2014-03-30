@@ -336,6 +336,10 @@ try {
 
 Change Log
 ----------
+##### v0.4.1 - 2014/03/30
+* Created the `Functions::swapArgs` method.
+* Refactored some of the code in the `ErrorsHandler` class.
+
 ##### v0.4.0 - 2014/03/30
 * Created the `ErrorsHandler` class.
 * Created the `Errors` class.
@@ -399,7 +403,6 @@ Change Log
 TODO
 ----
 * Replace `Strings` constants with enums.
-* Replace `ErrorHandler::defaultCallback` with a static method.
 
 License
 -------
