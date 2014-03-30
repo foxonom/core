@@ -48,36 +48,36 @@ Add the project to your composer.json as a dependency.
 
 Class Overview
 --------------
-The full class API documentation is available in the [/docs](docs/README.md) directory and the [wiki](wiki).
+The full class API documentation is available in the [/docs](docs/README.md) directory and the [wiki](https://github.com/headzoo/core/wiki).
 
-##### [Core\Arrays](wiki/Arrays)  
+##### [Core\Arrays](https://github.com/headzoo/core/wiki/Arrays)  
 Contains static methods for working with arrays.
 
-##### [Core\Strings](wiki/Strings)  
+##### [Core\Strings](https://github.com/headzoo/core/wiki/Strings)  
 Contains static methods for working with strings.
 
-##### [Core\Objects](wiki/Objects)  
+##### [Core\Objects](https://github.com/headzoo/core/wiki/Objects)  
 Contains static methods for working with objects and classes.
 
-##### [Core\Objects](wiki/ErrorHandler)  
+##### [Core\Objects](https://github.com/headzoo/core/wiki/ErrorHandler)  
 Used to capture and gracefully handle core errors and exceptions.
 
-##### [Core\Errors](wiki/Errors)  
+##### [Core\Errors](https://github.com/headzoo/core/wiki/Errors)  
 Utility class used to work with E_ERROR constants.
 
-##### [Core\Profiler](wiki/Profiler)  
+##### [Core\Profiler](https://github.com/headzoo/core/wiki/Profiler)  
 Used to profile code.
 
-##### [Core\ConstantsTrait](wiki/ConstantsTrait)  
+##### [Core\ConstantsTrait](https://github.com/headzoo/core/wiki/ConstantsTrait)  
 Trait for reflecting on class constants.
 
-##### [Core\AbstractEnum](wiki/AbstractEnum)  
+##### [Core\AbstractEnum](https://github.com/headzoo/core/wiki/AbstractEnum)  
 Abstract class for creating enumerator classes.
 
-##### [Core\Complete](wiki/Complete)  
+##### [Core\Complete](https://github.com/headzoo/core/wiki/Complete)  
 Used to call a function when the object destructs.
 
-##### [Core\Functions](wiki/Functions)  
+##### [Core\Functions](https://github.com/headzoo/core/wiki/Functions)  
 Contains static methods for working with functions and methods.
 
 
