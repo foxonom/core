@@ -41,8 +41,8 @@ running, and then defined different callbacks for each possible environment.
 if (!defined("ENVIRONMENT")) {
      define("ENVIRONMENT", "live");
 }
-$handler = new ErrorHandler(ENVIRONMENT);
 
+$handler = new ErrorHandler();
 $handler->setCallback("live", function($handler) {
      include("templates/live_error.php");
 });
@@ -50,12 +50,11 @@ $handler->setCallback("dev", function($handler) {
      include("templates/dev_error.php");
 });
 
-$handler->handle();
+$handler->handle(ENVIRONMENT);
 ```
 
-We pass the currently running environment to the ErrorHandler constructor, and then define
-callbacks for the various environments our site runs under. Change the ENVIRONMENT constant,
-and the way the error is handled changes with it.
+We pass the currently running environment to the ErrorHandler::handle() method. When an error is
+trapped, the callback set for that environment will be called.
 
 There are many more options for dealing with how errors are handled, and which errors are
 handled. See the API documentation for more information.
@@ -84,42 +83,6 @@ The default runtime environment
 
 ```php
 const DEFAULT_ENVIRONMENT = "development"
-```
-
-
-
-
-
-### DEFAULT_CALLBACK
-The default error handler
-
-
-```php
-const DEFAULT_CALLBACK = "defaultCallback"
-```
-
-
-
-
-
-### HANDLER_UNCAUGHT_EXCEPTIONS
-The name of a method in this class which handles uncaught exceptions.
-
-
-```php
-const HANDLER_UNCAUGHT_EXCEPTIONS = "handleUncaughtException"
-```
-
-
-
-
-
-### HANDLER_CORE_ERRORS
-The name of a method in this class method which handles core errors.
-
-
-```php
-const HANDLER_CORE_ERRORS = "handleCoreError"
 ```
 
 
@@ -265,13 +228,12 @@ Constructor
 
 
 ```php
-public mixed Headzoo\Core\ErrorHandler::__construct(string $running_env, psr\Log\LoggerInterface $logger)
+public mixed Headzoo\Core\ErrorHandler::__construct(psr\Log\LoggerInterface $logger)
 ```
 
 
 ##### Arguments
 
-* $running_env **string** - The current running environment
 * $logger **psr\Log\LoggerInterface** - Used to log errors
 
 
@@ -333,9 +295,13 @@ Returns true when errors are now being handled, or false when errors were alread
 being handled. Possibly because ::handle() had already been called, or an error has
 already been handled.
 ```php
-public bool Headzoo\Core\ErrorHandler::handle()
+public bool Headzoo\Core\ErrorHandler::handle(string $running_env)
 ```
 
+
+##### Arguments
+
+* $running_env **string** - The running environment
 
 
 
@@ -422,7 +388,7 @@ The class has a default callback which handles errors by displaying an HTML5 pag
 with the error message and backtrace. This method returns a callable instace
 of that default callback.
 ```php
-public callable Headzoo\Core\ErrorHandler::getDefaultCallback()
+public Closure Headzoo\Core\ErrorHandler::getDefaultCallback()
 ```
 
 

@@ -20,6 +20,39 @@ Methods
 -------
 
 
+### Headzoo\Core\Functions::swapArgs
+Swaps two values when the second is empty and the first is not
+
+Returns true when the arguments were swapped, and false if not.
+
+Example:
+```php
+$optional = "live";
+$swap     = null;
+$is_swapped = Functions::swapArgs($optional, $swap, "dev");
+var_dump($is_swapped);
+var_dump($optional);
+var_dump($swap);
+
+// Outputs:
+// bool(true)
+// string(4) "dev"
+// string(4) "live"
+```
+```php
+public bool Headzoo\Core\Functions::swapArgs(mixed $optional, mixed $swap, null $default)
+```
+
+* This method is **static**.
+
+##### Arguments
+
+* $optional **mixed** - Swap when this value is not empty
+* $swap **mixed** - Swap when this value is empty
+* $default **null** - The new value for $optional when swapped
+
+
+
 ### Headzoo\Core\Functions::swapCallable
 Swaps two variables when the second is a callable object
 
