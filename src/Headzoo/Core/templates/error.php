@@ -6,7 +6,7 @@
     <body>
         <?php
             /** @var Headzoo\Core\ErrorHandler $handler */
-            $exception = $handler->getException();
+            $exception = $handler->getLastError();
         ?>
         <h1><?=htmlspecialchars($exception->getMessage())?></h1>
         <p>
