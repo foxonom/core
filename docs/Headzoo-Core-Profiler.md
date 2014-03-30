@@ -91,7 +91,7 @@ $profiler = new Profiler(new FileLogger());
 * Class name: Profiler
 * Namespace: Headzoo\Core
 * Parent class: [Headzoo\Core\Obj](Headzoo-Core-Obj.md)
-
+* This class implements: psr\Log\LoggerAwareInterface
 
 
 Constants
@@ -143,26 +143,6 @@ Array of microtimes
 
 ```php
 protected array $start = array()
-```
-
-
-
-### $logger
-Logs profile times
-
-
-```php
-protected psr\Log\LoggerInterface $logger
-```
-
-
-
-### $log_level
-The logging level
-
-
-```php
-protected string $log_level
 ```
 
 
@@ -298,30 +278,13 @@ Constructor
 
 
 ```php
-public mixed Headzoo\Core\Profiler::__construct(psr\Log\LoggerInterface $logger, string $log_level)
+public mixed Headzoo\Core\Profiler::__construct(psr\Log\LoggerInterface $logger)
 ```
 
 
 ##### Arguments
 
 * $logger **psr\Log\LoggerInterface** - Used to log profiling information
-* $log_level **string** - The logging level
-
-
-
-### Headzoo\Core\Profiler::setLogger
-Sets the logger instance
-
-
-```php
-public Headzoo\Core\Profiler Headzoo\Core\Profiler::setLogger(psr\Log\LoggerInterface $logger, string $log_level)
-```
-
-
-##### Arguments
-
-* $logger **psr\Log\LoggerInterface** - Used to log profiling information
-* $log_level **string** - The logging level
 
 
 
@@ -421,7 +384,18 @@ public float|bool Headzoo\Core\Profiler::stop(string $id, bool $display)
 ### Headzoo\Core\Profiler::isStarted
 Returns whether profiling has been started for the given id
 
+Examples:
+```php
+$profiler = new Profiler();
+$is_started = $profiler->isStarted();
+var_dump($is_started);
+// Outputs: bool(false);
 
+$profiler->start();
+$is_started = $profiler->isStarted();
+var_dump($is_started);
+// Outputs: bool(true)
+```
 ```php
 public bool Headzoo\Core\Profiler::isStarted(string $id)
 ```

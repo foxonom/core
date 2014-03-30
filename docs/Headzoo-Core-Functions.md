@@ -27,6 +27,9 @@ Used to create functions/methods which have callbacks as the final argument, and
 it's desirable to make middle argument optional, while the callback remains the
 final argument.
 
+Throws an exception when $callable_required is true, and the callable object is
+empty.
+
 Returns true if the arguments were swapped, false if not.
 
 Examples:
@@ -46,7 +49,7 @@ joinArray($values, "-", 'Headzoo\Core\String::quote');
 joinArray($values, 'Headzoo\Core\String::quote');
 ```
 ```php
-public bool Headzoo\Core\Functions::swapCallable(mixed $optional, mixed $callable, mixed $default)
+public bool Headzoo\Core\Functions::swapCallable(mixed $optional, mixed $callable, mixed $default, bool $callable_required)
 ```
 
 * This method is **static**.
@@ -56,6 +59,7 @@ public bool Headzoo\Core\Functions::swapCallable(mixed $optional, mixed $callabl
 * $optional **mixed** - The optional argument
 * $callable **mixed** - Possibly a callable object
 * $default **mixed** - The optional argument default value
+* $callable_required **bool** - Whether the callable object is required (cannot be empty)
 
 
 

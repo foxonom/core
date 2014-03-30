@@ -46,6 +46,48 @@ Methods
 -------
 
 
+### Headzoo\Core\Arrays::remove
+Removes zero or more elements from an array
+
+Searches the array and removes every element that matches the given $needle. A non-strict
+comparison (==) is made between the needle and array element unless $strict (===) is set to
+true. The array will be re-index after removing items unless $preserve_keys is true.
+
+The array is passed by reference, and may be changed. Returns the number of elements that
+were removed, or 0 when the needle was not found.
+
+Examples:
+```php
+$array = [
+     "headzoo",
+     "joe",
+     "sam",
+     "headzoo"
+];
+
+$removed = Arrays::remove($array, "amy");
+var_dump($removed);
+// Outputs: 0
+
+$removed = Arrays::remove($array, "headzoo");
+var_dump($removed);
+// Outputs: 2
+```
+```php
+public int Headzoo\Core\Arrays::remove(array $array, mixed $needle, bool $strict, bool $preserve_keys)
+```
+
+* This method is **static**.
+
+##### Arguments
+
+* $array **array** - The array to search
+* $needle **mixed** - The needle to find
+* $strict **bool** - Whether to use strict comparison
+* $preserve_keys **bool** - Whether or not the array keys should be preserved
+
+
+
 ### Headzoo\Core\Arrays::containsKeyValue
 Returns true if the $array contains the key $key with the value $value
 
