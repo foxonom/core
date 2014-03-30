@@ -8,6 +8,28 @@ class FunctionsTest
     extends PHPUnit_Framework_TestCase
 {
     /**
+     * @covers ::swapArgs
+     */
+    public function testSwapArgs()
+    {
+        $op = "live";
+        $swap = null;
+        $this->assertTrue(
+            Functions::swapArgs($op, $swap)
+        );
+        $this->assertNull($op);
+        $this->assertEquals("live", $swap);
+        
+        $op = "live";
+        $swap = "dev";
+        $this->assertFalse(
+            Functions::swapArgs($op, $swap)
+        );
+        $this->assertEquals("live", $op);
+        $this->assertEquals("dev", $swap);
+    }
+    
+    /**
      * @covers ::swapCallable
      * @dataProvider providerSwapCallable
      */
@@ -15,7 +37,7 @@ class FunctionsTest
     {
         $this->assertEquals(
             $expected,
-            Functions::swapCallable($optional, $callable, $default)
+            Functions::swapCallable($optional, $callable, $default, false)
         );
     }
     
@@ -23,7 +45,7 @@ class FunctionsTest
      * @covers ::swapCallable
      * @expectedException Headzoo\Core\Exceptions\InvalidArgumentException
      */
-    public function testMethod()
+    public function testSwapCallable_Invalid()
     {
         $optional = null;
         $callable = null;
@@ -108,38 +130,6 @@ class FunctionsTest
         ];
 
         Functions::validateRequired($values, $required);
-    }
-    
-    /**
-     * @covers ::swapCallable
-     */
-    public function testSwapCallable_Callable()
-    {
-        $optional = "test";
-        $callable = null;
-        Functions::swapCallable($optional, $callable);
-        $this->assertEquals("test", $optional);
-        $this->assertNull($callable);
-        
-        $optional = null;
-        $callable = "trim";
-        Functions::swapCallable($optional, $callable);
-        $this->assertNull($optional);
-        $this->assertEquals("trim", $callable);
-        
-        $optional = "trim";
-        $callable = null;
-        Functions::swapCallable($optional, $callable);
-        $this->assertNull($optional);
-        $this->assertEquals("trim", $callable);
-
-        $optional = "trim";
-        $callable = null;
-        $default  = "test";
-        Functions::swapCallable($optional, $callable, $default);
-        $this->assertEquals("test", $optional);
-        $this->assertEquals("trim", $callable);
-        
     }
 
     /**

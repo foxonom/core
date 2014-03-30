@@ -8,6 +8,44 @@ class Functions
     extends Obj
 {
     /**
+     * Swaps two values when the second is empty and the first is not
+     * 
+     * Returns true when the arguments were swapped, and false if not.
+     * 
+     * Example:
+     * ```php
+     * $optional = "live";
+     * $swap     = null;
+     * $is_swapped = Functions::swapArgs($optional, $swap, "dev");
+     * var_dump($is_swapped);
+     * var_dump($optional);
+     * var_dump($swap);
+     * 
+     * // Outputs:
+     * // bool(true)
+     * // string(4) "dev"
+     * // string(4) "live"
+     * ```
+     * 
+     * @param mixed  $optional  Swap when this value is not empty
+     * @param mixed  $swap      Swap when this value is empty
+     * @param null   $default   The new value for $optional when swapped
+     *
+     * @return bool
+     */
+    public static function swapArgs(&$optional, &$swap, $default = null)
+    {
+        $is_swapped = false;
+        if (empty($swap) && !empty($optional)) {
+            $swap       = $optional;
+            $optional   = $default;
+            $is_swapped = true;
+        }
+        
+        return $is_swapped;
+    }
+    
+    /**
      * Swaps two variables when the second is a callable object
      *
      * Used to create functions/methods which have callbacks as the final argument, and
@@ -46,11 +84,11 @@ class Functions
      */
     public static function swapCallable(&$optional, &$callable, $default = null, $callable_required = true)
     {
-        $swapped = false;
+        $is_swapped = false;
         if (is_callable($optional)) {
             $callable = $optional;
             $optional = $default;
-            $swapped  = true;
+            $is_swapped  = true;
         }
         if ($callable_required && !$callable) {
             self::toss(
@@ -59,7 +97,7 @@ class Functions
             );
         }
         
-        return $swapped;
+        return $is_swapped;
     }
 
     /**
