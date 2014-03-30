@@ -45,8 +45,8 @@ use Closure;
  * if (!defined("ENVIRONMENT")) {
  *      define("ENVIRONMENT", "live");
  * }
- * $handler = new ErrorHandler(ENVIRONMENT);
  * 
+ * $handler = new ErrorHandler();
  * $handler->setCallback("live", function($handler) {
  *      include("templates/live_error.php");
  * });
@@ -54,12 +54,11 @@ use Closure;
  *      include("templates/dev_error.php");
  * });
  * 
- * $handler->handle();
+ * $handler->handle(ENVIRONMENT);
  * ```
- * 
- * We pass the currently running environment to the ErrorHandler constructor, and then define
- * callbacks for the various environments our site runs under. Change the ENVIRONMENT constant,
- * and the way the error is handled changes with it.
+ *
+ * We pass the currently running environment to the ErrorHandler::handle() method. When an error is
+ * trapped, the callback set for that environment will be called.
  * 
  * There are many more options for dealing with how errors are handled, and which errors are
  * handled. See the API documentation for more information.
@@ -174,16 +173,12 @@ class ErrorHandler
     /**
      * Constructor
      * 
-     * @param string              $running_env The current running environment
-     * @param Log\LoggerInterface $logger      Used to log errors
+     * @param Log\LoggerInterface $logger Used to log errors
      */
-    public function __construct($running_env = self::DEFAULT_ENVIRONMENT, Log\LoggerInterface $logger = null)
+    public function __construct(Log\LoggerInterface $logger = null)
     {
-        if (null === $logger) {
-            $logger = new Log\NullLogger();
-        }
-        $this->setLogger($logger);
-        $this->setRunningEnvironment($running_env);
+        $this->setLogger($logger ?: new Log\NullLogger());
+        $this->setRunningEnvironment(self::DEFAULT_ENVIRONMENT);
     }
 
     /**
@@ -256,12 +251,14 @@ class ErrorHandler
      * being handled. Possibly because ::handle() had already been called, or an error has
      * already been handled.
      * 
+     * @param  string $running_env The running environment
      * @return bool
      */
-    public function handle()
+    public function handle($running_env = self::DEFAULT_ENVIRONMENT)
     {
         $is_handled = false;
         if (!$this->is_handling && !$this->last_error) {
+            $this->setRunningEnvironment($running_env);
             $this->prev_exception_handler = set_exception_handler($this->getUncaughtExceptionHandler());
             $this->prev_error_handler     = set_error_handler($this->getCoreErrorHandler());
             register_shutdown_function(function() {
