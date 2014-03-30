@@ -59,7 +59,7 @@ Contains static methods for working with strings.
 ##### [Core\Objects](https://github.com/headzoo/core/wiki/Objects)  
 Contains static methods for working with objects and classes.
 
-##### [Core\Objects](https://github.com/headzoo/core/wiki/ErrorHandler)  
+##### [Core\ErrorHandler](https://github.com/headzoo/core/wiki/ErrorHandler)  
 Used to capture and gracefully handle core errors and exceptions.
 
 ##### [Core\Errors](https://github.com/headzoo/core/wiki/Errors)  
