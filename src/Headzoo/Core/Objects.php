@@ -30,10 +30,20 @@ class Objects
      */
     public static function getFullName($obj)
     {
+        $name = null;
         if (is_object($obj)) {
-            return get_class($obj);
+            $name = get_class($obj);
+        } else if (is_string($obj)) {
+            $name = trim($obj, '\\');
+        } else {
+            self::toss(
+                "InvalidArgument",
+                "Argument must be an object or string. Got {0} instead.",
+                $obj
+            );
         }
-        return trim($obj, '\\');
+        
+        return $name;
     }
 
     /**
