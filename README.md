@@ -62,10 +62,10 @@ Contains static methods for working with objects and classes.
 ##### [Core\Objects](wiki/ErrorHandler)  
 Used to capture and gracefully handle core errors and exceptions.
 
-##### [Core\Objects](wiki/Errors)  
+##### [Core\Errors](wiki/Errors)  
 Utility class used to work with E_ERROR constants.
 
-##### [Core\Objects](wiki/Profiler)  
+##### [Core\Profiler](wiki/Profiler)  
 Used to profile code.
 
 ##### [Core\ConstantsTrait](wiki/ConstantsTrait)  
