@@ -14,16 +14,13 @@ A collection of use PHP utility classes and functions.
 
 Overview
 --------
-This project is a collection of classes, methods, and functions which I've created over the years, and I use them
-in most of my other projects. The purpose of this project is putting all my useful code in one place. I'll be
-adding to this framework as I find useful classes from my other projects that I think should go into the core.
+This project is a collection of classes, methods, and functions which I've created over the years, and I use  them in most of my other projects. The purpose of this project is putting all my useful code in one place. I'll be adding to this framework as I find useful classes from my other projects that I think should go into the core.
 
-See the [wiki](https://github.com/headzoo/core/wiki) and [API class documentation](docs/README.md) for more information.
 
 Requirements
 ------------
-* PHP 5.5 or greater.
-* psr/log.
+* [PHP 5.5 or greater](https://php.net/downloads.php).
+* [psr/Log](https://github.com/php-fig/log).
 
 
 Installing
@@ -83,8 +80,7 @@ Contains static methods for working with functions and methods.
 
 Quick Start
 -----------
-This quick start guide *briefly* goes over a few of the classes. The full class API documentation is available
-in the [/docs](docs/README.md) directory.
+This quick start guide *briefly* goes over a few of the classes. The full class API documentation is available in the [/docs](docs/README.md) directory.
 
 
 #### Core\Strings

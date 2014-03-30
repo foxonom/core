@@ -239,25 +239,28 @@ class Profiler
     public static function run($num_runs, $display = true, callable $callable = null)
     {
         Functions::swapCallable($display, $callable, true);
-        $results = [];
         
+        $results = [];
         if (self::$enabled) {
+            $profiler  = new Profiler();
             $run_times = [];
-            $profiler  = self::factory("top");
+            $memory    = memory_get_usage();
             for($i = 0; $i < $num_runs; $i++) {
                 $profiler->start("loop");
                 $callable();
                 $run_times[] = $profiler->stop("loop", false);
             }
-            $results["total"]   = $profiler->stop("top", false);
+            $results["memory"]  = memory_get_usage() - $memory;
+            $results["total"]   = array_sum($run_times);
             $results["average"] = $results["total"] / $num_runs;
             $results["runs"]    = $run_times;
             
             if ($display) {
-                $output  = sprintf("Total Runs:   %17d%s",    $num_runs,           PHP_EOL);
-                $output .= sprintf("Total Time:   %17.12f%s", $results["total"],   PHP_EOL);
+                $output  = sprintf("Total Runs:   %17s%s",    number_format($num_runs),PHP_EOL);
+                $output .= sprintf("Total Time:   %17.12f%s", $results["total"], PHP_EOL);
                 $output .= sprintf("Average Time: %17.12f%s", $results["average"], PHP_EOL);
-                $output .= sprintf('-------------------------------%s',            PHP_EOL);
+                $output .= sprintf("Total Memory: %17s%s",    Conversions::bytesToHuman($results["memory"]), PHP_EOL);
+                $output .= sprintf('-------------------------------%s', PHP_EOL);
                 
                 if (count($run_times) > 50) {
                     $runs   = [];
@@ -401,6 +404,7 @@ class Profiler
      */
     public function stop($id = self::DEFAULT_ID, $display = true)
     {
+        $stopped   = microtime(true);
         $microtime = false;
         if (self::$enabled) {
             if (is_bool($id)) {
@@ -416,7 +420,7 @@ class Profiler
                 );
             }
             
-            $microtime = microtime(true) - $this->start[$id];
+            $microtime = $stopped - $this->start[$id];
             unset($this->start[$id]);
             $message = sprintf(
                 "Time for profile '%s': %F",
