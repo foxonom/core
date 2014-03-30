@@ -192,14 +192,14 @@ $handler->setCallback(function($handler) {
 $handler->handle()
 
 // Even handle errors different in different environments.
-$handler = new ErrorHandler("live");
+$handler = new ErrorHandler();
 $handler->setCallback("dev", function($handler) {
 	include("template/error_dev.php");
 });
 $handler->setCallback("live", function($handler) {
 	include("template/error_live.php");
 });
-$handler->handle();
+$handler->handle("live");
 ```
 
 #### Core\Profiler
