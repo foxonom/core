@@ -43,6 +43,17 @@ class FunctionsTraitTest
         $this->assertEquals("live", $op);
         $this->assertEquals("dev", $swap);
     }
+
+    /**
+     * @covers ::swapArgs
+     * @expectedException Headzoo\Core\Exceptions\InvalidArgumentException
+     */
+    public function testSwapArgs_Invalid()
+    {
+        $op = null;
+        $swap = null;
+        $this->fixture->swapArgsTest($op, $swap, null, "swap");
+    }
     
     /**
      * @covers ::swapCallable
@@ -167,9 +178,9 @@ class FunctionsTestClass
 {
     use FunctionsTrait;
     
-    public function swapArgsTest(&$optional, &$swap, $default = null)
+    public function swapArgsTest(&$optional, &$swap, $default = null, $swap_required = true)
     {
-        return $this->swapArgs($optional, $swap, $default);
+        return $this->swapArgs($optional, $swap, $default, $swap_required);
     }
     
     public function swapCallableTest(&$optional, &$callable, $default = null, $callable_required = true)

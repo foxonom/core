@@ -44,9 +44,12 @@ trait FunctionsTrait
             $is_swapped = true;
         }
         if ($swap_required && !$swap) {
-            throw new Exceptions\InvalidArgumentException(
-                "Missing argument."
-            );
+            if (is_string($swap_required)) {
+                $message = "Argument '{$swap_required}' is required.";
+            } else {
+                $message = "Missing argument.";
+            }
+            throw new Exceptions\InvalidArgumentException($message);
         }
         
         return $is_swapped;
