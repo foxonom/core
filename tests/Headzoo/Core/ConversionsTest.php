@@ -54,14 +54,14 @@ class ConversionsTest
             [1,                                     "1B"],
             [500,                                   "500B"],
             [1000,                                  "1,000B"],
-            [Conversions::BYTES_KILOBYTE,            "1KB"],
-            [Conversions::BYTES_KILOBYTE + 25,       "1.02KB"],
-            [Conversions::BYTES_MEGABYTE,            "1MB"],
-            [Conversions::BYTES_MEGABYTE + 11000,    "1.01MB"],
-            [Conversions::BYTES_GIGABYTE,            "1GB"],
-            [Conversions::BYTES_GIGABYTE + 111111000,"1.1GB"],
-            [Conversions::BYTES_TERABYTE,            "1TB"],
-            [Conversions::BYTES_PETABYTE,            "1PB"]
+            [Conversions::KILOBYTE,            "1KB"],
+            [Conversions::KILOBYTE + 25,       "1.02KB"],
+            [Conversions::MEGABYTE,            "1MB"],
+            [Conversions::MEGABYTE + 11000,    "1.01MB"],
+            [Conversions::GIGABYTE,            "1GB"],
+            [Conversions::GIGABYTE + 111111000,"1.1GB"],
+            [Conversions::TERABYTE,            "1TB"],
+            [Conversions::PETABYTE,            "1PB"]
         ];
     }
 }
