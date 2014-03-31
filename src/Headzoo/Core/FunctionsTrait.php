@@ -13,17 +13,20 @@ trait FunctionsTrait
      *
      * Example:
      * ```php
-     * $optional = "live";
-     * $swap     = null;
-     * $is_swapped = Functions::swapArgs($optional, $swap, "dev");
-     * var_dump($is_swapped);
-     * var_dump($optional);
-     * var_dump($swap);
+     * $env    = "live";
+     * $values = null;
+     * public function fetch($env, $values = null)
+     * {
+     *      $is_swapped = $this->swapArgs($env, $values, "dev");
+     *      var_dump($is_swapped);
+     *      var_dump($env);
+     *      var_dump($values);
      *
-     * // Outputs:
-     * // bool(true)
-     * // string(4) "dev"
-     * // string(4) "live"
+     *      // Outputs:
+     *      // bool(true)
+     *      // string(4) "dev"
+     *      // string(4) "live"
+     * }
      * ```
      *
      * @param mixed $optional       Swap when this value is not empty
@@ -69,19 +72,19 @@ trait FunctionsTrait
      * 
      * Examples:
      * ```php
-     * function joinArray(array $values, $separator, callable $callback = null)
+     * public function joinArray(array $values, $separator, callable $callback = null)
      * {
-     *      Functions::swapCallable($separator, $callback, "-");
+     *      $this->swapCallable($separator, $callback, "-");
      *      $values = array_map($callback, $values);
      *      return join($separator, $values);
      * }
      * 
      * // The function above may be called normally, like this:
      * $values = ["headzoo", "joe"];
-     * joinArray($values, "-", 'Headzoo\Core\String::quote');
+     * $this->joinArray($values, "-", 'Headzoo\Core\String::quote');
      * 
      * // Or the middle argument may be omitted, and called like this:
-     * joinArray($values, 'Headzoo\Core\String::quote');
+     * $this->joinArray($values, 'Headzoo\Core\String::quote');
      * ```
      * 
      * @param  mixed $optional          The optional argument
@@ -118,6 +121,18 @@ trait FunctionsTrait
      *
      * This method always returns true, but throws an exception when the value is invalid.
      *
+     * Example:
+     * ```php
+     * public function fetch(array $values)
+     * {
+     *      // The $values argument must contain the keys "name" and "location", or
+     *      // else an exception is thrown.
+     *      $this->validateRequired($values, ["name", "location"]);
+     * 
+     *      ... other stuff ...
+     * }
+     * ```
+     * 
      * @param  array $values        The values to validate
      * @param  array $required      List of keys
      * @param  bool  $allow_empty   Are empty values acceptable?
