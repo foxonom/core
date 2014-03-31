@@ -349,6 +349,41 @@ class ErrorsHandlerTest
     /**
      * @covers ::handle
      */
+    public function testHandle_Error_Callback()
+    {
+        $callback = function() {
+            echo "Error!";
+        };
+        $this->assertTrue($this->handler->handle($callback));
+        $this->assertEquals(
+            $callback,
+            $this->handler->getCallback()
+        );
+    }
+
+    /**
+     * @covers ::handle
+     */
+    public function testHandle_Error_Callback_Env()
+    {
+        $callback = function() {
+            echo "Error!";
+        };
+        $this->assertTrue($this->handler->handle("unit-test", $callback));
+        $this->assertEquals(
+            "unit-test",
+            $this->handler->getRunningEnvironment()
+        );
+        $this->assertEquals(
+            $callback,
+            $this->handler->getCallback("unit-test")
+        );
+        $this->assertNull($this->handler->getCallback("no-unit-testing"));
+    }
+
+    /**
+     * @covers ::handle
+     */
     public function testHandle_Exception()
     {
         // Success when the the ::handle method switch the uncaught exception handler
@@ -414,7 +449,7 @@ class ErrorsHandlerTest
         $logger = new TestErrorLogger();
         $this->handler->setLogger($logger);
         $this->handler->handle();
-        $this->handler->setCoreErrors([E_ERROR]);
+        $this->handler->setCoreErrors(E_ERROR);
         $this->assertTrue($this->handler->handleCoreError(
             E_ERROR,
             "There was an error.",
@@ -430,6 +465,23 @@ class ErrorsHandlerTest
         // Can't start handling again after an error has been handled.
         $this->assertFalse($this->handler->handle());
         $this->assertFalse($this->handler->isHandling());
+    }
+
+    /**
+     * @covers ::handleCoreError
+     */
+    public function testHandleCoreError_Callback()
+    {
+        $this->expectOutputRegex("~Look out, there's been an error!~");
+        $this->handler->handle(function() {
+                echo "Look out, there's been an error!";
+            });
+        $this->assertTrue($this->handler->handleCoreError(
+                E_ERROR,
+                "There was an error.",
+                __FILE__,
+                __LINE__
+            ));
     }
     
     /**

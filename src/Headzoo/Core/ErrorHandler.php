@@ -53,12 +53,38 @@ use Closure;
  * $handler->setCallback("dev", function($handler) {
  *      include("templates/dev_error.php");
  * });
- * 
- * $handler->handle(ENVIRONMENT);
+ * $handler->setRunningEnvironment(ENVIRONMENT);
+ * $handler->handle();
  * ```
  *
- * We pass the currently running environment to the ErrorHandler::handle() method. When an error is
- * trapped, the callback set for that environment will be called.
+ * We pass the currently running environment to the ErrorHandler::setRunningEnvironment() method. When
+ * an error is trapped, the callback set for that environment will be called. The example could be
+ * shortened a bit.
+ * 
+ * ```php
+ * if (!defined("ENVIRONMENT")) {
+ *      define("ENVIRONMENT", "live");
+ * }
+ *
+ * $handler = new ErrorHandler();
+ * $handler->setCallback("live", function($handler) {
+ *      include("templates/live_error.php");
+ * });
+ * $handler->setCallback("dev", function($handler) {
+ *      include("templates/dev_error.php");
+ * });
+ * $handler->handle(ENVIRONMENT);
+ * ```
+ * 
+ * This time we pass the running environment straight to the ErrorHandler::handle() method. In fact
+ * the ::handle() method can even take an error callback.
+ * 
+ * ```php
+ * $handler = new ErrorHandler();
+ * $handler->handle(function() {
+ *      include("templates/error.php");
+ * });
+ * ```
  * 
  * There are many more options for dealing with how errors are handled, and which errors are
  * handled. See the API documentation for more information.
@@ -254,14 +280,38 @@ class ErrorHandler
      * being handled. Possibly because ::handle() had already been called, or an error has
      * already been handled.
      * 
-     * @param  string $running_env The running environment
+     * Examples:
+     * ```
+     * $handler = new ErrorHandler();
+     * $handler->handle();
+     * 
+     * $handler = new ErrorHandler();
+     * $handler->setCallback(function() { echo "Look out!"; });
+     * $handler->handle();
+     * 
+     * $handler = new ErrorHandler();
+     * $handler->setRunningEnvironment("live");
+     * $handler->setCallback("live", function() { echo "Look out!"; });
+     * $handler->handle();
+     * 
+     * $handler = new ErrorHandler();
+     * $handler->handle("live", function() { echo "Look out!"; });
+     * ```
+     * 
+     * @param  string   $running_env The running environment
+     * @param  callable $callback    The error callback
      * @return bool
      */
-    public function handle($running_env = self::DEFAULT_ENVIRONMENT)
+    public function handle($running_env = self::DEFAULT_ENVIRONMENT, callable $callback = null)
     {
         $is_handled = false;
         if (!$this->is_handling && !$this->last_error) {
+            Functions::swapCallable($running_env, $callback, $this->running_env, false);
             $this->setRunningEnvironment($running_env);
+            if ($callback) {
+                $this->setCallback($callback);
+            }
+            
             $this->prev_exception_handler = set_exception_handler($this->getUncaughtExceptionHandler());
             $this->prev_error_handler     = set_error_handler($this->getCoreErrorHandler());
             register_shutdown_function(function() {
@@ -274,6 +324,7 @@ class ErrorHandler
                         );
                     }
                 });
+            
             $this->is_handling = true;
             $is_handled = true;
         }
@@ -419,8 +470,9 @@ class ErrorHandler
             echo "<!DOCTYPE html><html><head><title>Error</title></head><body>",
                 "<h1>{$message}</h1><p>{$trace}</p></body><html>";
         } else {
-            echo $exception->getMessage() . PHP_EOL;
-            echo $exception->getTraceAsString() . PHP_EOL;
+            echo $exception->getMessage() . PHP_EOL,
+                "-----------" . PHP_EOL,
+                $exception->getTraceAsString() . PHP_EOL;
         }
     }
     
@@ -452,12 +504,9 @@ class ErrorHandler
     {
         Functions::swapArgs($env, $errors, $this->running_env);
         
-        $this->errors[$env] = 0;
-        if ($errors) {
-            $this->errors[$env] = $errors;
-            if (!$this->getCallback($env)) {
-                $this->setCallback($env, $this->getDefaultCallback());
-            }
+        $this->errors[$env] = $errors;
+        if (!$this->getCallback($env)) {
+            $this->setCallback($env, $this->getDefaultCallback());
         }
         
         return $this;
@@ -505,7 +554,7 @@ class ErrorHandler
         $is_removed = false;
         if (isset($this->errors[$env])) {
             $orig = $this->errors[$env];
-            $this->errors[$env] = ($this->errors[$env] & ~ Errors::toInteger($error));
+            $this->errors[$env] = ($this->errors[$env] & ~ $error);
             $is_removed = $this->errors[$env] !== $orig;
         }
         
@@ -620,7 +669,6 @@ class ErrorHandler
     public function isHandlingCoreError($env, $error = 0)
     {
         Functions::swapArgs($env, $error, $this->running_env);
-        $error = Errors::toInteger($error);
         return isset($this->errors[$env]) && (($this->errors[$env] & $error) === $error);
     }
 
