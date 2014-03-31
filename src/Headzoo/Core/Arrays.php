@@ -7,6 +7,8 @@ namespace Headzoo\Core;
 class Arrays
     extends Obj
 {
+    use FunctionsTrait;
+    
     /**
      * Default conjunction used by the conjunct() method
      */
@@ -250,7 +252,7 @@ class Arrays
      */
     public static function join(array $array, $separator = self::DEFAULT_SEPARATOR, callable $callback = null)
     {
-        Functions::swapCallable($separator, $callback, self::DEFAULT_SEPARATOR);
+        self::swapCallable($separator, $callback, self::DEFAULT_SEPARATOR);
         if (null !== $callback) {
             $array = array_map($callback, $array);
         }
@@ -291,7 +293,7 @@ class Arrays
      */
     public static function conjunct(array $array, $conjunction = self::DEFAULT_CONJUNCTION, callable $callback = null)
     {
-        Functions::swapCallable($conjunction, $callback, self::DEFAULT_CONJUNCTION);
+        self::swapCallable($conjunction, $callback, self::DEFAULT_CONJUNCTION);
         if (null !== $callback) {
             $array = array_map($callback, $array);
         }

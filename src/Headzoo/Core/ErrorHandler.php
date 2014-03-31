@@ -103,6 +103,7 @@ class ErrorHandler
     implements Log\LoggerAwareInterface
 {
     use Log\LoggerAwareTrait;
+    use FunctionsTrait;
     
     /**
      * The default runtime environment
@@ -309,7 +310,7 @@ class ErrorHandler
     {
         $is_handled = false;
         if (!$this->is_handling && !$this->last_error) {
-            Functions::swapCallable($running_env, $callback, $this->running_env, false);
+            $this->swapCallable($running_env, $callback, $this->running_env, false);
             $this->setRunningEnvironment($running_env);
             if ($callback) {
                 $this->setCallback($callback);
@@ -406,7 +407,7 @@ class ErrorHandler
      */
     public function setCallback($env, callable $callable = null)
     {
-        Functions::swapCallable($env, $callable, $this->running_env);
+        $this->swapCallable($env, $callable, $this->running_env);
         
         $this->callbacks[$env] = $callable;
         if (empty($this->errors[$env])) {
@@ -498,7 +499,7 @@ class ErrorHandler
      */
     public function setCoreErrors($env, $errors = 0)
     {
-        Functions::swapArgs($env, $errors, $this->running_env);
+        $this->swapArgs($env, $errors, $this->running_env);
         
         $this->errors[$env] = $errors;
         if (!$this->getCallback($env)) {
@@ -545,7 +546,7 @@ class ErrorHandler
      */
     public function removeCoreError($env, $error = 0)
     {
-        Functions::swapArgs($env, $error, $this->running_env);
+        $this->swapArgs($env, $error, $this->running_env);
         
         $is_removed = false;
         if (isset($this->errors[$env])) {
@@ -585,7 +586,7 @@ class ErrorHandler
      */
     public function setUncaughtExceptions($env, array $exceptions = [])
     {
-        Functions::swapArgs($env, $exceptions, $this->running_env);
+        $this->swapArgs($env, $exceptions, $this->running_env);
         
         $this->exceptions[$env] = [];
         if (!empty($exceptions)) {
@@ -644,7 +645,7 @@ class ErrorHandler
      */
     public function removeUncaughtException($env, $exception = null)
     {
-        Functions::swapArgs($env, $exception, $this->running_env);
+        $this->swapArgs($env, $exception, $this->running_env);
         
         $is_removed = false;
         if (isset($this->exceptions[$env])) {
@@ -677,7 +678,7 @@ class ErrorHandler
      */
     public function isHandlingCoreError($env, $error = 0)
     {
-        Functions::swapArgs($env, $error, $this->running_env);
+        $this->swapArgs($env, $error, $this->running_env);
         return isset($this->errors[$env]) && (($this->errors[$env] & $error) === $error);
     }
 
@@ -704,7 +705,7 @@ class ErrorHandler
      */
     public function isHandlingUncaughtException($env, $exception = null)
     {
-        Functions::swapArgs($env, $exception, $this->running_env);
+        $this->swapArgs($env, $exception, $this->running_env);
         
         $is_handling = false;
         if (isset($this->exceptions[$env])) {

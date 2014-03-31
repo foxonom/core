@@ -94,6 +94,7 @@ class Profiler
     implements Log\LoggerAwareInterface
 {
     use Log\LoggerAwareTrait;
+    use FunctionsTrait;
     
     /**
      * The default enabled value
@@ -238,7 +239,7 @@ class Profiler
      */
     public static function run($num_runs, $display = true, callable $callable = null)
     {
-        Functions::swapCallable($display, $callable, true);
+        self::swapCallable($display, $callable, true);
         
         $results = [];
         if (self::$enabled) {
