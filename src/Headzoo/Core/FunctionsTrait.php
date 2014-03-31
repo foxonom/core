@@ -5,12 +5,12 @@ namespace Headzoo\Core;
  * Contains methods for working with functions and methods.
  */
 trait FunctionsTrait
-{    
+{
     /**
      * Swaps two values when the second is empty and the first is not
-     * 
+     *
      * Returns true when the arguments were swapped, and false if not.
-     * 
+     *
      * Example:
      * ```php
      * $optional = "live";
@@ -19,26 +19,34 @@ trait FunctionsTrait
      * var_dump($is_swapped);
      * var_dump($optional);
      * var_dump($swap);
-     * 
+     *
      * // Outputs:
      * // bool(true)
      * // string(4) "dev"
      * // string(4) "live"
      * ```
-     * 
-     * @param mixed  $optional  Swap when this value is not empty
-     * @param mixed  $swap      Swap when this value is empty
-     * @param null   $default   The new value for $optional when swapped
      *
+     * @param mixed $optional       Swap when this value is not empty
+     * @param mixed $swap           Swap when this value is empty
+     * @param null  $default        The new value for $optional when swapped
+     * @param bool  $swap_required  Is the $swap argument required?
+     *
+     * @throws Exceptions\InvalidArgumentException When the $swap value is required and is empty
+     * 
      * @return bool
      */
-    protected static function swapArgs(&$optional, &$swap, $default = null)
+    protected static function swapArgs(&$optional, &$swap, $default = null, $swap_required = true)
     {
         $is_swapped = false;
         if (empty($swap) && !empty($optional)) {
             $swap       = $optional;
             $optional   = $default;
             $is_swapped = true;
+        }
+        if ($swap_required && !$swap) {
+            throw new Exceptions\InvalidArgumentException(
+                "Missing argument."
+            );
         }
         
         return $is_swapped;
@@ -91,7 +99,7 @@ trait FunctionsTrait
         }
         if ($callable_required && !$callable) {
             throw new Exceptions\InvalidArgumentException(
-                "A callable object is required"
+                "A callable object is required."
             );
         }
         
