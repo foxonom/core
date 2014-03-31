@@ -2,20 +2,17 @@
 namespace Headzoo\Core;
 
 /**
- * Used to call a function when the object destructs.
+ * Used to call a function when a resource is no longer needed.
  *
- * The class wraps a callable function, which is called in the class destructor. The utility
- * of this scheme is the ability to ensure the function is called eventually. Usually when
- * the SmartCallable object goes out of scope, which is when it's destructor is called.
+ * SmartCallable instances wrap functions, which are called when the SmartCallable instances
+ * go out of scope. The idea is similar to "smart pointers" from C++, where an object -- the smart
+ * pointer -- wraps a resource, and automatically frees the resource when it's no longer needed.
+ *
+ * In this example we create a method which requests a web resource using curl.
+ * We use a SmartCallable instance to ensure the curl resource is closed when
+ * the method returns, or an exception is thrown.
  * 
- * This class can be used to simulate a try...catch...finally in versions of PHP which do not
- * support the finally clause.
- * 
- * Example:
  * ```php
- * // In this example we create a method which requests a web resource using curl.
- * // We use a SmartCallable instance to ensure the curl resource is closed when
- * // the method returns, or an exception is thrown.
  * public function fetch()
  * {
  *      $curl = curl_init("http://some-site.com");
@@ -23,7 +20,55 @@ namespace Headzoo\Core;
  *              curl_close($curl);
  *      });
  * 
- *      return curl_exec($curl);
+ *      $response = curl_exec($curl);
+ *      if ($e = curl_error()) {
+ *          throw new Exception($e);
+ *      }
+ * 
+ *      return $response;
+ * }
+ * ```
+ * 
+ * The method could also be written this way.
+ * 
+ * ```php
+ * public function fetch()
+ * {
+ *      $curl = curl_init("http://some-site.com");
+ *      $sc = SmartCallable::factory("curl_close", $curl);
+ *
+ *      $response = curl_exec($curl);
+ *      if ($e = curl_error()) {
+ *          throw new Exception($e);
+ *      }
+ *
+ *      return $response;
+ * }
+ * ```
+ * This class can be used to simulate a try...catch...finally in versions of PHP which do not
+ * support the finally clause. In this example the database connection is closed even if we
+ * throw an exception before calling the close() method.
+ * 
+ * ```php
+ * public function fetchRows()
+ * {
+ *      $mysqli = new mysqli('localhost', 'my_user', 'my_password', 'my_db');
+ *      $sc = SmartCallable::factory(function() use($mysql) {
+ *          $mysqli->close();
+ *      });
+ * 
+ *      try {
+ *          $result = $mysqli->query("SELECT Name FROM City LIMIT 10");
+ *      } catch (Exception $e) {
+ *          $this->logger->error($e->getMessage());
+ *          throw $e;
+ *      }
+ * 
+ *      $mysql->close();
+ *      // We could also close the connection by invoking the SmartCallable object.
+ *      $sc();
+ * 
+ *      return $result;
  * }
  * ```
  * 
