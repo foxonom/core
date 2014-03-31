@@ -332,6 +332,10 @@ try {
 
 Change Log
 ----------
+##### v0.5.0 - 2014/03/31
+* Created the `Conversions` class.
+* The `Profiler::run` method outputs memory usage.
+* 
 ##### v0.4.1 - 2014/03/30
 * Created the `Functions::swapArgs` method.
 * Refactored some of the code in the `ErrorsHandler` class.

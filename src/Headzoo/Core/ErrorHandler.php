@@ -86,6 +86,8 @@ use Closure;
  * });
  * ```
  * 
+ * That's the short, short example for using the error handler.
+ * 
  * There are many more options for dealing with how errors are handled, and which errors are
  * handled. See the API documentation for more information.
  * 
