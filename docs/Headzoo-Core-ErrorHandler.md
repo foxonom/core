@@ -281,7 +281,8 @@ public mixed Headzoo\Core\ErrorHandler::__destruct()
 Returns the last generated exception
 
 Generally used by the error callbacks, this method returns an exception instance which
-describes the error that was handled.
+describes the error that was handled. Returns null when an error has not been
+handled.
 ```php
 public Exception|null Headzoo\Core\ErrorHandler::getLastError()
 ```
@@ -418,7 +419,7 @@ Returns the callback that will be called when an error is handled
 
 Uses the currently running environment when none is given.
 ```php
-public null Headzoo\Core\ErrorHandler::getCallback(string|null $env)
+public callable Headzoo\Core\ErrorHandler::getCallback(string|null $env)
 ```
 
 
@@ -432,7 +433,7 @@ public null Headzoo\Core\ErrorHandler::getCallback(string|null $env)
 Returns the default callback for errors
 
 The class has a default callback which handles errors by displaying an HTML5 page
-with the error message and backtrace. This method returns a callable instace
+with the error message and backtrace. This method returns a callable instance
 of that default callback.
 ```php
 public Closure Headzoo\Core\ErrorHandler::getDefaultCallback()
@@ -467,20 +468,20 @@ Uses the currently running environment when none is given.
 
 Examples:
 ```php
-$handler->setCoreErrors([E_ERROR, E_WARNING, E_DEPRECIATED]);
+$handler->setCoreErrors(E_ERROR | E_WARNING | E_DEPRECIATED);
 
-$handler->setCoreErrors("live", [E_ERROR, E_WARNING]);
+$handler->setCoreErrors("live", E_ERROR | E_WARNING);
 
-$handler->setCoreError("dev", [E_ERROR, E_WARNING, E_NOTICE]);
+$handler->setCoreError("dev", E_ERROR | E_WARNING | E_NOTICE);
 ```
 ```php
-public Headzoo\Core\ErrorHandler Headzoo\Core\ErrorHandler::setCoreErrors(string|int[] $env, int $errors)
+public Headzoo\Core\ErrorHandler Headzoo\Core\ErrorHandler::setCoreErrors(string|int $env, int $errors)
 ```
 
 
 ##### Arguments
 
-* $env **string|int[]** - Name of the environment
+* $env **string|int** - Name of the environment
 * $errors **int** - The errors to handle
 
 
@@ -512,7 +513,7 @@ $handler->removeCoreError(E_NOTICE);
 
 $handler->removeCoreError("live", E_NOTICE);
 
-$handler->removeCoreError("dev", E_DEPRECIATED);
+$handler->removeCoreError("dev", E_NOTICE | E_DEPRECIATED);
 ```
 ```php
 public bool Headzoo\Core\ErrorHandler::removeCoreError(string|int $env, string|int $error)
@@ -530,7 +531,11 @@ public bool Headzoo\Core\ErrorHandler::removeCoreError(string|int $env, string|i
 Sets the uncaught exceptions which will be handled
 
 By default every uncaught exception is handled, but specific types may be
-specified using this method.
+specified using this method. The $exceptions argument may be an array of class
+names, or array of objects.
+
+Uncaught exceptions will not be handled when this method is given an empty
+array.
 
 Uses the currently running environment when none is given.
 
@@ -543,19 +548,22 @@ $handler->setUncaughtException("live", [RuntimeException::class, LogicException:
 $handler->setUncaughtException("dev", [InvalidArgumentException::class, LogicException::class]);
 ```
 ```php
-public Headzoo\Core\ErrorHandler Headzoo\Core\ErrorHandler::setUncaughtExceptions(string|\Exception[] $env, string[] $exceptions)
+public Headzoo\Core\ErrorHandler Headzoo\Core\ErrorHandler::setUncaughtExceptions(string|string[]|\Exception[] $env, string[]|\Exception[] $exceptions)
 ```
 
 
 ##### Arguments
 
-* $env **string|Exception[]** - Name of the environment
-* $exceptions **string[]** - The exceptions to handle
+* $env **string|string[]|Exception[]** - Name of the environment
+* $exceptions **string[]|Exception[]** - The exceptions to handle
 
 
 
 ### Headzoo\Core\ErrorHandler::getUncaughtExceptions
 Returns the types of uncaught exceptions which are being handled
+
+Returns an array of class names representing the types of uncaught exceptions the
+class is handling.
 
 Uses the currently running environment when none is given.
 ```php
@@ -572,6 +580,11 @@ public string[] Headzoo\Core\ErrorHandler::getUncaughtExceptions(string|null $en
 ### Headzoo\Core\ErrorHandler::removeUncaughtException
 Stops handling an uncaught exception
 
+Tells the class to stop handling the given type of exception, which may be either
+a class name, or object. Returns true if the exception type has been successfully
+unhandled. A false return value means the class wasn't handling the given
+exception.
+
 Uses the currently running environment when none is given.
 
 Examples:
@@ -583,19 +596,22 @@ $handler->removeUncaughtException("live", LogicError::class);
 $handler->removeUncaughtException("dev", InvalidArgumentException::class);
 ```
 ```php
-public bool Headzoo\Core\ErrorHandler::removeUncaughtException(string|int $env, Exception|null $exception)
+public bool Headzoo\Core\ErrorHandler::removeUncaughtException(string|\Exception|string $env, Exception|string|null $exception)
 ```
 
 
 ##### Arguments
 
-* $env **string|int** - Name of the environment
-* $exception **Exception|null**
+* $env **string|Exception|string** - Name of the environment
+* $exception **Exception|string|null** - The exception to check
 
 
 
 ### Headzoo\Core\ErrorHandler::isHandlingCoreError
 Returns whether errors of the given type are being handled
+
+Returns true when the given error -- one of the E_ERROR constants -- is one of
+the errors being handled. Otherwise false is returned.
 
 Uses the currently running environment when none is given.
 
@@ -620,6 +636,10 @@ public bool Headzoo\Core\ErrorHandler::isHandlingCoreError(string|int $env, stri
 ### Headzoo\Core\ErrorHandler::isHandlingUncaughtException
 Returns whether the given exception is being handled
 
+Returns true when the given exception is one of the exceptions being handled for
+the given running environment. Otherwise false is returned. The $exception
+argument can be a class name or object.
+
 Uses the currently running environment when none is given.
 
 Examples:
@@ -643,9 +663,9 @@ public bool Headzoo\Core\ErrorHandler::isHandlingUncaughtException(string|int $e
 ### Headzoo\Core\ErrorHandler::handleCoreError
 Handles core errors
 
-The callback used by ErrorHandler when it captures a core PHP error. This method
-will call the error callback if the type of error matches one of the errors
-being handled.
+Called by PHP when an error occures. This method determines whether the error is one
+of the errors being handled. If it is, the the error will be captured, and the
+error callback is called.
 ```php
 public bool Headzoo\Core\ErrorHandler::handleCoreError(int $type, string $message, string $file, int $line)
 ```
@@ -663,9 +683,9 @@ public bool Headzoo\Core\ErrorHandler::handleCoreError(int $type, string $messag
 ### Headzoo\Core\ErrorHandler::handleUncaughtException
 Handles uncaught exceptions
 
-The callback used by ErrorHandler when it captures an unhandled exception. This
-method will call the error callback if the type of exception matches the exceptions
-being handled.
+Called by PHP when an exception goes uncaught. This method determines whether the
+exception is one of the exceptions being handled. If it is, the the exception will be
+captured, and the error callback is called.
 ```php
 public bool Headzoo\Core\ErrorHandler::handleUncaughtException(Exception $exception)
 ```
@@ -680,9 +700,16 @@ public bool Headzoo\Core\ErrorHandler::handleUncaughtException(Exception $except
 ### Headzoo\Core\ErrorHandler::getCoreErrorHandler
 Returns the callback being used to handle core errors
 
+This method is primarily used internally when setting up error callbacks, but
+is left public for testing purposes. It essentially returns a reference to
+the ::handleCoreError() method.
 
+The returned closure has the following signature:
 ```php
-public callable Headzoo\Core\ErrorHandler::getCoreErrorHandler()
+function(int $type, string $message, string $file, int $line) {}
+```
+```php
+public Closure Headzoo\Core\ErrorHandler::getCoreErrorHandler()
 ```
 
 
@@ -691,16 +718,23 @@ public callable Headzoo\Core\ErrorHandler::getCoreErrorHandler()
 ### Headzoo\Core\ErrorHandler::getUncaughtExceptionHandler
 Returns the callback being used to handle uncaught exceptions.
 
+This method is primarily used internally when setting up error callbacks, but
+is left public for testing purposes. It essentially returns a reference to
+the ::handleUncaughtException() method.
 
+The returned closure has the following signature:
 ```php
-public callable Headzoo\Core\ErrorHandler::getUncaughtExceptionHandler()
+function(Exception $exception) {}
+```
+```php
+public Closure Headzoo\Core\ErrorHandler::getUncaughtExceptionHandler()
 ```
 
 
 
 
 ### Headzoo\Core\ErrorHandler::triggerError
-Calls the set error callback
+Calls the error callback
 
 Called by ::handleCoreError() and ::handleUncaughtException() when the type of error
 captured matches an error being handled. This method calls the error callback, and
