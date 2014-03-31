@@ -77,8 +77,8 @@ Abstract class for creating enumerator classes.
 ##### [Core\SmartCallable](https://github.com/headzoo/core/wiki/SmartCallable)  
 Used to call a function when a resource is no longer needed.
 
-##### [Core\Functions](https://github.com/headzoo/core/wiki/Functions)  
-Contains static methods for working with functions and methods.
+##### [Core\FunctionsTrait](https://github.com/headzoo/core/wiki/FunctionsTrait)  
+Contains methods for working with functions and methods.
 
 
 Quick Start
@@ -294,26 +294,6 @@ var_dump($day_tue1 == $day_fri1);
 // bool(false)
 ```
 
-#### Core\Functions
-```php
-// The Functions::swapCallable() method is used to swap two arguments when the second is a callable. It's used
-// to create functions/methods which have callbacks as the final argument, and it's desirable to make middle
-// argument optional, while the callback remains the final argument.
-
-function joinArray(array $values, $separator, callable $callback = null)
-{
-   Functions::swapCallable($separator, $callback, "-");
-   $values = array_map($callback, $values);
-   return join($separator, $values);
-}
-
-// The function above may be called normally, like this:
-$values = ["headzoo", "joe"];
-joinArray($values, "-", 'Headzoo\Core\String::quote');
-
-// Or the middle argument may be omitted, and called like this:
-joinArray($values, 'Headzoo\Core\String::quote');
-```
 
 #### Core\SmartCallable
 ```php
