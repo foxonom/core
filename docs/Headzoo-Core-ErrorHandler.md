@@ -49,12 +49,40 @@ $handler->setCallback("live", function($handler) {
 $handler->setCallback("dev", function($handler) {
      include("templates/dev_error.php");
 });
+$handler->setRunningEnvironment(ENVIRONMENT);
+$handler->handle();
+```
 
+We pass the currently running environment to the ErrorHandler::setRunningEnvironment() method. When
+an error is trapped, the callback set for that environment will be called. The example could be
+shortened a bit.
+
+```php
+if (!defined("ENVIRONMENT")) {
+     define("ENVIRONMENT", "live");
+}
+
+$handler = new ErrorHandler();
+$handler->setCallback("live", function($handler) {
+     include("templates/live_error.php");
+});
+$handler->setCallback("dev", function($handler) {
+     include("templates/dev_error.php");
+});
 $handler->handle(ENVIRONMENT);
 ```
 
-We pass the currently running environment to the ErrorHandler::handle() method. When an error is
-trapped, the callback set for that environment will be called.
+This time we pass the running environment straight to the ErrorHandler::handle() method. In fact
+the ::handle() method can even take an error callback.
+
+```php
+$handler = new ErrorHandler();
+$handler->handle(function() {
+     include("templates/error.php");
+});
+```
+
+That's the short, short example for using the error handler.
 
 There are many more options for dealing with how errors are handled, and which errors are
 handled. See the API documentation for more information.
@@ -98,7 +126,7 @@ The default types of errors handled for every runtime environment
 
 
 ```php
-private int[] $default_errors = array(E_ERROR, E_PARSE, E_CORE_ERROR, E_USER_ERROR, E_USER_WARNING, E_RECOVERABLE_ERROR)
+private int[] $default_errors = array(E_ERROR, E_WARNING, E_USER_ERROR, E_USER_WARNING, E_RECOVERABLE_ERROR)
 ```
 
 * This property is **static**.
@@ -160,7 +188,7 @@ Core errors which are being handled
 
 
 ```php
-protected array $errors = array()
+protected int[] $errors = array()
 ```
 
 
@@ -216,7 +244,7 @@ Returns the core errors which are handled by default
 
 
 ```php
-public int[] Headzoo\Core\ErrorHandler::getDefaultCoreErrors()
+public int Headzoo\Core\ErrorHandler::getDefaultCoreErrors()
 ```
 
 * This method is **static**.
@@ -294,14 +322,33 @@ Starts handling errors
 Returns true when errors are now being handled, or false when errors were already
 being handled. Possibly because ::handle() had already been called, or an error has
 already been handled.
+
+Examples:
+```
+$handler = new ErrorHandler();
+$handler->handle();
+
+$handler = new ErrorHandler();
+$handler->setCallback(function() { echo "Look out!"; });
+$handler->handle();
+
+$handler = new ErrorHandler();
+$handler->setRunningEnvironment("live");
+$handler->setCallback("live", function() { echo "Look out!"; });
+$handler->handle();
+
+$handler = new ErrorHandler();
+$handler->handle("live", function() { echo "Look out!"; });
+```
 ```php
-public bool Headzoo\Core\ErrorHandler::handle(string $running_env)
+public bool Headzoo\Core\ErrorHandler::handle(string $running_env, callable $callback)
 ```
 
 
 ##### Arguments
 
 * $running_env **string** - The running environment
+* $callback **callable** - The error callback
 
 
 
@@ -427,14 +474,14 @@ $handler->setCoreErrors("live", [E_ERROR, E_WARNING]);
 $handler->setCoreError("dev", [E_ERROR, E_WARNING, E_NOTICE]);
 ```
 ```php
-public Headzoo\Core\ErrorHandler Headzoo\Core\ErrorHandler::setCoreErrors(string|int[] $env, int[] $errors)
+public Headzoo\Core\ErrorHandler Headzoo\Core\ErrorHandler::setCoreErrors(string|int[] $env, int $errors)
 ```
 
 
 ##### Arguments
 
 * $env **string|int[]** - Name of the environment
-* $errors **int[]** - The errors to handle
+* $errors **int** - The errors to handle
 
 
 
@@ -443,7 +490,7 @@ Returns the core errors which are being handled
 
 Uses the currently running environment when none is given.
 ```php
-public int[] Headzoo\Core\ErrorHandler::getCoreErrors(string|null $env)
+public int Headzoo\Core\ErrorHandler::getCoreErrors(string|null $env)
 ```
 
 
