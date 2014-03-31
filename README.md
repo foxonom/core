@@ -65,6 +65,9 @@ Utility class used to work with E_ERROR constants.
 ##### [Core\Profiler](https://github.com/headzoo/core/wiki/Profiler)  
 Used to profile code.
 
+##### [Core\Conversions](https://github.com/headzoo/core/wiki/Conversions)  
+Utility class for converting from one value to another.
+
 ##### [Core\ConstantsTrait](https://github.com/headzoo/core/wiki/ConstantsTrait)  
 Trait for reflecting on class constants.
 
@@ -335,7 +338,8 @@ Change Log
 ##### v0.5.0 - 2014/03/31
 * Created the `Conversions` class.
 * The `Profiler::run` method outputs memory usage.
-* 
+* Refactored the `ErrorHandler` class.
+
 ##### v0.4.1 - 2014/03/30
 * Created the `Functions::swapArgs` method.
 * Refactored some of the code in the `ErrorsHandler` class.
