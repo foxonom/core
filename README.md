@@ -74,8 +74,8 @@ Trait for reflecting on class constants.
 ##### [Core\AbstractEnum](https://github.com/headzoo/core/wiki/AbstractEnum)  
 Abstract class for creating enumerator classes.
 
-##### [Core\Complete](https://github.com/headzoo/core/wiki/Complete)  
-Used to call a function when the object destructs.
+##### [Core\SmartCallable](https://github.com/headzoo/core/wiki/SmartCallable)  
+Used to call a function when a resource is no longer needed.
 
 ##### [Core\Functions](https://github.com/headzoo/core/wiki/Functions)  
 Contains static methods for working with functions and methods.
@@ -315,26 +315,48 @@ joinArray($values, "-", 'Headzoo\Core\String::quote');
 joinArray($values, 'Headzoo\Core\String::quote');
 ```
 
-#### Core\Complete
+#### Core\SmartCallable
 ```php
-// In this example the database connection will always be closed, even if the $database->fetch()
-// method throws an exception, because the anonymous function passed to Complete::factory()
-// is called when the $complete object goes out of scope.
+// In this example we create a method which requests a web resource using curl.
+// We use a SmartCallable instance to ensure the curl resource is closed when
+// the method returns, or an exception is thrown.
 
-$database = new FakeDatabase();
-$complete = Complete::factory(function() use($database) {
-   $database->close();
-});
-try {
-   $rows = $database->fetch();
-} catch (Exception $e) {
-   echo $e->getTraceAsString();
-   throw $e;
+public function fetch()
+{
+  $curl = curl_init("http://some-site.com");
+  $sc = SmartCallable::factory(function() use($curl) {
+          curl_close($curl);
+  });
+
+  $response = curl_exec($curl);
+  if ($e = curl_error()) {
+      throw new Exception($e);
+  }
+
+  return $response;
+}
+
+// The method could also be written this way.
+public function fetch()
+{
+  $curl = curl_init("http://some-site.com");
+  $sc = SmartCallable::factory("curl_close", $curl);
+
+  $response = curl_exec($curl);
+  if ($e = curl_error()) {
+      throw new Exception($e);
+  }
+
+  return $response;
 }
 ```
 
 Change Log
 ----------
+##### v0.6.0 - 2014/04/01
+* The `Functions` class is now a trait, `FunctionsTrait`.
+* Renamed the class `Complete` to `SmartCallable`.
+* 
 ##### v0.5.0 - 2014/03/31
 * Created the `Conversions` class.
 * The `Profiler::run` method outputs memory usage.
