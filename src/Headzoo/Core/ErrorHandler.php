@@ -87,8 +87,7 @@ class ErrorHandler
      */
     private static $default_errors = [
         E_ERROR,
-        E_PARSE,
-        E_CORE_ERROR,
+        E_WARNING,
         E_USER_ERROR,
         E_USER_WARNING,
         E_RECOVERABLE_ERROR
@@ -128,7 +127,7 @@ class ErrorHandler
 
     /**
      * Core errors which are being handled
-     * @var array
+     * @var int[]
      */
     protected $errors = [];
 
@@ -163,11 +162,15 @@ class ErrorHandler
     /**
      * Returns the core errors which are handled by default
      *
-     * @return int[]
+     * @return int
      */
     public static function getDefaultCoreErrors()
     {
-        return self::$default_errors;
+        $errors = 0;
+        foreach(self::$default_errors as $error) {
+            $errors |= $error;
+        }
+        return $errors;
     }
     
     /**
@@ -353,7 +356,7 @@ class ErrorHandler
         
         $this->callbacks[$env] = $callable;
         if (empty($this->errors[$env])) {
-            $this->setCoreErrors($env, self::$default_errors);
+            $this->setCoreErrors($env, self::getDefaultCoreErrors());
         }
         if (empty($this->exceptions[$env])) {
             $this->setUncaughtExceptions($env, self::$default_exceptions);
@@ -430,21 +433,19 @@ class ErrorHandler
      * ```
      * 
      * @param string|int[]  $env        Name of the environment
-     * @param int[]         $errors     The errors to handle
+     * @param int           $errors     The errors to handle
      * 
      * @throws Exceptions\InvalidArgumentException When the errors array is empty
      *                                             
      * @return $this
      */
-    public function setCoreErrors($env, array $errors = [])
+    public function setCoreErrors($env, $errors = 0)
     {
         Functions::swapArgs($env, $errors, $this->running_env);
         
-        $this->errors[$env] = [];
-        if (!empty($errors)) {
-            foreach($errors as $error) {
-                $this->errors[$env][] = Errors::toInteger($error);
-            }
+        $this->errors[$env] = 0;
+        if ($errors) {
+            $this->errors[$env] = $errors;
             if (!$this->getCallback($env)) {
                 $this->setCallback($env, $this->getDefaultCallback());
             }
@@ -460,12 +461,12 @@ class ErrorHandler
      * 
      * @param  string|null $env     Name of the environment
      * 
-     * @return int[]
+     * @return int
      */
     public function getCoreErrors($env = null)
     {
         $env = $env ?: $this->running_env;
-        return isset($this->errors[$env]) ? $this->errors[$env] : [];
+        return isset($this->errors[$env]) ? $this->errors[$env] : 0;
     }
     
     /**
@@ -494,13 +495,9 @@ class ErrorHandler
         
         $is_removed = false;
         if (isset($this->errors[$env])) {
-            $error = Errors::toInteger($error);
-            if (E_ALL === $error) {
-                $this->errors[$env] = [];
-                $is_removed = true;
-            } else {
-                $is_removed = (bool)Arrays::remove($this->errors[$env], $error);
-            }
+            $orig = $this->errors[$env];
+            $this->errors[$env] = ($this->errors[$env] & ~ Errors::toInteger($error));
+            $is_removed = $this->errors[$env] !== $orig;
         }
         
         return $is_removed;
@@ -614,13 +611,8 @@ class ErrorHandler
     public function isHandlingCoreError($env, $error = 0)
     {
         Functions::swapArgs($env, $error, $this->running_env);
-        
         $error = Errors::toInteger($error);
-        return isset($this->errors[$env])
-            && (
-                in_array($error, $this->errors[$env]) ||
-                in_array(E_ALL, $this->errors[$env])
-            );
+        return isset($this->errors[$env]) && (($this->errors[$env] & $error) === $error);
     }
 
     /**

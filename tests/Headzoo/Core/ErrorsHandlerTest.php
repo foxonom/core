@@ -178,14 +178,9 @@ class ErrorsHandlerTest
     public function testGetDefaultErrors()
     {
         $errors = $this->handler->getDefaultCoreErrors();
-        $this->assertContains(
-            E_ERROR,
-            $errors
-        );
-        $this->assertContains(
-            E_PARSE,
-            $errors
-        );
+        $this->assertTrue(($errors & E_ERROR) === E_ERROR);
+        $this->assertTrue(($errors & E_WARNING) === E_WARNING);
+        $this->assertFalse(($errors & E_PARSE) === E_PARSE );
     }
 
     /**
@@ -200,14 +195,14 @@ class ErrorsHandlerTest
         // Now we are watching for E_NOTICE in the default environment.
         $this->assertSame(
             $this->handler,
-            $this->handler->setCoreErrors([E_ERROR, E_WARNING, E_NOTICE])
+            $this->handler->setCoreErrors(E_ERROR | E_WARNING | E_NOTICE)
         );
         $this->assertTrue($this->handler->isHandlingCoreError(E_NOTICE));
 
         // Now we are watching for E_NOTICE in the "unit-test" environment.
         $this->assertSame(
             $this->handler,
-            $this->handler->setCoreErrors("unit-testing", [E_ERROR, E_WARNING, E_NOTICE])
+            $this->handler->setCoreErrors("unit-testing", E_ERROR | E_WARNING | E_NOTICE)
         );
         $this->assertTrue($this->handler->isHandlingCoreError("unit-testing", E_NOTICE));
     }
@@ -247,7 +242,7 @@ class ErrorsHandlerTest
         );
         
         // Now it's being watched, and now it can be removed.
-        $this->handler->setCoreErrors([E_NOTICE]);
+        $this->handler->setCoreErrors(E_NOTICE);
         $this->assertTrue(
             $this->handler->removeCoreError(E_NOTICE)
         );
@@ -256,7 +251,7 @@ class ErrorsHandlerTest
         );
         
         // Checking that no $env argument defaults to the running environment.
-        $this->handler->setCoreErrors(ErrorHandler::DEFAULT_ENVIRONMENT, [E_NOTICE]);
+        $this->handler->setCoreErrors(ErrorHandler::DEFAULT_ENVIRONMENT, E_NOTICE);
         $this->assertTrue(
             $this->handler->removeCoreError(E_NOTICE)
         );
@@ -270,7 +265,7 @@ class ErrorsHandlerTest
         );
 
         // Now E_NOTICE it's being watched in "unit-test", and now it can be removed.
-        $this->handler->setCoreErrors("unit-test", [E_NOTICE]);
+        $this->handler->setCoreErrors("unit-test", E_NOTICE);
         $this->assertTrue(
             $this->handler->removeCoreError("unit-test", E_NOTICE)
         );
@@ -281,7 +276,7 @@ class ErrorsHandlerTest
         // Ensuring that removing E_ALL removes all watched error types.
         $this->assertSame(
             $this->handler,
-            $this->handler->setCoreErrors("unit-test", [E_ERROR, E_WARNING, E_NOTICE])
+            $this->handler->setCoreErrors("unit-test", E_ERROR | E_WARNING | E_NOTICE)
         );
         $this->assertNotEmpty($this->handler->getCoreErrors("unit-test"));
         $this->assertTrue(
