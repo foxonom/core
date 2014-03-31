@@ -410,9 +410,18 @@ class ErrorHandler
      * @param  ErrorHandler $handler The object that handled the error
      * @return mixed
      */
-    public function defaultCallback(/** @noinspection PhpUnusedParameterInspection */ $handler)
+    public function defaultCallback($handler)
     {
-        include(__DIR__ . "/templates/error.php");
+        $exception = $handler->getLastError();
+        if (php_sapi_name() != "cli") {
+            $message   = htmlspecialchars($exception->getMessage());
+            $trace     = nl2br(htmlspecialchars($exception->getTraceAsString()));
+            echo "<!DOCTYPE html><html><head><title>Error</title></head><body>",
+                "<h1>{$message}</h1><p>{$trace}</p></body><html>";
+        } else {
+            echo $exception->getMessage() . PHP_EOL;
+            echo $exception->getTraceAsString() . PHP_EOL;
+        }
     }
     
     /**

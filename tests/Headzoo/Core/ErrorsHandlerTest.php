@@ -409,7 +409,7 @@ class ErrorsHandlerTest
      */
     public function testHandleCoreError()
     {
-        $this->expectOutputRegex("~<h1>There was an error.</h1>~");
+        $this->expectOutputRegex("~There was an error.~");
         
         $logger = new TestErrorLogger();
         $this->handler->setLogger($logger);
@@ -437,7 +437,7 @@ class ErrorsHandlerTest
      */
     public function testHandleUncaughtException()
     {
-        //$this->expectOutputRegex("~<h1>There was an exception.</h1>~");
+        $this->expectOutputRegex("~There was an exception.~");
         $exception = new TestingException("There was an exception.", 42);
 
         $logger = new TestErrorLogger();
