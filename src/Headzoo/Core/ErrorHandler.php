@@ -499,7 +499,7 @@ class ErrorHandler
      */
     public function setCoreErrors($env, $errors = 0)
     {
-        $this->swapArgs($env, $errors, $this->running_env);
+        $this->swapArgs($env, $errors, $this->running_env, false);
         
         $this->errors[$env] = $errors;
         if (!$this->getCallback($env)) {
@@ -586,7 +586,7 @@ class ErrorHandler
      */
     public function setUncaughtExceptions($env, array $exceptions = [])
     {
-        $this->swapArgs($env, $exceptions, $this->running_env);
+        $this->swapArgs($env, $exceptions, $this->running_env, false);
         
         $this->exceptions[$env] = [];
         if (!empty($exceptions)) {
