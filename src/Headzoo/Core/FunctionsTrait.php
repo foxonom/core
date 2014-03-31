@@ -2,11 +2,10 @@
 namespace Headzoo\Core;
 
 /**
- * Contains static methods for working with functions and methods.
+ * Contains methods for working with functions and methods.
  */
-class Functions
-    extends Obj
-{
+trait FunctionsTrait
+{    
     /**
      * Swaps two values when the second is empty and the first is not
      * 
@@ -33,7 +32,7 @@ class Functions
      *
      * @return bool
      */
-    public static function swapArgs(&$optional, &$swap, $default = null)
+    protected static function swapArgs(&$optional, &$swap, $default = null)
     {
         $is_swapped = false;
         if (empty($swap) && !empty($optional)) {
@@ -82,7 +81,7 @@ class Functions
      * 
      * @return bool
      */
-    public static function swapCallable(&$optional, &$callable, $default = null, $callable_required = true)
+    protected static function swapCallable(&$optional, &$callable, $default = null, $callable_required = true)
     {
         $is_swapped = false;
         if (is_callable($optional)) {
@@ -91,9 +90,8 @@ class Functions
             $is_swapped  = true;
         }
         if ($callable_required && !$callable) {
-            self::toss(
-                "InvalidArgument",
-                "A callable object is required."
+            throw new Exceptions\InvalidArgumentException(
+                "A callable object is required"
             );
         }
         
@@ -115,17 +113,18 @@ class Functions
      * @return bool
      * @throws Exceptions\ValidationFailedException When a required value is missing
      */
-    public static function validateRequired(array $values, array $required, $allow_empty = false)
+    protected static function validateRequired(array $values, array $required, $allow_empty = false)
     {
         if (!$allow_empty) {
             $values = array_filter($values);
         }
         $missing = array_diff($required, array_keys($values));
         if (!empty($missing)) {
-            self::toss(
-                "ValidationFailedException",
-                "Required values missing: {0}.",
-                Arrays::conjunct($missing, 'Headzoo\Core\Strings::quote')
+            throw new Exceptions\ValidationFailedException(
+                sprintf(
+                    "Required values missing: %s.",
+                    Arrays::conjunct($missing, 'Headzoo\Core\Strings::quote')
+                )
             );
         }
 

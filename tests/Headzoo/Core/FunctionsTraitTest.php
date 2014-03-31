@@ -1,12 +1,27 @@
 <?php
-use Headzoo\Core\Functions;
+use Headzoo\Core\FunctionsTrait;
 
 /**
- * @coversDefaultClass Headzoo\Core\Functions
+ * @coversDefaultClass Headzoo\Core\FunctionsTrait
  */
-class FunctionsTest
+class FunctionsTraitTest
     extends PHPUnit_Framework_TestCase
 {
+    /**
+     * The test fixture
+     * @var FunctionsTestClass
+     */
+    protected $fixture;
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
+    {
+        $this->fixture = new FunctionsTestClass();
+    }
+    
     /**
      * @covers ::swapArgs
      */
@@ -15,7 +30,7 @@ class FunctionsTest
         $op = "live";
         $swap = null;
         $this->assertTrue(
-            Functions::swapArgs($op, $swap)
+            $this->fixture->swapArgsTest($op, $swap)
         );
         $this->assertNull($op);
         $this->assertEquals("live", $swap);
@@ -23,7 +38,7 @@ class FunctionsTest
         $op = "live";
         $swap = "dev";
         $this->assertFalse(
-            Functions::swapArgs($op, $swap)
+            $this->fixture->swapArgsTest($op, $swap)
         );
         $this->assertEquals("live", $op);
         $this->assertEquals("dev", $swap);
@@ -37,7 +52,7 @@ class FunctionsTest
     {
         $this->assertEquals(
             $expected,
-            Functions::swapCallable($optional, $callable, $default, false)
+            $this->fixture->swapCallableTest($optional, $callable, $default, false)
         );
     }
     
@@ -49,7 +64,7 @@ class FunctionsTest
     {
         $optional = null;
         $callable = null;
-        Functions::swapCallable($optional, $callable);
+        $this->fixture->swapCallableTest($optional, $callable);
     }
 
     /**
@@ -69,7 +84,7 @@ class FunctionsTest
             "gender"
         ];
 
-        Functions::validateRequired($values, $required);
+        $this->fixture->validateRequiredTest($values, $required);
     }
 
     /**
@@ -89,7 +104,7 @@ class FunctionsTest
             "gender"
         ];
 
-        Functions::validateRequired($values, $required, true);
+        $this->fixture->validateRequiredTest($values, $required, true);
     }
 
     /**
@@ -108,7 +123,7 @@ class FunctionsTest
             "gender"
         ];
 
-        Functions::validateRequired($values, $required);
+        $this->fixture->validateRequiredTest($values, $required);
     }
 
     /**
@@ -129,7 +144,7 @@ class FunctionsTest
             "gender"
         ];
 
-        Functions::validateRequired($values, $required);
+        $this->fixture->validateRequiredTest($values, $required);
     }
 
     /**
@@ -145,5 +160,25 @@ class FunctionsTest
             [null,   "trim", null, false],
             ["trim", null,   null, true]
         ];
+    }
+}
+
+class FunctionsTestClass
+{
+    use FunctionsTrait;
+    
+    public function swapArgsTest(&$optional, &$swap, $default = null)
+    {
+        return $this->swapArgs($optional, $swap, $default);
+    }
+    
+    public function swapCallableTest(&$optional, &$callable, $default = null, $callable_required = true)
+    {
+        return $this->swapCallable($optional, $callable, $default, $callable_required);
+    }
+    
+    public function validateRequiredTest(array $values, array $required, $allow_empty = false)
+    {
+        return $this->validateRequired($values, $required, $allow_empty);
     }
 }
