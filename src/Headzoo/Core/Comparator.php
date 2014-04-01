@@ -2,10 +2,10 @@
 namespace Headzoo\Core;
 
 /**
- * Used to make comparisons between values.
- * 
- * Primarily used when a comparison needs to be made between two values
- * with a callback.
+ * Contains static methods for making comparisons between values.
+ *
+ * Primarily used when a callback is needed which makes comparisons between
+ * two values.
  * 
  * #### Example
  * 
