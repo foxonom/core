@@ -34,6 +34,24 @@ class Comparator
      * Compares its two arguments for order. Returns a negative integer, zero, or a positive integer as
      * the first argument is less than, equal to, or greater than the second.
      * 
+     * Example:
+     * ```php
+     * $arr = [
+     *      "joe",
+     *      "headzoo",
+     *      "amy"
+     * ];
+     * usort($arr, 'Headzoo\Core\Comparator::compare');
+     * print_r($arr);
+     *
+     * // Outputs:
+     * // [
+     * //   "amy",
+     * //   "joe",
+     * //   "headzoo"
+     * // ]
+     * ```
+     * 
      * @param  mixed $left  The left value
      * @param  mixed $right The right value
      *
@@ -49,6 +67,48 @@ class Comparator
             $result = 0;
         }
         
+        return $result;
+    }
+
+    /**
+     * Returns the order of the left and right hand values
+     *
+     * Compares its two arguments for order. Returns a negative integer, zero, or a positive integer as
+     * the first argument is greater than, equal to, or less than the second.
+     *
+     * Example:
+     * ```php
+     * $arr = [
+     *      "joe",
+     *      "headzoo",
+     *      "amy"
+     * ];
+     * usort($arr, 'Headzoo\Core\Comparator::reverse');
+     * print_r($arr);
+     *
+     * // Outputs:
+     * // [
+     * //   "headzoo",
+     * //   "joe",
+     * //   "amy"
+     * // ]
+     * ```
+     * 
+     * @param  mixed $left  The left value
+     * @param  mixed $right The right value
+     *
+     * @return int
+     */
+    public static function reverse($left, $right)
+    {
+        if ($left < $right) {
+            $result = 1;
+        } else if ($left > $right) {
+            $result = -1;
+        } else {
+            $result = 0;
+        }
+
         return $result;
     }
     
