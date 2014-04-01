@@ -5,36 +5,13 @@ class ComparatorTest
     extends PHPUnit_Framework_TestCase
 {
     /**
-     * The test fixture
-     * @var Comparator
-     */
-    protected $fixture;
-
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        $this->fixture = new Comparator();
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
      * @covers Headzoo\Core\Comparator::compare
      */
     public function testCompare()
     {
-        $this->assertEquals(0, $this->fixture->compare(5, 5));
-        $this->assertEquals(-1, $this->fixture->compare(4, 5));
-        $this->assertEquals(1, $this->fixture->compare(6, 5));
+        $this->assertEquals(0, Comparator::compare(5, 5));
+        $this->assertEquals(-1, Comparator::compare(4, 5));
+        $this->assertEquals(1, Comparator::compare(6, 5));
     }
     
     /**
@@ -42,9 +19,9 @@ class ComparatorTest
      */
     public function testIsEquals()
     {
-        $this->assertTrue($this->fixture->isEquals(5, 5));
-        $this->assertTrue($this->fixture->isEquals(5, "5"));
-        $this->assertFalse($this->fixture->isEquals(4, 5));
+        $this->assertTrue(Comparator::isEquals(5, 5));
+        $this->assertTrue(Comparator::isEquals(5, "5"));
+        $this->assertFalse(Comparator::isEquals(4, 5));
     }
 
     /**
@@ -52,9 +29,9 @@ class ComparatorTest
      */
     public function testIsNotEquals()
     {
-        $this->assertFalse($this->fixture->isNotEquals(5, 5));
-        $this->assertFalse($this->fixture->isNotEquals(5, "5"));
-        $this->assertTrue($this->fixture->isNotEquals(4, 5));
+        $this->assertFalse(Comparator::isNotEquals(5, 5));
+        $this->assertFalse(Comparator::isNotEquals(5, "5"));
+        $this->assertTrue(Comparator::isNotEquals(4, 5));
     }
 
     /**
@@ -62,9 +39,9 @@ class ComparatorTest
      */
     public function testIsStrictlyEquals()
     {
-        $this->assertTrue($this->fixture->isStrictlyEquals(5, 5));
-        $this->assertFalse($this->fixture->isStrictlyEquals(5, "5"));
-        $this->assertFalse($this->fixture->isStrictlyEquals(4, 5));
+        $this->assertTrue(Comparator::isStrictlyEquals(5, 5));
+        $this->assertFalse(Comparator::isStrictlyEquals(5, "5"));
+        $this->assertFalse(Comparator::isStrictlyEquals(4, 5));
     }
 
     /**
@@ -72,9 +49,9 @@ class ComparatorTest
      */
     public function testIsStrictlyNotEquals()
     {
-        $this->assertFalse($this->fixture->isStrictlyNotEquals(5, 5));
-        $this->assertTrue($this->fixture->isStrictlyNotEquals(5, "5"));
-        $this->assertTrue($this->fixture->isStrictlyNotEquals(4, 5));
+        $this->assertFalse(Comparator::isStrictlyNotEquals(5, 5));
+        $this->assertTrue(Comparator::isStrictlyNotEquals(5, "5"));
+        $this->assertTrue(Comparator::isStrictlyNotEquals(4, 5));
     }
 
     /**
@@ -82,9 +59,9 @@ class ComparatorTest
      */
     public function testIsLessThan()
     {
-        $this->assertFalse($this->fixture->isLessThan(5, 5));
-        $this->assertFalse($this->fixture->isLessThan(5, "5"));
-        $this->assertTrue($this->fixture->isLessThan(4, 5));
+        $this->assertFalse(Comparator::isLessThan(5, 5));
+        $this->assertFalse(Comparator::isLessThan(5, "5"));
+        $this->assertTrue(Comparator::isLessThan(4, 5));
     }
 
     /**
@@ -92,9 +69,9 @@ class ComparatorTest
      */
     public function testIsLessThanOrEquals()
     {
-        $this->assertTrue($this->fixture->isLessThanOrEquals(5, 5));
-        $this->assertTrue($this->fixture->isLessThanOrEquals(5, "5"));
-        $this->assertTrue($this->fixture->isLessThanOrEquals(4, 5));
+        $this->assertTrue(Comparator::isLessThanOrEquals(5, 5));
+        $this->assertTrue(Comparator::isLessThanOrEquals(5, "5"));
+        $this->assertTrue(Comparator::isLessThanOrEquals(4, 5));
     }
 
     /**
@@ -102,9 +79,9 @@ class ComparatorTest
      */
     public function testIsGreaterThan()
     {
-        $this->assertFalse($this->fixture->isGreaterThan(5, 5));
-        $this->assertFalse($this->fixture->isGreaterThan(5, "5"));
-        $this->assertTrue($this->fixture->isGreaterThan(6, 5));
+        $this->assertFalse(Comparator::isGreaterThan(5, 5));
+        $this->assertFalse(Comparator::isGreaterThan(5, "5"));
+        $this->assertTrue(Comparator::isGreaterThan(6, 5));
     }
 
     /**
@@ -112,10 +89,10 @@ class ComparatorTest
      */
     public function testIsGreaterThanOrEquals()
     {
-        $this->assertTrue($this->fixture->isGreaterThanOrEquals(5, 5));
-        $this->assertTrue($this->fixture->isGreaterThanOrEquals(5, "5"));
-        $this->assertTrue($this->fixture->isGreaterThanOrEquals(6, 5));
-        $this->assertFalse($this->fixture->isGreaterThanOrEquals(4, 5));
+        $this->assertTrue(Comparator::isGreaterThanOrEquals(5, 5));
+        $this->assertTrue(Comparator::isGreaterThanOrEquals(5, "5"));
+        $this->assertTrue(Comparator::isGreaterThanOrEquals(6, 5));
+        $this->assertFalse(Comparator::isGreaterThanOrEquals(4, 5));
     }
 
     /**
@@ -123,7 +100,7 @@ class ComparatorTest
      */
     public function testIsInstanceOf()
     {
-        $this->assertTrue($this->fixture->isInstanceOf($this, ComparatorTest::class));
-        $this->assertFalse($this->fixture->isInstanceOf($this, Comparator::class));
+        $this->assertTrue(Comparator::isInstanceOf($this, ComparatorTest::class));
+        $this->assertFalse(Comparator::isInstanceOf($this, Comparator::class));
     }
 }

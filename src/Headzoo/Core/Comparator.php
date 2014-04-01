@@ -6,6 +6,25 @@ namespace Headzoo\Core;
  * 
  * Primarily used when a comparison needs to be made between two values
  * with a callback.
+ * 
+ * #### Example
+ * 
+ * ```php
+ * $arr = [
+ *      "joe",
+ *      "headzoo",
+ *      "amy"
+ * ];
+ * usort($arr, 'Headzoo\Core\Comparator::compare');
+ * print_r($arr);
+ * 
+ * // Outputs:
+ * // [
+ * //   "amy",
+ * //   "joe",
+ * //   "headzoo"
+ * // ]
+ * ```
  */
 class Comparator
 {
@@ -20,7 +39,7 @@ class Comparator
      *
      * @return int
      */
-    public function compare($left, $right)
+    public static function compare($left, $right)
     {
         if ($left < $right) {
             $result = -1;
@@ -41,7 +60,7 @@ class Comparator
      *
      * @return bool
      */
-    public function isEquals($left, $right)
+    public static function isEquals($left, $right)
     {
         return $left == $right;
     }
@@ -54,7 +73,7 @@ class Comparator
      *
      * @return bool
      */
-    public function isNotEquals($left, $right)
+    public static function isNotEquals($left, $right)
     {
         return $left != $right;
     }
@@ -67,7 +86,7 @@ class Comparator
      *
      * @return bool
      */
-    public function isStrictlyEquals($left, $right)
+    public static function isStrictlyEquals($left, $right)
     {
         return $left === $right;
     }
@@ -80,7 +99,7 @@ class Comparator
      *
      * @return bool
      */
-    public function isStrictlyNotEquals($left, $right)
+    public static function isStrictlyNotEquals($left, $right)
     {
         return $left !== $right;
     }
@@ -93,7 +112,7 @@ class Comparator
      *
      * @return bool
      */
-    public function isLessThan($left, $right)
+    public static function isLessThan($left, $right)
     {
         return $left < $right;
     }
@@ -106,7 +125,7 @@ class Comparator
      *
      * @return bool
      */
-    public function isLessThanOrEquals($left, $right)
+    public static function isLessThanOrEquals($left, $right)
     {
         return $left <= $right;
     }
@@ -119,7 +138,7 @@ class Comparator
      *
      * @return bool
      */
-    public function isGreaterThan($left, $right)
+    public static function isGreaterThan($left, $right)
     {
         return $left > $right;
     }
@@ -132,7 +151,7 @@ class Comparator
      *
      * @return bool
      */
-    public function isGreaterThanOrEquals($left, $right)
+    public static function isGreaterThanOrEquals($left, $right)
     {
         return $left >= $right;
     }
@@ -145,7 +164,7 @@ class Comparator
      *
      * @return bool
      */
-    public function isInstanceOf($left, $right)
+    public static function isInstanceOf($left, $right)
     {
         return $left instanceof $right;
     }
