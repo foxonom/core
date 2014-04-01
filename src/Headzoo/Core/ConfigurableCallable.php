@@ -236,12 +236,6 @@ class ConfigurableCallable
      * @var int
      */
     protected $max_retries = self::DEFAULT_MAX_RETRIES;
-
-    /**
-     * Used to make comparisons between values
-     * @var Comparator
-     */
-    protected $comparator;
     
     /**
      * The wrapped callable
@@ -278,19 +272,14 @@ class ConfigurableCallable
      * 
      * @param callable            $callback     The callback to invoke
      * @param Log\LoggerInterface $logger       Used to log errors
-     * @param Comparator          $comparator   Used to make comparisons between values
      */
-    public function __construct(callable $callback, Log\LoggerInterface $logger = null, Comparator $comparator = null)
+    public function __construct(callable $callback, Log\LoggerInterface $logger = null)
     {
         $this->callback = $callback;
         if (!$logger) {
             $logger = new Log\NullLogger();
         }
         $this->setLogger($logger);
-        if (!$comparator) {
-            $comparator = new Comparator();
-        }
-        $this->comparator = $comparator;
     }
 
     /**
@@ -436,9 +425,9 @@ class ConfigurableCallable
         $matched  = false;
         foreach($this->conditions as $expression) {
             if ("isExceptionOf" === $expression["compare"]) {
-                $matched = $this->comparator->isInstanceOf($exception, $expression["value"]);
+                $matched = Comparator::isInstanceOf($exception, $expression["value"]);
             } else {
-                $matched = $this->comparator->$expression["compare"]($return, $expression["value"]);
+                $matched = Comparator::$expression["compare"]($return, $expression["value"]);
             }
             if ($matched) {
                 $matched = $expression["action"];
