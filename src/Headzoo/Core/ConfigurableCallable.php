@@ -5,7 +5,7 @@ use Exception;
 use psr\Log;
 
 /**
- * Creates a callable instance with configurable behaviour.
+ * Creates a callable instance with configurable behavior.
  * 
  * Primarily used when you need to continuously call a method or function until certain
  * conditions are met. For example until an exception isn't being thrown, or a specific
