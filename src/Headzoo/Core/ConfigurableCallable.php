@@ -285,6 +285,21 @@ class ConfigurableCallable
     /**
      * Sets the max number of retries
      * 
+     * The value may be set to -1 for an unlimited number of retries. Use with caution,
+     * as you may leave your application frozen.
+     * 
+     * Example:
+     * ```php
+     * $counter = ConfigurableCallable::factory(function() {
+     *      static $count = 0;
+     *      return ++$count;
+     * });
+     * $counter->setMaxRetries(-1)
+     *         ->retryOnLessThan(42);
+     * echo $counter();
+     * // Outputs: 42
+     * ```
+     * 
      * @param $max_retries
      *
      * @return $this
@@ -297,6 +312,23 @@ class ConfigurableCallable
 
     /**
      * Sets a return value filter
+     * 
+     * The return value from the wrapped function may be filtered through another function,
+     * which is specified here. Note the filtering happens after all conditions have been
+     * met, and the callable is returning a value.
+     * 
+     * Example:
+     * ```php
+     * $func = ConfigurableCallable::factory(function() {
+     *      return "hello world!";
+     * });
+     * $func->setFilter(function($str) {
+     *      return strtoupper($str);
+     * });
+     * echo $func();
+     * 
+     * // Outputs: "HELLO WORLD!"
+     * ```
      * 
      * @param callable $filter
      *
