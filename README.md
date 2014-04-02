@@ -77,8 +77,14 @@ Abstract class for creating enumerator classes.
 ##### [Core\SmartCallable](https://github.com/headzoo/core/wiki/SmartCallable)  
 Used to call a function when a resource is no longer needed.
 
+##### [Core\ConfigurableCallable](https://github.com/headzoo/core/wiki/ConfigurableCallable)  
+Creates a callable instance with configurable behavior.
+
 ##### [Core\FunctionsTrait](https://github.com/headzoo/core/wiki/FunctionsTrait)  
 Contains methods for working with functions and methods.
+
+##### [Core\Comparator](https://github.com/headzoo/core/wiki/Comparator)  
+Contains static methods for making comparisons between values.
 
 
 Quick Start
@@ -331,12 +337,50 @@ public function fetch()
 }
 ```
 
+#### Core\ConfigurableCallable
+```php
+// In this example you want to insert a row into the database, which may lead to
+// a DeadLockException being thrown. The recommended action for dead locks is retrying
+// the query. We use a ConfigurableCallable instance to keep trying the query until
+// it succeeds.
+$link  = mysqli_connect("localhost", "my_user", "my_password", "my_db");
+$query = new ConfigurableCallable("mysqli_query");
+$query->retryOnException(DeadLockException::class);
+$result = $query($link, "INSERT INTO `members` ('headzoo')");
+
+// In this example we will call a remote web API, which sometimes takes a few tries
+// depending on how busy the remote server is at the any given moment. The remote
+// server may return an empty value (null), the API library may thrown an exception,
+// or PHP may trigger an error.
+$api     = new RemoteApi();
+$members = new ConfigurableCallable([$api, "getMembers"]);
+$members->retryOnException()
+     ->retryOnError()
+     ->retryOnNull();
+$rows = $members(0, 10);
+```
+
+#### Core\Conversions
+```php
+echo Conversions::bytesToHuman(100);
+// Outputs: "100B"
+
+echo Conversions::bytesToHuman(1024);
+// Outputs: "1KB"
+
+echo Conversions::bytesToHuman(1050);
+// Outputs: "1.02KB"
+```
+
+
 Change Log
 ----------
 ##### v0.6.0 - 2014/04/01
 * The `Functions` class is now a trait, `FunctionsTrait`.
 * Renamed the class `Complete` to `SmartCallable`.
-* 
+* Created the `ConfigurableCallable` class.
+* Created the `Comparator` class.
+
 ##### v0.5.0 - 2014/03/31
 * Created the `Conversions` class.
 * The `Profiler::run` method outputs memory usage.
