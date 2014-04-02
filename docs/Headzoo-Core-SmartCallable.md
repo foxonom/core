@@ -1,35 +1,78 @@
-Headzoo\Core\Complete
+Headzoo\Core\SmartCallable
 ===============
 
-Used to call a function when the object destructs.
+Used to call a function when a resource is no longer needed.
 
-The class wraps a callable function, which is called in the class destructor. The utility
-of this scheme is the ability to ensure the function is called eventually. Usually when
-the Complete object goes out of scope, which is when it's destructor is called.
+SmartCallable instances wrap functions, which are called when the SmartCallable instances
+go out of scope. The idea is similar to "smart pointers" from C++, where an object -- the smart
+pointer -- wraps a resource, and automatically frees the resource when it's no longer needed.
 
-This class can be used to simulate a try...catch...finally in versions of PHP which do not
-support the finally clause.
+In this example we create a method which requests a web resource using curl.
+We use a SmartCallable instance to ensure the curl resource is closed when
+the method returns, or an exception is thrown.
 
-Example:
 ```php
-// In this example the database connection will always be closed, even if the $database->fetch()
-// method throws an exception, because the anonymous function passed to Complete::factory()
-// is called when the $complete object goes out of scope.
+public function fetch()
+{
+     $curl = curl_init("http://some-site.com");
+     $sc = SmartCallable::factory(function() use($curl) {
+             curl_close($curl);
+     });
 
-$database = new FakeDatabase();
-$complete = Complete::factory(function() use($database) {
-     $database->close();
-});
-try {
-     $rows = $database->fetch();
-} catch (Exception $e) {
-     echo $e->getTraceAsString();
-     throw $e;
+     $response = curl_exec($curl);
+     if ($e = curl_error()) {
+         throw new Exception($e);
+     }
+
+     return $response;
+}
+```
+
+The method could also be written this way.
+
+```php
+public function fetch()
+{
+     $curl = curl_init("http://some-site.com");
+     $sc = SmartCallable::factory("curl_close", $curl);
+
+     $response = curl_exec($curl);
+     if ($e = curl_error()) {
+         throw new Exception($e);
+     }
+
+     return $response;
+}
+```
+This class can be used to simulate a try...catch...finally in versions of PHP which do not
+support the finally clause. In this example the database connection is closed even if we
+throw an exception before calling the close() method.
+
+```php
+public function fetchRows()
+{
+     $mysqli = new mysqli('localhost', 'my_user', 'my_password', 'my_db');
+     $sc = SmartCallable::factory(function() use($mysql) {
+         $mysqli->close();
+     });
+
+     try {
+         $result = $mysqli->query("SELECT Name FROM City LIMIT 10");
+     } catch (Exception $e) {
+         $this->logger->error($e->getMessage());
+         throw $e;
+     }
+
+     $mysql->close();
+     // We could also close the connection by invoking the SmartCallable object.
+     $sc();
+
+     return $result;
 }
 ```
 
 
-* Class name: Complete
+* Class name: SmartCallable
 * Namespace: Headzoo\Core
 * Parent class: [Headzoo\Core\Obj](Headzoo-Core-Obj.md)
 
@@ -51,21 +94,40 @@ private callable $callable
 
 
 
+### $args
+Arguments passed to the callable
+
+
+```php
+private array $args = array()
+```
+
+
+
 Methods
 -------
 
 
-### Headzoo\Core\Complete::factory
+### Headzoo\Core\SmartCallable::factory
 Static factory class to create a new instance of this class
 
 Example:
 ```php
-$complete = Complete::factory(function() {
+$sc = SmartCallable::factory(function() {
      echo "I'm complete!";
 });
+
+// Passing arguments to the callable.
+$sc = SmartCallable::factory(function($arg1, $arg1) {
+     echo "{$arg1}, {$arg2}";
+}, "Hello", "World");
+
+// Using a string as the callable, and passing arguments.
+$curl = curl_init("http://some-site.com");
+$sc = SmartCallable::factory("curl_close", $curl);
 ```
 ```php
-public Headzoo\Core\Complete Headzoo\Core\Complete::factory(callable $callable)
+public Headzoo\Core\SmartCallable Headzoo\Core\SmartCallable::factory(callable $callable, mixed $args)
 ```
 
 * This method is **static**.
@@ -73,53 +135,55 @@ public Headzoo\Core\Complete Headzoo\Core\Complete::factory(callable $callable)
 ##### Arguments
 
 * $callable **callable** - The function to call in the Complete destructor
+* $args **mixed** - Arguments passed to the callable
 
 
 
-### Headzoo\Core\Complete::__construct
+### Headzoo\Core\SmartCallable::__construct
 Constructor
 
 
 ```php
-public mixed Headzoo\Core\Complete::__construct(callable $callable)
+public mixed Headzoo\Core\SmartCallable::__construct(callable $callable, array $args)
 ```
 
 
 ##### Arguments
 
 * $callable **callable** - The function to call in the destructor
+* $args **array** - Arguments passed to the callable
 
 
 
-### Headzoo\Core\Complete::__destruct
+### Headzoo\Core\SmartCallable::__destruct
 Destructor
 
 Calls the set $callable function
 ```php
-public mixed Headzoo\Core\Complete::__destruct()
+public mixed Headzoo\Core\SmartCallable::__destruct()
 ```
 
 
 
 
-### Headzoo\Core\Complete::__invoke
+### Headzoo\Core\SmartCallable::__invoke
 When calling an instance of this class as a function
 
 Example:
 ```php
-$complete = Complete::factory(function() {
+$sc = SmartCallable::factory(function() {
      echo "I'm complete!";
 });
-$complete();
+$sc();
 ```
 ```php
-public bool Headzoo\Core\Complete::__invoke()
+public bool Headzoo\Core\SmartCallable::__invoke()
 ```
 
 
 
 
-### Headzoo\Core\Complete::invoke
+### Headzoo\Core\SmartCallable::invoke
 Calls the set $callable function
 
 Ensures the callable cannot be called twice, even if the callback has an error. Subsequent calls to this method
@@ -127,13 +191,13 @@ do nothing. Returns true when the callable was called, and false if not.
 
 Example:
 ```php
-$complete = Complete::factory(function() {
+$sc = SmartCallable::factory(function() {
      echo "I'm complete!";
 });
-$complete->invoke();
+$sc->invoke();
 ```
 ```php
-public bool Headzoo\Core\Complete::invoke()
+public bool Headzoo\Core\SmartCallable::invoke()
 ```
 
 
@@ -144,7 +208,7 @@ Returns the name of the class
 
 
 ```php
-public string Headzoo\Core\Complete::getClassName()
+public string Headzoo\Core\SmartCallable::getClassName()
 ```
 
 
@@ -157,7 +221,7 @@ The namespace will not have a leading forward-slash, eg "Headzoo\Core" instead
 of "\Headzoo\Core". An empty string is returned when the class is in the
 global namespace.
 ```php
-public string Headzoo\Core\Complete::getNamespaceName()
+public string Headzoo\Core\SmartCallable::getNamespaceName()
 ```
 
 
@@ -208,7 +272,7 @@ The built in place holders:
  {code}      - The exception code
  {date}      - The date the exception was thrown
 ```php
-protected mixed Headzoo\Core\Complete::toss(string $exception, string $message, int $code)
+protected mixed Headzoo\Core\SmartCallable::toss(string $exception, string $message, int $code)
 ```
 
 * This method is **static**.
@@ -226,7 +290,7 @@ Interpolates context values into the message placeholders.
 
 Taken from PSR-3's example implementation.
 ```php
-private string Headzoo\Core\Complete::interpolate(string $message, array $context)
+private string Headzoo\Core\SmartCallable::interpolate(string $message, array $context)
 ```
 
 * This method is **static**.

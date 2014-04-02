@@ -1,12 +1,12 @@
-Headzoo\Core\Exceptions\PHPErrorException
+Headzoo\Core\Exceptions\PHPParseException
 ===============
 
-Thrown when PHP triggers an E_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR, E_CORE_ERROR or E_COMPILE_ERROR.
+Thrown when PHP triggers an E_PARSE.
 
 
 
 
-* Class name: PHPErrorException
+* Class name: PHPParseException
 * Namespace: Headzoo\Core\Exceptions
 * Parent class: [Headzoo\Core\Exceptions\PHPException](Headzoo-Core-Exceptions-PHPException.md)
 
@@ -27,7 +27,7 @@ The value of $code should be one of the E_ERROR constants. This method will retu
 correct PHPException instance for that code. For example, if $code == E_WARNING, an
 instance of PHPWarningException is returned.
 ```php
-public Headzoo\Core\Exceptions\PHPException Headzoo\Core\Exceptions\PHPErrorException::factory(string $message, int $code, string $file, int $line, Exception $prev)
+public Headzoo\Core\Exceptions\PHPException Headzoo\Core\Exceptions\PHPParseException::factory(string $message, int $code, string $file, int $line, Exception $prev)
 ```
 
 * This method is **static**.
@@ -47,7 +47,7 @@ Constructor
 
 
 ```php
-public mixed Headzoo\Core\Exceptions\PHPErrorException::__construct(string $message, int $code, string $file, int $line, Exception $prev)
+public mixed Headzoo\Core\Exceptions\PHPParseException::__construct(string $message, int $code, string $file, int $line, Exception $prev)
 ```
 
 
