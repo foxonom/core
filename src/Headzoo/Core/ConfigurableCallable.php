@@ -2,7 +2,7 @@
 namespace Headzoo\Core;
 use Headzoo\Core\Exceptions\PHPException;
 use Exception;
-use psr\Log;
+use Psr\Log;
 
 /**
  * Creates a callable instance with configurable behavior.

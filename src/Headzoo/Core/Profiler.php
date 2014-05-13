@@ -1,6 +1,6 @@
 <?php
 namespace Headzoo\Core;
-use psr\Log;
+use Psr\Log;
 
 /**
  * A simple profiling class.
@@ -85,7 +85,7 @@ use psr\Log;
  * // Profiling can be globally enabled and disabled.
  * Profiler::enabled(false);
  * 
- * // You can also log the profile information with an instance of psr/Log/LoggerInterface.
+ * // You can also log the profile information with an instance of Psr/Log/LoggerInterface.
  * $profiler = new Profiler(new FileLogger());
  * ```
  */

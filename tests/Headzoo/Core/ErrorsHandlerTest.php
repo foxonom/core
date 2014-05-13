@@ -1,7 +1,7 @@
 <?php
 use Headzoo\Core\ErrorHandler;
-use psr\Log\AbstractLogger;
-use psr\Log\LogLevel;
+use Psr\Log\AbstractLogger;
+use Psr\Log\LogLevel;
 
 /**
  * @coversDefaultClass
