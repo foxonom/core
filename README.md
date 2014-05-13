@@ -1,5 +1,5 @@
-Headzoo Core v0.6
-=================
+Headzoo Core v0.6.1
+===================
 
 A collection of use PHP utility classes and functions.
 
@@ -375,6 +375,9 @@ echo Conversions::bytesToHuman(1050);
 
 Change Log
 ----------
+##### v0.6.1 - 2014/05/13
+* Minor fixes for Psr\Log.
+
 ##### v0.6.0 - 2014/04/01
 * The `Functions` class is now a trait, `FunctionsTrait`.
 * Renamed the class `Complete` to `SmartCallable`.

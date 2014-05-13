@@ -56,7 +56,7 @@ use Psr\Log;
  * times before the callable gives up. If the callable does give up, it will return
  * the last value returned by the wrapped function, or throw the last exception
  * thrown by the function. PHP errors are converted to exceptions and thrown.
- * Errors can be logged by passing a psr\Log\LoggerInterface instance to the
+ * Errors can be logged by passing a Psr\Log\LoggerInterface instance to the
  * ConfigurableCallable constructor.
  *
  * ```php

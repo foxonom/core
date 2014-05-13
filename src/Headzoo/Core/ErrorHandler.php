@@ -1,7 +1,7 @@
 <?php
 namespace Headzoo\Core;
 use Exception;
-use psr\Log;
+use Psr\Log;
 use Closure;
 
 /**
