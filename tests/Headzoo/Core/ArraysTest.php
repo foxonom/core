@@ -172,6 +172,10 @@ class ArraysTest
             "sam"
         ];
         $this->assertEquals(
+            "headzoo, joe, or sam",
+            Arrays::conjunct($arr, "or")
+        );
+        $this->assertEquals(
             "'headzoo', 'joe', or 'sam'",
             Arrays::conjunct($arr, "or", 'Headzoo\Core\Strings::quote')
         );

@@ -293,7 +293,7 @@ class Arrays
      */
     public static function conjunct(array $array, $conjunction = self::DEFAULT_CONJUNCTION, callable $callback = null)
     {
-        self::swapCallable($conjunction, $callback, self::DEFAULT_CONJUNCTION);
+        self::swapCallable($conjunction, $callback, self::DEFAULT_CONJUNCTION, false);
         if (null !== $callback) {
             $array = array_map($callback, $array);
         }
