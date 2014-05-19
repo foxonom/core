@@ -1,4 +1,4 @@
-Headzoo Core v0.6.1
+Headzoo Core v0.6.2
 ===================
 
 A collection of use PHP utility classes and functions.
@@ -375,6 +375,9 @@ echo Conversions::bytesToHuman(1050);
 
 Change Log
 ----------
+##### v0.6.2 - 2014/05/19
+* Bug fix in `Arrays` class.
+
 ##### v0.6.1 - 2014/05/13
 * Minor fixes for Psr\Log.
 
