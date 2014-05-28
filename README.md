@@ -1,4 +1,4 @@
-Headzoo Core v0.6.2
+Headzoo Core v0.6.3
 ===================
 
 A collection of use PHP utility classes and functions.
@@ -375,6 +375,9 @@ echo Conversions::bytesToHuman(1050);
 
 Change Log
 ----------
+##### v0.6.3 - 2014/05/28
+* Created `FunctionsTrait::throwOnInvalidArgument`.
+
 ##### v0.6.2 - 2014/05/19
 * Bug fix in `Arrays` class.
 
