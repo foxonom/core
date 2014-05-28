@@ -7,6 +7,22 @@ namespace Headzoo\Core;
 trait FunctionsTrait
 {
     /**
+     * The possible return values from gettype()
+     *
+     * @var array
+     */
+     private static $native_php_types = [
+        "boolean",
+        "integer",
+        "double",
+        "string",
+        "array",
+        "object",
+        "resource",
+        "NULL"
+    ];
+    
+    /**
      * Swaps two values when the second is empty and the first is not
      *
      * Returns true when the arguments were swapped, and false if not.
@@ -154,6 +170,48 @@ trait FunctionsTrait
             );
         }
 
+        return true;
+    }
+
+    /**
+     * Throws an InvalidArgumentException when the argument is not one of the given types
+     *
+     * The $type argument should be one of the native PHP types returned by gettype() or the name of
+     * a class, in which case the argument must be an instance of that class.
+     * 
+     * This method always returns true.
+     *
+     * @param string $arg  The argument
+     * @param string $type The first type to check
+     *
+     * @throws Exceptions\InvalidArgumentException
+     * @internal param $string ...   Additional types to check
+     *           
+     * @return bool
+     */
+    protected static function throwOnInvalidArgument($arg, $type)
+    {
+        $args     = func_get_args();
+        $arg      = array_shift($args);
+        $arg_type = gettype($arg);
+        
+        $found = false;
+        foreach($args as $type) {
+            if ((in_array($type, static::$native_php_types) && $arg_type == $type) || $arg instanceof $type) {
+                $found = true;
+                break;
+            }
+        }
+        
+        if (!$found) {
+            throw new Exceptions\InvalidArgumentException(
+                sprintf(
+                    "Argument must be of type %s.",
+                    Arrays::conjunct($args, "or")
+                )
+            );
+        }
+        
         return true;
     }
 } 

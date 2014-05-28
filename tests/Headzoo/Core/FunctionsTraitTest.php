@@ -159,6 +159,31 @@ class FunctionsTraitTest
     }
 
     /**
+     * @covers ::throwOnInvalidArgument
+     */
+    public function testThrowOnInvalidArgument()
+    {
+        $this->assertTrue(
+            $this->fixture->throwOnInvalidArgumentTest(55, "integer")
+        );
+        $this->assertTrue(
+            $this->fixture->throwOnInvalidArgumentTest(55, "integer", "array")
+        );
+        $this->assertTrue(
+            $this->fixture->throwOnInvalidArgumentTest($this, "string", FunctionsTraitTest::class)
+        );
+    }
+
+    /**
+     * @covers ::throwOnInvalidArgument
+     * @expectedException Headzoo\Core\Exceptions\InvalidArgumentException
+     */
+    public function testThrowOnInvalidArgument_InvalidArgument()
+    {
+        $this->fixture->throwOnInvalidArgumentTest($this, "string", FunctionsTestClass::class);
+    }
+
+    /**
      * Data provider for testSwapCallable
      * 
      * @return array
@@ -191,5 +216,10 @@ class FunctionsTestClass
     public function validateRequiredTest(array $values, array $required, $allow_empty = false)
     {
         return $this->validateRequired($values, $required, $allow_empty);
+    }
+    
+    public function throwOnInvalidArgumentTest($arg, $type)
+    {
+        return call_user_func_array([$this, "throwOnInvalidArgument"], func_get_args());
     }
 }
