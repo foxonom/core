@@ -206,7 +206,7 @@ trait FunctionsTrait
         
         $found = false;
         foreach($args as $type) {
-            if ((in_array($type, static::$native_php_types) && $arg_type == $type) || $arg instanceof $type) {
+            if ((in_array($type, self::$native_php_types) && $arg_type == $type) || $arg instanceof $type) {
                 $found = true;
                 break;
             }
