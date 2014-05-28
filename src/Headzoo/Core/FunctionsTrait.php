@@ -180,6 +180,15 @@ trait FunctionsTrait
      * a class, in which case the argument must be an instance of that class.
      * 
      * This method always returns true.
+     * 
+     * Example:
+     * public function fetch($values)
+     * {
+     *      $this->throwOnInvalidArgument($values, "array", ArrayableInterface::class);
+     *
+     *      ... other stuff ...
+     * }
+     * ```
      *
      * @param string $arg  The argument
      * @param string $type The first type to check
