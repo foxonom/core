@@ -1,4 +1,4 @@
-Headzoo Core v0.6.3.1
+Headzoo Core v0.6.3.2
 =====================
 
 A collection of use PHP utility classes and functions.
@@ -375,6 +375,9 @@ echo Conversions::bytesToHuman(1050);
 
 Change Log
 ----------
+##### v0.6.3.2 - 2014/06/24
+* Change to `Objects::isInstance` handling of non-objects.
+
 ##### v0.6.3.1 - 2014/05/28
 * Created `FunctionsTrait::throwOnInvalidArgument`.
 
