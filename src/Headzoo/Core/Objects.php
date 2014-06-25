@@ -170,23 +170,19 @@ class Objects
     {
         if (is_array($obj)) {
             $reduced = array_filter($obj, function($o) use($class) {
-                return self::isInstance($o, $class);
-            });
+                    return self::isInstance($o, $class);
+                });
             $is_instance = count($obj) == count($reduced);
         } else {
             if (!is_object($obj)) {
-                self::toss(
-                    "Logic",
-                    "Argument 1 must be an object or array. Got type {0}.",
-                    gettype($obj)
-                );
+                $is_instance = false;
+            } else {
+                $class = self::getFullName($class);
+                $is_instance = is_subclass_of($obj, $class) ||
+                    self::getFullName($obj) === $class;
             }
-            
-            $class = self::getFullName($class);
-            $is_instance = is_subclass_of($obj, $class) ||
-                self::getFullName($obj) === $class;
         }
-        
+
         return $is_instance;
     }
 

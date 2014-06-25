@@ -56,29 +56,6 @@ class ObjectsTest
             Objects::isInstance($objs, $class)
         );
     }
-
-    /**
-     * @covers ::isInstance
-     * @expectedException Headzoo\Core\Exceptions\LogicException
-     */
-    public function testIsInstance_Logic()
-    {
-        /** @noinspection PhpParamsInspection */
-        Objects::isInstance(42, $this);
-    }
-
-    /**
-     * @covers ::isInstance
-     * @expectedException Headzoo\Core\Exceptions\LogicException
-     */
-    public function testIsInstance_Logic_Array()
-    {
-        $objects = [
-            $this,
-            42
-        ];
-        Objects::isInstance($objects, $this);
-    }
     
     /**
      * @covers ::equals
@@ -272,6 +249,7 @@ class ObjectsTest
             [$obj,                  ObjectsTest::class,         false],
             [$this,                 'stdClass',                 false],
             [$obj,                  ObjectTestInterface::class, false],
+            [42,                    'stdClass',                 false]
         ];
     }
 
@@ -314,6 +292,11 @@ class ObjectsTest
             ],
             [
                 [$this, new stdClass()],
+                stdClass::class,
+                false
+            ],
+            [
+                [42, new stdClass()],
                 stdClass::class,
                 false
             ]
