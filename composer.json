@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Headzoo\\Utilities\\Core": "src/Headzoo/Core"
+            "Headzoo\\Utilities\\Core\\": "src/Headzoo/Core"
         }
     }
 }
