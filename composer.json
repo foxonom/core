@@ -17,8 +17,8 @@
         "psr/log": "dev-master"
     },
     "autoload": {
-        "psr-0": {
-            "Headzoo": "src/"
+        "psr-4": {
+            "Headzoo\\Utilities\\Core": "src/Headzoo/Core"
         }
     }
 }
